@@ -5,15 +5,15 @@ export const dynamic = "force-static";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Cranoly",
-    short_name: "Cranoly",
+    name: "Cranoly Mono",
+    short_name: "Cranoly Mono",
     description: "Linked notes for language learning, with flashcards inside your notes.",
     start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "any",
-    background_color: "#1b1b1e",
-    theme_color: "#1b1b1e",
+    background_color: "#000000",
+    theme_color: "#000000",
     categories: ["education", "productivity"],
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

@@ -143,7 +143,7 @@ export default function Sidebar() {
     <aside className="sidebar-left" aria-label="Folders">
       <div className="sb-head">
         <Link href="/" className="sb-brand" onClick={closeDrawer}>
-          <Logo size={24} /> Cranoly
+          <Logo size={24} /> Cranoly Mono
         </Link>
         <button
           className="icon-btn"

@@ -30,7 +30,7 @@ function Progress({ step }: { step: number }) {
 /** "German", "German and Spanish", "German, Spanish and French". */
 const listOf = (names: string[]) => (names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`);
 
-/** What Cranoly is, in three lines. */
+/** What Cranoly Mono is, in three lines. */
 function Intro({ onNext, onRestored }: { onNext: () => void; onRestored: () => void }) {
   return (
     <>
@@ -62,7 +62,7 @@ function Intro({ onNext, onRestored }: { onNext: () => void; onRestored: () => v
         </button>
       </div>
       <p className="wc-restore">
-        Already use Cranoly?{" "}
+        Already use Cranoly Mono?{" "}
         <button
           onClick={() =>
             pickBackup((incoming) => {
@@ -159,7 +159,7 @@ function Voices({ onNext }: { onNext: () => void }) {
       <h1 className="wc-title">Hear it spoken.</h1>
       <p className="wc-text">
         {codes.length > 1 ? "Get natural" : "Get a natural"} {listOf(codes.map((c) => languageOf(c).name))}{" "}
-        {codes.length > 1 ? "voices. They’re saved in Cranoly and work" : "voice. It’s saved in Cranoly and works"} offline.
+        {codes.length > 1 ? "voices. They’re saved in Cranoly Mono and work" : "voice. It’s saved in Cranoly Mono and works"} offline.
       </p>
       <VoiceList codes={codes} offer={false} />
       {!started && metered && (
@@ -212,7 +212,7 @@ function FirstWord({ onAdded, onSkip }: { onAdded: (front: string, back: string)
   return (
     <>
       <h1 className="wc-title">Add your first {lang.name} word.</h1>
-      <p className="wc-text">Type any word. Cranoly finds what it means and turns it into a flashcard.</p>
+      <p className="wc-text">Type any word. Cranoly Mono finds what it means and turns it into a flashcard.</p>
       {lang.starter && (
         <div className="wc-chips">
           {lang.starter.map((w) => (
@@ -294,15 +294,15 @@ function TryIt({ card, onDone }: { card: { front: string; back: string } | null;
       <>
         <h1 className="wc-title">You’re all set.</h1>
         <ul className="wc-tips">
-          <li><b>＋</b> adds a word. The meaning fills itself in.</li>
-          <li><b>Practice</b> shows your cards. Tap to flip, swipe for the next.</li>
-          <li><b>Notes</b> are for everything else: lessons, texts, ideas.</li>
+          <li><b>＋</b> makes a new note. Scan a page or paste a word list from there too.</li>
+          <li><b>Practice</b> shows your cards. Tap to flip, swipe up for the next.</li>
+          <li><b>Add a word</b> in the Dictionary, or select one in a note and tap Flashcard.</li>
         </ul>
         <NotesTip word={languageOf(settings.learning).starter?.[0] ?? "word"} />
         <div className="wc-foot">
           <button className="btn btn-primary btn-lg" onClick={onDone}>
-            <Tumble label="Start using Cranoly">
-              Start using Cranoly <ArrowRight size={17} />
+            <Tumble label="Start using Cranoly Mono">
+              Start using Cranoly Mono <ArrowRight size={17} />
             </Tumble>
           </button>
         </div>
@@ -313,7 +313,7 @@ function TryIt({ card, onDone }: { card: { front: string; back: string } | null;
     <>
       <h1 className="wc-title">{flipped ? "That’s it!" : "Now try it."}</h1>
       <p className="wc-text">
-        {flipped ? "Look, think, flip. That’s all practice is. Add words any time with ＋." : "Say what it means in your head, then tap the card."}
+        {flipped ? "Look, think, flip. That’s all practice is. Add words any time from the Dictionary." : "Say what it means in your head, then tap the card."}
       </p>
       <button
         className={`wc-card${flipped ? " is-flipped" : ""}`}
@@ -333,8 +333,8 @@ function TryIt({ card, onDone }: { card: { front: string; back: string } | null;
       {flipped && <NotesTip word={card.front.split(" ").at(-1) ?? card.front} />}
       <div className="wc-foot">
         <button className="btn btn-primary btn-lg" onClick={onDone} disabled={!flipped}>
-          <Tumble label="Start using Cranoly">
-            <Check size={17} /> Start using Cranoly
+          <Tumble label="Start using Cranoly Mono">
+            <Check size={17} /> Start using Cranoly Mono
           </Tumble>
         </button>
       </div>
@@ -367,12 +367,12 @@ function Flow() {
     router.push(window.matchMedia("(max-width: 820px)").matches ? "/notes" : "/");
   };
   return (
-    <div className="wc-layer" data-no-swipe role="dialog" aria-modal="true" aria-label="Welcome to Cranoly">
+    <div className="wc-layer" data-no-swipe role="dialog" aria-modal="true" aria-label="Welcome to Cranoly Mono">
       <div className="wc-card-panel">
         <div className="wc-top">
           {step === 0 ? (
             <span className="wc-brand">
-              <Logo size={30} /> Cranoly
+              <Logo size={30} /> Cranoly Mono
             </span>
           ) : (
             <>
@@ -414,7 +414,7 @@ function Flow() {
   );
 }
 
-/** First launch: what Cranoly is, your languages and their voices, a first word, a first card. Shown once. */
+/** First launch: what Cranoly Mono is, your languages and their voices, a first word, a first card. Shown once. */
 export default function Welcome() {
   const { ready, settings } = useVault();
   return ready && !settings.onboarded ? <Flow /> : null;

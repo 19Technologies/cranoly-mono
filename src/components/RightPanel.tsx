@@ -183,7 +183,7 @@ function Outline({ note }: { note: Note }) {
   const headings = useMemo(() => extractHeadings(note.content), [note.content]);
   if (!headings.length) return <p className="pane-empty">No headings found.</p>;
   return (
-    <div className="outline">
+    <div className="outline-list">
       {headings.map((h) => (
         <button
           key={h.line}

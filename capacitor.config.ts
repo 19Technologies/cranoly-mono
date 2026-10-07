@@ -1,11 +1,11 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.cranoly.app",
-  appName: "Cranoly",
+  appId: "com.cranoly.mono",
+  appName: "Cranoly Mono",
   webDir: "out",
   android: {
-    backgroundColor: "#1b1b1e",
+    backgroundColor: "#000000",
   },
   plugins: {
     SystemBars: {

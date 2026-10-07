@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Cranoly</string>
-    <string name="title_activity_main">Cranoly</string>
-    <string name="package_name">com.cranoly.app</string>
-    <string name="custom_url_scheme">com.cranoly.app</string>
+    <string name="app_name">Cranoly Mono</string>
+    <string name="title_activity_main">Cranoly Mono</string>
+    <string name="package_name">com.cranoly.mono</string>
+    <string name="custom_url_scheme">com.cranoly.mono</string>
 </resources>

@@ -152,7 +152,7 @@ function paragraph(lines: Line[]) {
   const width = Math.max(...lines.map((l) => l.bbox.x1 - l.bbox.x0));
   const full = lines.slice(0, -1).filter((l) => l.bbox.x1 - l.bbox.x0 >= width * 0.72).length / (lines.length - 1);
   const paired = texts.filter((t) => PAIRED.test(t)).length / texts.length;
-  // A word list printed with dashes between word and meaning comes back the way Cranoly writes pairs: "der Hund = the dog".
+  // A word list printed with dashes between word and meaning comes back the way Cranoly Mono writes pairs: "der Hund = the dog".
   if (paired > 0.5) return texts.map((t) => t.replace(/\s[–—-]\s/, " = ")).join("\n");
   if (full < 0.7) return texts.join("\n");
   return texts

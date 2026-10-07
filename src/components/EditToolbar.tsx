@@ -4,7 +4,7 @@ import { useSyncExternalStore, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   BookA, Bold, ChevronDown, CircleQuestionMark, Hash, Heading2, IndentDecrease, IndentIncrease, Italic, Layers, Link2,
-  ListChecks, Redo2, SpellCheck, Undo2, Volume2, WandSparkles,
+  ListChecks, Redo2, SpellCheck, Undo2, Volume2, LetterText,
 } from "lucide-react";
 import { setUI, useUI } from "@/lib/ui";
 import { getVault } from "@/lib/store";
@@ -72,7 +72,7 @@ export default function EditToolbar() {
           <Link2 size={17} /> Link
         </Tool>
         <Tool label="Format" onPress={format} wide>
-          <WandSparkles size={17} /> Format
+          <LetterText size={17} /> Format
         </Tool>
         <span className="tool-sep" />
         <Tool label="Undo" onPress={(v) => { undo(v); v.focus(); }}>

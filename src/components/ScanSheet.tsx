@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, FilePlus2, ImageUp, ListPlus, Loader2, RotateCcw, Sparkles } from "lucide-react";
+import { Camera, FilePlus2, ImageUp, ListPlus, Loader2, RotateCcw, TextSearch } from "lucide-react";
 import Sheet from "./Sheet";
 import { haptic } from "@/lib/native";
 import { toast, useVault, vault } from "@/lib/store";
@@ -95,7 +95,7 @@ function Scanner({ noteId }: { noteId: string | null }) {
         }}
       >
         <p className="add-hint">
-          Take a photo of a page, a sign or a word list. Cranoly reads the {langs.map((l) => l.name).join(" and ")} in it.
+          Take a photo of a page, a sign or a word list. Cranoly Mono reads the {langs.map((l) => l.name).join(" and ")} in it.
         </p>
         <div className="scan-buttons">
           <button className="scan-btn hint-touch" onClick={() => camera.current?.click()}>
@@ -189,7 +189,7 @@ function Scanner({ noteId }: { noteId: string | null }) {
           disabled={!text.trim()}
           onClick={() => setUI({ scan: null, newWords: { text, noteId: keep() } })}
         >
-          <Sparkles size={17} /> Find new words
+          <TextSearch size={17} /> Find new words
         </button>
       </div>
       <div className="add-other">

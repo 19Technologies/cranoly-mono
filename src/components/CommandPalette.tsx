@@ -30,12 +30,12 @@ import {
   ListPlus,
   MessageCircleQuestion,
   Plus,
-  Sparkles,
+  TextSearch,
   SpellCheck,
   Volume2,
   ScanText,
   Type,
-  WandSparkles,
+  LetterText,
 } from "lucide-react";
 import { addProperties, checkWriting, explain, findNewWords, hear, makeCards, withEditor } from "@/lib/smart";
 import { folderOf, titleOf } from "@/lib/vault";
@@ -98,7 +98,7 @@ function Palette({ mode }: { mode: "commands" | "notes" }) {
       { id: "random", label: "Open a random note", icon: <Shuffle size={15} />, run: () => { vault.openRandom(); router.push("/"); } },
       { id: "left", label: "Toggle left sidebar", icon: <PanelLeft size={15} />, hint: "⌘\\", run: () => vault.setPanel("leftOpen") },
       { id: "right", label: "Toggle right sidebar", icon: <PanelRight size={15} />, run: () => vault.setPanel("rightOpen") },
-      { id: "backup", label: folderKind() === "zip" ? "Save a backup (Cranoly.zip)" : "Save to the Cranoly folder now", icon: <Download size={15} />, run: () => (folderKind() === "zip" ? downloadZip() : void saveNow()) },
+      { id: "backup", label: folderKind() === "zip" ? "Save a backup (Cranoly Mono.zip)" : "Save to the Cranoly Mono folder now", icon: <Download size={15} />, run: () => (folderKind() === "zip" ? downloadZip() : void saveNow()) },
       { id: "bring-in", label: "Bring in changes from another device", icon: <ArrowDownToLine size={15} />, run: () => pickBackup() },
       ...(folderKind() === "app" ? [{ id: "share-copy", label: "Share a copy of your notes", icon: <Share2 size={15} />, run: () => void shareCopy().catch(() => {}) }] : []),
       { id: "settings", label: "Open settings", icon: <Settings size={15} />, run: go("/settings") },
@@ -114,11 +114,11 @@ function Palette({ mode }: { mode: "commands" | "notes" }) {
         { id: "properties", label: "Add properties (tags, date and more)", icon: <TableProperties size={15} />, run: () => { router.push("/"); withEditor(addProperties); } },
         { id: "split", label: "Split view: edit and preview", icon: <Columns2 size={15} />, run: () => { vault.setMode("split"); router.push("/"); } },
         { id: "rename", label: `Rename “${titleOf(activeNote.path)}”`, icon: <TextCursorInput size={15} />, run: () => { setUI({ pendingRename: activeNote.id }); router.push("/"); } },
-        { id: "format", label: "Format this note with AI", icon: <WandSparkles size={15} />, run: () => setUI({ format: { noteId: activeNote.id } }) },
+        { id: "format", label: "Format this note with AI", icon: <LetterText size={15} />, run: () => setUI({ format: { noteId: activeNote.id } }) },
         { id: "check", label: "Check my writing", icon: <SpellCheck size={15} />, run: () => { router.push("/"); withEditor(checkWriting); } },
         { id: "explain", label: "Explain the selected word", icon: <BookA size={15} />, run: () => { router.push("/"); withEditor(explain); } },
         { id: "hear", label: "Hear the selected text", icon: <Volume2 size={15} />, run: () => withEditor(hear) },
-        { id: "new-words", label: "Find new words in this note", icon: <Sparkles size={15} />, run: () => { router.push("/"); withEditor(findNewWords); } },
+        { id: "new-words", label: "Find new words in this note", icon: <TextSearch size={15} />, run: () => { router.push("/"); withEditor(findNewWords); } },
         { id: "make-cards", label: "Turn a word list into flashcards", icon: <ListPlus size={15} />, run: () => { router.push("/"); withEditor((v) => makeCards(v)); } },
       );
       if (count) list.splice(3, 0, { id: "study-note", label: `Study ${count} cards from “${titleOf(activeNote.path)}”`, icon: <BookOpen size={15} />, run: () => router.push(`/flashcards/study?note=${activeNote.id}`) });

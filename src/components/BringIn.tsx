@@ -9,7 +9,7 @@ import { toast, useVault } from "@/lib/store";
 import { setUI, useUI } from "@/lib/ui";
 
 /**
- * Pick a backup to bring in: a "Cranoly backup" file, a Cranoly.zip or .md notes. On a phone the
+ * Pick a backup to bring in: a "Cranoly Mono backup" file, a Cranoly Mono.zip or .md notes. On a phone the
  * picker includes Google Drive, so the laptop's backup can be opened straight from there.
  */
 export function pickBackup(then?: (incoming: Incoming) => void) {

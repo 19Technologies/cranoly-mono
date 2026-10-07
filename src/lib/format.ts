@@ -1,5 +1,5 @@
 // Format: hand a note to Claude, ChatGPT or Gemini with a ready prompt, then paste the answer back.
-// Cranoly runs no AI itself. The note leaves the device only when the learner taps the button,
+// Cranoly Mono runs no AI itself. The note leaves the device only when the learner taps the button,
 // and only to the assistant they picked.
 import { CALLOUTS } from "./callouts";
 import { frontmatterOf } from "./properties";
@@ -91,6 +91,13 @@ export function buildPrompt(
     "",
     note.content.trim(),
   ].join("\n");
+}
+
+/** The same request, split for the built-in AI: what to do (the system prompt) and the note itself. */
+export function formatParts(note: { title: string; content: string }, tasks: FormatTask[], lang: PromptLang) {
+  const all = buildPrompt(note, tasks, lang);
+  const at = all.lastIndexOf(`The note is called "${note.title}":`);
+  return { system: all.slice(0, at).trim(), user: all.slice(at).trim() };
 }
 
 /** The pasted answer, without the code fence or chatty lines assistants like to add. */

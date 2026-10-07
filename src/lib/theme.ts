@@ -25,7 +25,7 @@ export function applyTheme(choice: "paper" | "graphite" | "system"): ResolvedThe
   const theme: ResolvedTheme =
     choice === "system" ? (matchMedia("(prefers-color-scheme: dark)").matches ? "graphite" : "paper") : choice;
   document.documentElement.dataset.theme = theme;
-  const color = theme === "paper" ? "#fbf7f0" : "#1b1b1e";
+  const color = theme === "paper" ? "#ffffff" : "#000000";
   document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", color));
   return theme;
 }

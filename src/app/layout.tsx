@@ -4,16 +4,16 @@ import AppShell from "@/components/AppShell";
 import ServiceWorker from "@/components/ServiceWorker";
 import "./globals.css";
 
-// Cranoly type: Fraunces (soft, variable serif) for display, Instrument Sans for text.
+// Cranoly Mono type: Fraunces (soft, variable serif) for display, Instrument Sans for text.
 const display = Fraunces({ subsets: ["latin", "latin-ext"], variable: "--font-display", axes: ["opsz", "SOFT", "WONK"] });
 const ui = Instrument_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-ui" });
 const mono = Geist_Mono({ subsets: ["latin", "latin-ext"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "Cranoly",
-  applicationName: "Cranoly",
+  title: "Cranoly Mono",
+  applicationName: "Cranoly Mono",
   description: "A language notebook: linked notes, with flashcards written right inside them.",
-  appleWebApp: { capable: true, title: "Cranoly", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "Cranoly Mono", statusBarStyle: "black-translucent" },
   formatDetection: { telephone: false },
 };
 
@@ -23,8 +23,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbf7f0" },
-    { media: "(prefers-color-scheme: dark)", color: "#1b1b1e" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 

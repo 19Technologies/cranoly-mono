@@ -1,10 +1,10 @@
-// The Cranoly folder: a copy of everything, kept as you go. Each note is a Markdown file in the same
-// folders as in the app, next to one backup file Cranoly can read back in (with study history and
+// The Cranoly Mono folder: a copy of everything, kept as you go. Each note is a Markdown file in the same
+// folders as in the app, next to one backup file Cranoly Mono can read back in (with study history and
 // deletions), and a dated copy for each of the last 7 days.
-// - Phone app: Documents › Cranoly, saved a few seconds after each change and when you leave the app.
+// - Phone app: Documents › Cranoly Mono, saved a few seconds after each change and when you leave the app.
 // - Laptop (Chrome, Edge): a folder you choose once, saved the same way. Kept in Google Drive, Dropbox or
-//   iCloud Drive, it's online too, and Cranoly brings in the backups your other devices put there.
-// - Other browsers: "Save a backup" downloads Cranoly.zip with the same folder inside.
+//   iCloud Drive, it's online too, and Cranoly Mono brings in the backups your other devices put there.
+// - Other browsers: "Save a backup" downloads Cranoly Mono.zip with the same folder inside.
 // Notes travel between devices through this folder; merge.ts decides how they're brought in.
 import { useSyncExternalStore } from "react";
 import { strFromU8, strToU8, unzipSync, zipSync } from "fflate";
@@ -59,7 +59,7 @@ const setBroughtIn = (m: Record<string, number>) => write("cranoly-brought-in", 
 export const COPIES = "Daily copies";
 const KEEP_DAYS = 7;
 
-export const backupName = (name = device().name) => `Cranoly backup (${name}).json`;
+export const backupName = (name = device().name) => `Cranoly Mono backup (${name}).json`;
 
 /** Everything in one object: the vault, plus which device saved it and what it had brought in. */
 export function backupOf(state: VaultState, savedAt = Date.now()) {
@@ -126,8 +126,8 @@ const setWritten = (key: string, w: Written) => write(`cranoly-folder-files:${ke
 
 const filesystem = () => import("@capacitor/filesystem");
 
-/** The phone's Documents › Cranoly ("Cranoly 2" if the first one can't be written, e.g. after reinstalling). */
-const appRoot = () => read<string>("cranoly-app-folder", "Cranoly");
+/** The phone's Documents › Cranoly Mono ("Cranoly Mono 2" if the first one can't be written, e.g. after reinstalling). */
+const appRoot = () => read<string>("cranoly-app-folder", "Cranoly Mono");
 
 function appTarget(root = appRoot()): Target {
   return {
@@ -327,7 +327,7 @@ async function saveOnce(all = false) {
       await writeFiles(target, state, all);
     } catch (e) {
       // After reinstalling, Android won't let the app change the files it made before. If new files
-      // still work, carry on in "Cranoly 2" (or the next free name) and say so.
+      // still work, carry on in "Cranoly Mono 2" (or the next free name) and say so.
       if (!actLikeApp() || read("cranoly-app-folder-moved", false)) throw e;
       const old = appRoot();
       await appTarget(old).write(`.check-${Date.now()}`, "ok");
@@ -335,7 +335,7 @@ async function saveOnce(all = false) {
       write("cranoly-app-folder", next);
       write("cranoly-app-folder-moved", true);
       setStatus({ folder: `Documents › ${next}` });
-      toast(`Couldn’t change the files in Documents › ${old}, so Cranoly now saves to Documents › ${next}.`);
+      toast(`Couldn’t change the files in Documents › ${old}, so Cranoly Mono now saves to Documents › ${next}.`);
       await writeFiles(appTarget(next), state);
     }
     write(`cranoly-folder-content:${target.key}`, content);
@@ -354,14 +354,14 @@ async function saveOnce(all = false) {
 async function freeAppRoot() {
   const { Filesystem, Directory } = await filesystem();
   for (let i = 2; i < 50; i++) {
-    const name = `Cranoly ${i}`;
+    const name = `Cranoly Mono ${i}`;
     const there = await Filesystem.stat({ path: name, directory: Directory.Documents }).then(
       () => true,
       () => false,
     );
     if (!there) return name;
   }
-  return `Cranoly ${Date.now()}`;
+  return `Cranoly Mono ${Date.now()}`;
 }
 
 /** Turn the phone's automatic saving on or off. */
@@ -375,16 +375,16 @@ export function setAutoSave(on: boolean) {
 /* The laptop's folder                                                 */
 /* ------------------------------------------------------------------ */
 
-/** Choose the folder on a laptop. If it isn't called Cranoly, a Cranoly folder is made inside it. */
+/** Choose the folder on a laptop. If it isn't called Cranoly Mono, a Cranoly Mono folder is made inside it. */
 export async function chooseFolder() {
   const pick = (window as unknown as { showDirectoryPicker: (o: object) => Promise<Dir> }).showDirectoryPicker;
   const chosen = await pick({ id: "cranoly", mode: "readwrite", startIn: "documents" });
-  const root = (chosen.name === "Cranoly" ? chosen : await chosen.getDirectoryHandle("Cranoly", { create: true })) as Dir;
+  const root = (chosen.name === "Cranoly Mono" ? chosen : await chosen.getDirectoryHandle("Cranoly Mono", { create: true })) as Dir;
   await handles("readwrite", (s) => s.put(root, "folder"));
   picked = root;
   setWritten("folder", {});
   write("cranoly-folder-content:folder", null);
-  setStatus({ where: "folder", folder: root.name === chosen.name ? root.name : `${chosen.name} › Cranoly`, needsPermission: false, error: undefined });
+  setStatus({ where: "folder", folder: root.name === chosen.name ? root.name : `${chosen.name} › Cranoly Mono`, needsPermission: false, error: undefined });
   write("cranoly-folder-name", status.folder);
   await scanFolder(true);
   await saveNow();
@@ -410,7 +410,7 @@ export async function allowFolder() {
 let lastScan = 0;
 
 /**
- * Look in the laptop's folder for what changed outside Cranoly: backups your other devices put there
+ * Look in the laptop's folder for what changed outside Cranoly Mono: backups your other devices put there
  * (brought in), and notes edited or added as .md files. Nothing in the folder is ever deleted here.
  */
 export async function scanFolder(force = false) {
@@ -434,7 +434,7 @@ export async function scanFolder(force = false) {
       /* not a backup */
     }
   }
-  // 2. Notes edited or added outside Cranoly.
+  // 2. Notes edited or added outside Cranoly Mono.
   const written = writtenOf("folder");
   const files: Array<{ path: string; handle: FileSystemFileHandle }> = [];
   const walk = async (dir: FileSystemDirectoryHandle, prefix: string) => {
@@ -478,7 +478,7 @@ export async function scanFolder(force = false) {
     changes++;
   }
   setWritten("folder", written);
-  if (changes) vault.adopt({ ...getVault(), notes }, `Brought in ${changes} ${changes === 1 ? "change" : "changes"} from the Cranoly folder`);
+  if (changes) vault.adopt({ ...getVault(), notes }, `Brought in ${changes} ${changes === 1 ? "change" : "changes"} from the Cranoly Mono folder`);
 }
 
 /* ------------------------------------------------------------------ */
@@ -488,16 +488,16 @@ export async function scanFolder(force = false) {
 /** The folder as a .zip (the notes and the backup file, without the daily copies). */
 export function zipOf(state = getVault()) {
   const files: Record<string, Uint8Array> = {};
-  for (const f of filesOf(state)) if (!f.path.startsWith(`${COPIES}/`)) files[`Cranoly/${f.path}`] = strToU8(f.text);
+  for (const f of filesOf(state)) if (!f.path.startsWith(`${COPIES}/`)) files[`Cranoly Mono/${f.path}`] = strToU8(f.text);
   return zipSync(files, { level: 6 });
 }
 
-/** Browsers without folder access: download Cranoly.zip. */
+/** Browsers without folder access: download Cranoly Mono.zip. */
 export function downloadZip() {
   const url = URL.createObjectURL(new Blob([zipOf().slice().buffer as ArrayBuffer], { type: "application/zip" }));
   const a = document.createElement("a");
   a.href = url;
-  a.download = "Cranoly.zip";
+  a.download = "Cranoly Mono.zip";
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
   write("cranoly-backup-last", Date.now());
@@ -511,7 +511,7 @@ export async function shareCopy() {
   await Filesystem.writeFile({ path: name, data: JSON.stringify(backupOf(getVault())), directory: Directory.Cache, encoding: Encoding.UTF8 });
   const { uri } = await Filesystem.getUri({ path: name, directory: Directory.Cache });
   const { Share } = await import("@capacitor/share");
-  await Share.share({ title: "Cranoly backup", files: [uri] }).catch((e: unknown) => {
+  await Share.share({ title: "Cranoly Mono backup", files: [uri] }).catch((e: unknown) => {
     // Closing the share sheet without picking anything isn't a problem.
     if (!/cancel/i.test(e instanceof Error ? e.message : String(e))) throw e;
   });
@@ -525,7 +525,7 @@ export interface Incoming {
   count: number;
 }
 
-const NOT_A_BACKUP = "That isn’t a Cranoly backup. Pick a “Cranoly backup” file, a Cranoly.zip or some .md notes.";
+const NOT_A_BACKUP = "That isn’t a Cranoly Mono backup. Pick a “Cranoly Mono backup” file, a Cranoly Mono.zip or some .md notes.";
 
 function fromJson(text: string): Incoming {
   let data: Backup & { deviceName?: string };
@@ -538,7 +538,7 @@ function fromJson(text: string): Incoming {
   return { backup: data, from: data.deviceName || "a backup", savedAt: data.savedAt, count: Object.keys(data.notes).length };
 }
 
-/** Read what was picked: a backup file, a Cranoly.zip, or .md notes (each becomes a note). */
+/** Read what was picked: a backup file, a Cranoly Mono.zip, or .md notes (each becomes a note). */
 export async function readIncoming(files: File[]): Promise<Incoming> {
   const mds: Array<{ path: string; text: string; at: number }> = [];
   for (const file of files) {
@@ -551,10 +551,10 @@ export async function readIncoming(files: File[]): Promise<Incoming> {
         throw new Error(NOT_A_BACKUP);
       }
       const paths = Object.keys(entries);
-      const json = paths.find((p) => /cranoly backup[^/]*\.json$/i.test(p)) ?? paths.find((p) => p.endsWith(".json") && !p.includes(`${COPIES}/`));
+      const json = paths.find((p) => /cranoly( mono)? backup[^/]*\.json$/i.test(p)) ?? paths.find((p) => p.endsWith(".json") && !p.includes(`${COPIES}/`));
       if (json) return fromJson(strFromU8(entries[json]));
       for (const p of paths)
-        if (/\.(md|txt)$/i.test(p)) mds.push({ path: p.replace(/^Cranoly\//, "").replace(/\.(md|txt)$/i, ""), text: strFromU8(entries[p]), at: file.lastModified });
+        if (/\.(md|txt)$/i.test(p)) mds.push({ path: p.replace(/^Cranoly( Mono)?\//, "").replace(/\.(md|txt)$/i, ""), text: strFromU8(entries[p]), at: file.lastModified });
     } else if (/\.(md|markdown|txt)$/.test(name)) {
       mds.push({ path: file.name.replace(/\.(md|markdown|txt)$/i, ""), text: await file.text(), at: file.lastModified });
     } else return fromJson(await file.text());

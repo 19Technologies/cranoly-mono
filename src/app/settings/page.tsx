@@ -3,11 +3,13 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
-  ArrowDownToLine, Check, Download, FolderOpen, GraduationCap, RotateCcw, Save, Share, Share2, Smartphone, Sparkles, Sun, Moon, MonitorSmartphone, Type, X,
+  ArrowDownToLine, Check, Download, FolderOpen, GraduationCap, KeyRound, RotateCcw, Save, Share, Share2, Smartphone, Hand, Sun, Moon, MonitorSmartphone, Type, X,
 } from "lucide-react";
 import VoiceList from "@/components/Voices";
 import { download } from "@/components/CommandPalette";
 import { pickBackup } from "@/components/BringIn";
+import { KeyBox } from "@/components/FormatSheet";
+import { MODEL_NAME, maskKey, setAiKey, useAiKey } from "@/lib/ai";
 import { allowFolder, chooseFolder, downloadZip, folderKind, forgetFolder, saveNow, setAutoSave, shareCopy, useBackupStatus } from "@/lib/backup";
 import { toast, useVault, vault } from "@/lib/store";
 import type { Settings } from "@/lib/vault";
@@ -134,7 +136,7 @@ function VoiceSettings() {
     <section className="card-panel" id="voices">
       <div className="card-panel-head"><h2>Voices</h2></div>
       <p className="setting-note">
-        Natural voices for <b>Hear it</b>. They&apos;re saved in Cranoly and work offline.
+        Natural voices for <b>Hear it</b>. They&apos;re saved in Cranoly Mono and work offline.
         {engineNeeded && ` The first one also brings the speech engine (${ENGINE_MB} MB).`}
       </p>
       <VoiceList codes={codes} removable />
@@ -166,30 +168,30 @@ function InstallApp() {
     <section className="card-panel">
       <div className="card-panel-head"><h2>Install the app</h2></div>
       {standalone ? (
-        <p className="setting-note">Cranoly is installed on this device and works offline.</p>
+        <p className="setting-note">Cranoly Mono is installed on this device and works offline.</p>
       ) : installPrompt ? (
         <>
-          <p className="setting-note">Add Cranoly to your home screen. It opens full-screen and works offline.</p>
+          <p className="setting-note">Add Cranoly Mono to your home screen. It opens full-screen and works offline.</p>
           <button
             className="btn btn-primary"
             onClick={async () => {
               await installPrompt.prompt();
               const { outcome } = await installPrompt.userChoice;
               setUI({ installPrompt: null });
-              if (outcome === "accepted") toast("Installing Cranoly…");
+              if (outcome === "accepted") toast("Installing Cranoly Mono…");
             }}
           >
-            <Smartphone size={14} /> Install Cranoly
+            <Smartphone size={14} /> Install Cranoly Mono
           </button>
         </>
       ) : ios ? (
         <p className="setting-note install-steps">
-          In Safari, tap <Share size={14} /> <b>Share</b>, then <b>Add to Home Screen</b>. Cranoly then opens
+          In Safari, tap <Share size={14} /> <b>Share</b>, then <b>Add to Home Screen</b>. Cranoly Mono then opens
           full-screen like a regular app and works offline.
         </p>
       ) : (
         <p className="setting-note">
-          Use your browser&apos;s <b>Install app</b> or <b>Add to Home screen</b> option. Cranoly then opens in its own
+          Use your browser&apos;s <b>Install app</b> or <b>Add to Home screen</b> option. Cranoly Mono then opens in its own
           window and works offline.
         </p>
       )}
@@ -256,7 +258,7 @@ function ago(t: number) {
 }
 
 /**
- * Backup and sync: the Cranoly folder (each note as a file, plus one backup file), saved as you go,
+ * Backup and sync: the Cranoly Mono folder (each note as a file, plus one backup file), saved as you go,
  * and how to move notes between devices by bringing in a backup from the other one.
  */
 function BackupSettings() {
@@ -267,7 +269,7 @@ function BackupSettings() {
   const bytes = vault.exportJSON().length;
   useClock();
 
-  const where = kind === "app" ? s.folder ?? "Documents › Cranoly" : s.folder;
+  const where = kind === "app" ? s.folder ?? "Documents › Cranoly Mono" : s.folder;
   const state = s.saving
     ? "Saving…"
     : s.error
@@ -283,7 +285,7 @@ function BackupSettings() {
       <div className="card-panel-head"><h2>Backup and sync</h2></div>
       {kind === "app" && (
         <p className="setting-note">
-          Cranoly keeps a copy of everything in <b>Documents › Cranoly</b> on this phone and updates it as you go. Each note is
+          Cranoly Mono keeps a copy of everything in <b>Documents › Cranoly Mono</b> on this phone and updates it as you go. Each note is
           its own file, in the same folders as here, next to one backup file with your study history. A copy from each of the
           last 7 days is kept too. Open the Files app to see it.
         </p>
@@ -291,13 +293,13 @@ function BackupSettings() {
       {kind === "pick" && (
         <p className="setting-note">
           {s.where === "folder"
-            ? "Cranoly keeps a copy of everything in this folder and updates it as you go: each note as its own file, in the same folders as here, next to one backup file with your study history."
-            : "Choose a folder and Cranoly keeps a copy of everything in it as you go: each note as its own file, in the same folders as here, next to one backup file with your study history. Choose a folder in Google Drive, Dropbox or iCloud Drive and your notes are online too."}
+            ? "Cranoly Mono keeps a copy of everything in this folder and updates it as you go: each note as its own file, in the same folders as here, next to one backup file with your study history."
+            : "Choose a folder and Cranoly Mono keeps a copy of everything in it as you go: each note as its own file, in the same folders as here, next to one backup file with your study history. Choose a folder in Google Drive, Dropbox or iCloud Drive and your notes are online too."}
         </p>
       )}
       {kind === "zip" && (
         <p className="setting-note">
-          Save a backup to download <b>Cranoly.zip</b>: each note as its own file, in the same folders as here, next to one
+          Save a backup to download <b>Cranoly Mono.zip</b>: each note as its own file, in the same folders as here, next to one
           backup file with your study history. Keep it somewhere safe, like Google Drive.
         </p>
       )}
@@ -310,7 +312,7 @@ function BackupSettings() {
       )}
       {s.needsPermission && (
         <div className="backup-allow">
-          <span>Your browser asks once after a restart before Cranoly can save to the folder again.</span>
+          <span>Your browser asks once after a restart before Cranoly Mono can save to the folder again.</span>
           <button className="btn btn-primary" onClick={() => void allowFolder()}>
             <FolderOpen size={14} /> Allow
           </button>
@@ -364,7 +366,7 @@ function BackupSettings() {
         <label className="setting">
           <span className="setting-text">
             <b>Save automatically</b>
-            <span>Update the Cranoly folder a few seconds after each change.</span>
+            <span>Update the Cranoly Mono folder a few seconds after each change.</span>
           </span>
           <span className="switch">
             <input type="checkbox" checked={s.auto} onChange={(e) => setAutoSave(e.target.checked)} />
@@ -390,7 +392,7 @@ function BackupSettings() {
       </ol>
       {kind === "pick" && (
         <p className="setting-note">
-          Keep the Cranoly folder in Google Drive, and a backup your phone shares into it is brought in when you open Cranoly here.
+          Keep the Cranoly Mono folder in Google Drive, and a backup your phone shares into it is brought in when you open Cranoly Mono here.
         </p>
       )}
       <p className="setting-fine">
@@ -413,6 +415,33 @@ function BackupSettings() {
   );
 }
 
+/** Built-in AI: Claude with your own Anthropic API key, kept on this device only. */
+function AiSettings() {
+  const key = useAiKey();
+  return (
+    <section className="card-panel" id="ai">
+      <div className="card-panel-head"><h2>AI</h2></div>
+      <p className="setting-note">
+        Format with AI uses <b>{MODEL_NAME}</b> with your own Anthropic API key. The key stays on this device and is never
+        saved in your backups. A note goes to Anthropic only when you tap Format, and each one costs a few cents on your
+        Anthropic account.
+      </p>
+      {key ? (
+        <div className="ai-key-saved">
+          <span>
+            <KeyRound size={15} /> Key saved: <code>{maskKey(key)}</code>
+          </span>
+          <button className="btn" onClick={() => setAiKey(null)}>
+            <X size={14} /> Remove
+          </button>
+        </div>
+      ) : (
+        <KeyBox />
+      )}
+    </section>
+  );
+}
+
 export default function SettingsPage() {
   const { notes } = useVault();
   const [confirmReset, setConfirmReset] = useState(false);
@@ -426,6 +455,7 @@ export default function SettingsPage() {
 
       <Appearance />
       <BackupSettings />
+      <AiSettings />
       <LanguageSettings />
       <VoiceSettings />
       <InstallApp />
@@ -453,7 +483,7 @@ export default function SettingsPage() {
             <Type size={14} /> Formatting guide
           </Link>
           <button className="btn" onClick={() => vault.updateSettings({ onboarded: false })}>
-            <Sparkles size={14} /> Show the welcome again
+            <Hand size={14} /> Show the welcome again
           </button>
         </div>
       </section>

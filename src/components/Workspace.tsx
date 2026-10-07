@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   BookOpen, ChevronLeft, ClipboardCopy, CodeXml, Columns2, Command, Layers, Link2, MoreHorizontal, Orbit, PanelRight, PenLine, Pin, PinOff,
-  Plus, ListPlus, ScanText, Sparkles, SpellCheck, SquarePen, TableProperties, TextCursorInput, Trash2, WandSparkles,
+  Plus, ListPlus, ScanText, TextSearch, SpellCheck, SquarePen, TableProperties, TextCursorInput, Trash2, LetterText,
 } from "lucide-react";
 import { Note, ViewMode, titleOf } from "@/lib/vault";
 import { cardsOf, toast, useVault, vault } from "@/lib/store";
@@ -17,6 +17,7 @@ import MarkdownView from "./MarkdownView";
 import Sheet, { type Anchor } from "./Sheet";
 import Editor from "./Editor";
 import Tumble from "./Tumble";
+import { GlassIcon } from "./ui/glass-icon";
 
 function InlineTitle({ note }: { note: Note }) {
   const { pendingRename } = useUI();
@@ -218,7 +219,7 @@ function NoteMenu({ note, onClose }: { note: Note; onClose: () => void }) {
   }
   return (
     <div className="sheet-list">
-      {item(<WandSparkles size={16} />, "Format with AI", () => { onClose(); setUI({ format: { noteId: note.id } }); })}
+      {item(<LetterText size={16} />, "Format with AI", () => { onClose(); setUI({ format: { noteId: note.id } }); })}
       <span className="menu-sep" />
       {item(<BookOpen size={16} />, "Reading view", setMode("read"), mode === "read" ? " is-current" : "")}
       {item(<PenLine size={16} />, "Live preview", setSource(false), editing && !workspace.source ? " is-current" : "")}
@@ -236,7 +237,7 @@ function NoteMenu({ note, onClose }: { note: Note; onClose: () => void }) {
       {item(<Orbit size={16} />, "Open the Mind Map", () => { onClose(); router.push("/mind-map"); })}
       <span className="menu-sep" />
       {item(<SpellCheck size={16} />, "Check my writing", () => { onClose(); withEditor(checkWriting); })}
-      {item(<Sparkles size={16} />, "Find new words", () => { onClose(); withEditor(findNewWords); })}
+      {item(<TextSearch size={16} />, "Find new words", () => { onClose(); withEditor(findNewWords); })}
       {item(<ListPlus size={16} />, "Turn word list into cards", () => { onClose(); withEditor((v) => makeCards(v)); })}
       {item(<ScanText size={16} />, "Scan text into this note", () => { onClose(); setUI({ scan: { noteId: note.id } }); })}
       <span className="menu-sep" />
@@ -296,9 +297,9 @@ function NoteToolbar({ note, mode }: { note: Note; mode: ViewMode }) {
       {tool("Add a word", <Plus size={18} />, () => setUI({ addWord: { noteId: note.id, mode: "word" } }))}
       {tool("Scan text into this note", <ScanText size={17} />, () => setUI({ scan: { noteId: note.id } }))}
       {tool("Check my writing", <SpellCheck size={17} />, () => withEditor(checkWriting))}
-      {tool("Find new words", <Sparkles size={17} />, () => withEditor(findNewWords))}
+      {tool("Find new words", <TextSearch size={17} />, () => withEditor(findNewWords))}
       <button className="btn tb-format" title="Format this note with AI" onClick={() => setUI({ format: { noteId: note.id } })}>
-        <WandSparkles size={15} /> Format
+        <LetterText size={15} /> Format
       </button>
       <span className="tb-space" />
       {tool(
@@ -341,9 +342,9 @@ function MobileHeader({ note, mode }: { note?: Note; mode: ViewMode }) {
       <span className="mobile-space" />
       {note && (
         <>
-          <button className="icon-btn" aria-label="More options" onClick={() => setMenu(true)}>
-            <MoreHorizontal size={22} />
-          </button>
+          <GlassIcon size={40} aria-label="More options" onClick={() => setMenu(true)}>
+            <MoreHorizontal size={20} />
+          </GlassIcon>
           <ModeButton mode={mode} className="mobile-mode" />
           <Sheet open={menu} onClose={() => setMenu(false)} title={titleOf(note.path)}>
             <NoteMenu note={note} onClose={() => setMenu(false)} />

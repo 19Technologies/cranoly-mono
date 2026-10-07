@@ -31,7 +31,7 @@ export default function MindMapPage() {
 
   // The browser's top bar matches the dark map, then goes back to the theme's colour.
   useEffect(() => {
-    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", "#141417"));
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", "#000000"));
     return () => void applyTheme(getVault().settings.theme);
   }, []);
 

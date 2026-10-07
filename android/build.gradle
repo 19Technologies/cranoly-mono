@@ -24,21 +24,19 @@ allprojects {
     }
 }
 
-// Capacitor 8 targets Java 21. On a machine that only has JDK 17, put java.release=17 in
-// local.properties (per machine, not committed): Capacitor's code builds fine as Java 17.
-def localProps = new Properties()
-def localFile = rootProject.file("local.properties")
-if (localFile.exists()) localFile.withInputStream { localProps.load(it) }
-def javaRelease = localProps.getProperty("java.release")
-if (javaRelease) {
-    def version = JavaVersion.toVersion(javaRelease)
-    subprojects {
-        afterEvaluate { p ->
-            if (p.extensions.findByName("android")) {
-                p.android.compileOptions {
-                    sourceCompatibility version
-                    targetCompatibility version
-                }
+// Capacitor 8 requires Java 21. Configure a Java 21 toolchain so Gradle
+// auto-provisions JDK 21 via the foojay-resolver (see settings.gradle).
+subprojects {
+    afterEvaluate { p ->
+        if (p.extensions.findByName("android")) {
+            p.android.compileOptions {
+                sourceCompatibility JavaVersion.VERSION_21
+                targetCompatibility JavaVersion.VERSION_21
+            }
+        }
+        p.tasks.withType(JavaCompile).configureEach {
+            javaCompiler = javaToolchains.compilerFor {
+                languageVersion = JavaLanguageVersion.of(21)
             }
         }
     }

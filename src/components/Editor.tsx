@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { BookA, FilePlus2, Layers, Link2, ListPlus, Sparkles, SpellCheck, Volume2 } from "lucide-react";
+import { BookA, FilePlus2, Layers, Link2, ListPlus, TextSearch, SpellCheck, Volume2 } from "lucide-react";
 import { EditorSelection, EditorState, Prec, Transaction } from "@codemirror/state";
 import { EditorView, keymap, placeholder, type ViewUpdate } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
@@ -358,7 +358,7 @@ export default function Editor({ note, autoFocus = false }: { note: Note; autoFo
           )}
           {bar.words >= 3 && !bar.list && (
             <button onClick={() => act(findNewWords)} title="List the words you don't have cards for">
-              <Sparkles size={15} /> New words
+              <TextSearch size={15} /> New words
             </button>
           )}
           {languageOf(settings.learning).grammar && bar.words >= 2 && (

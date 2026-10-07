@@ -1,4 +1,4 @@
-// Bringing in notes from another device: the Cranoly folder (or a backup file shared from it) is how
+// Bringing in notes from another device: the Cranoly Mono folder (or a backup file shared from it) is how
 // notes travel between a phone and a laptop. Nothing is replaced wholesale:
 // - a note changed on one device only: that version is used;
 // - changed on both: if both only added lines at the end (new words), both additions are kept,
@@ -8,7 +8,7 @@
 // Bringing in the same backup twice changes nothing.
 import { folderOf, newId, titleOf, type Note, type VaultState } from "./vault";
 
-/** What a Cranoly backup file holds (older exports have only the vault part). */
+/** What a Cranoly Mono backup file holds (older exports have only the vault part). */
 export interface Backup {
   cranoly?: number;
   /** The device that saved it, and what it's called ("Phone", "Laptop"). */

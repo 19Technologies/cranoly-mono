@@ -1,4 +1,4 @@
-// Languages Cranoly knows how to speak, look up and check.
+// Languages Cranoly Mono knows how to speak, look up and check.
 
 export interface Language {
   code: string;
@@ -19,7 +19,7 @@ export interface Language {
   hello: string;
   /** Tesseract language for "Scan text". */
   ocr: string;
-  /** Natural voice Cranoly can download (Piper). Without one, the device's own voice is used. */
+  /** Natural voice Cranoly Mono can download (Piper). Without one, the device's own voice is used. */
   model?: { name?: string; path: string; mb: number };
 }
 

@@ -41,6 +41,8 @@ export interface UIState {
   format: { noteId: string } | null;
   /** "Bring in changes": a backup picked from another device, waiting for a yes. */
   bringIn: Incoming | null;
+  /** The ＋ sheet: a new note, a scan or a pasted list. */
+  plus: boolean;
 }
 
 const INITIAL: UIState = {
@@ -63,6 +65,7 @@ const INITIAL: UIState = {
   scan: null,
   format: null,
   bringIn: null,
+  plus: false,
 };
 
 let ui = INITIAL;

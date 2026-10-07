@@ -1,79 +1,84 @@
-# Cranoly Style Reference
-> a sticker notebook for words, on warm paper
+# Cranoly Mono Style Reference
+> a black and white notebook for words
 
-**Theme:** dark (Graphite) by default, and light (Paper)
+**Theme:** black (Graphite) by default, and white (Paper)
 
-**Lineage:** Cranoly's own look comes from the Tutora brand: warm paper, ink outlines, hard "pop" shadows, one orange, pastel tints, Fraunces and Instrument Sans, and the yellow flashcard. From slush.app (SLUSHDESIGN.md) it takes **only the micro-animations**. The curves and timings are measured from slush.app's own CSS, not guessed.
+**Lineage:** Cranoly Mono is a fork of Cranoly. It keeps Cranoly's shapes, ink outlines, hard shadows, type and motion (the micro-animations borrowed from slush.app, measured from its own CSS) and takes the colour out: black, white and greys. Two colours are left, each with one job: **yellow for links** and **mint for progress**. Its round icon buttons are liquid glass.
 
-**Decided 3 October 2026:** a full Slush-style restyle was compared side by side with today's look and turned down. It had hairline outlines, no shadows, and a new palette and type scale. Keep Cranoly's look as written here, and borrow motion only. Everything in this file is live in the app. `src/app/globals.css` is the source of truth for every value.
+**Decided 7 October 2026:** both themes are black and white; links are yellow; progress bars are mint, the colour Cranoly's links use; the round icons are glass (`LiquidButton`); ＋ makes a note first; Practice is a feed you swipe up and down; Format with AI runs Claude inside the app; nothing glows. Everything in this file is live in the app. `src/app/globals.css` is the source of truth: Cranoly's tokens come first, and the **Cranoly Mono** block near the end overrides them.
 
-Cranoly feels like a paper notebook with stickers on it: warm cream pages, black ink outlines, and bright cut-out pieces that cast a small hard shadow, like card lifted off the page. Orange marks the main thing to do and where you are. Yellow marks what's chosen and what you're learning. Green is only for links. Every touch answers with a small spring: things squish when pressed, selections slide instead of jumping, and main buttons' labels tumble. The app stays calm enough to write in.
+Cranoly Mono feels like a printed notebook: black ink on white paper, or white on black, with ink outlines and small hard shadows. The main thing to do and the thing you've chosen are solid ink (black on Paper, white on Graphite) with the page colour as their text. Yellow marks a link and nothing else; mint shows how far you've got. Every touch answers with a small spring: things squish when pressed, selections slide instead of jumping, and main buttons' labels tumble. The app stays calm enough to write in.
 
 ## Colours
 
-### Paper (light)
+### Paper (white)
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Paper | `#fbf7f0` | `--background-primary` | App canvas, notes, phone sheets |
-| Paper 2 | `#f4eee3` | `--background-secondary`, `--paper-2` | Sidebar and panels, switch and progress tracks, desktop dialogs, the phone edit toolbar |
+| Paper | `#ffffff` | `--background-primary` | App canvas, notes, phone sheets |
+| Paper 2 | `#f5f5f5` (tracks `#f2f2f2`) | `--background-secondary` (`--paper-2`) | Sidebar and panels, switch and progress tracks, desktop dialogs, the phone edit toolbar |
 | Card | `#ffffff` | `--card` | Buttons, cards, menus, fields, the flashcard's question side |
-| Ink | `#16141a` | `--text-normal`, `--edge`, `--pop-color` | Text, outlines and hard shadows. Also `--accent`: the toast and the selection bar |
-| Orange | `#ff5b3a` | `--brand` | **The main action and "where you are":** primary buttons, the active tab's pill, switches when on, the progress bar, the streak flame. Ink text on top (`--brand-ink`) |
-| Orange hover | `#ff6f52` | `--brand-hover` | Primary buttons on hover |
-| Orange soft | `#ffe1d8` | `--brand-soft` | Focus ring on fields, pressed rows in phone sheets and toolbars |
-| Sun | `#ffd84d` | `--sun` | **What's chosen and what you're learning:** the flashcard's answer side, the selected note, chosen language and folder pills, chosen chips and language tiles, the phone ＋ button, the selection bar's hover |
-| Sky | `#cfe3ff` | `--sky` | Word of the day (Dictionary), tags |
-| Lilac | `#e4dbff` | `--lilac` | Tags (the default tag colour) |
-| Peach | `#ffe1d8` | `--peach` | Tags, warm tints |
-| Link mark | `#c5e8b2` | `--link-mark` | **Links only:** the highlighter stroke under linked words. Hover: `#b3dd9d` (`--link-mark-hover`). Link text stays ink |
-| Link line | `rgba(111,179,90,.55)` | `--link-underline` | Dashed underline of links to notes not written yet |
-| Selection | `rgba(0,122,255,.24)` | `--selection` | Selected text, system blue. Nothing else is this blue |
-| Danger | `#e5383b` | `--text-error` | Delete buttons, errors, writing issues |
-| Text muted | `#4b4752` | `--text-muted` | Secondary text, metadata, unchosen tab labels |
-| Text faint | `#8c8793` | `--text-faint` | Placeholders, counts, hints |
-| Border | `#e8e2d8` | `--background-modifier-border` | Hairlines between rows |
-| Border strong | `#d6cec1` | `--background-modifier-border-hover` | Resting outline of chips, fields, search and unchosen pills. Turns ink on hover or focus |
-| Border focus | `#bdb3a4` | `--background-modifier-border-focus` | Desktop dialog outline, dashed "add" outlines |
-| Wash | `rgba(22,20,26,.06)` | `--background-modifier-hover` | Hover fills, segmented-control tracks |
-| Wash strong | `rgba(22,20,26,.10)` | `--background-modifier-active` | The sidebar's selected row |
+| Ink | `#000000` | `--text-normal`, `--edge`, `--pop-color` | Text, outlines and hard shadows. Also `--accent`: the toast and the selection bar |
+| Brand | `#000000` (hover `#1f1f1f`), white text (`--brand-ink`) | `--brand` | **The main action and "where you are":** primary buttons, the disc under the phone bar's current tab, switches when on, ＋'s New note, the streak flame |
+| Brand soft | `#ececec` | `--brand-soft` | Focus ring on fields, pressed rows in phone sheets and toolbars |
+| Sun | `#000000`, white text (`--sun-ink`) | `--sun` | **What's chosen:** the flashcard's answer side, the selected note, chosen language and folder pills, chosen chips and language tiles |
+| Greys | Sky `#f2f2f2` · Lilac `#e6e6e6` · Peach `#d9d9d9` | `--sky`, `--lilac`, `--peach` | Word of the day, tags. Cranoly's pastels, now greys, with black text |
+| Link mark | `#ffd84d` | `--link-mark` | **Links only:** the yellow highlighter stroke under linked words. Hover: `#ffcc1a` (`--link-mark-hover`). Link text stays ink |
+| Link line | `rgba(0,0,0,.45)` | `--link-underline` | Dashed underline of links to notes not written yet |
+| Progress | `#c5e8b2` | `--progress` | **Progress only:** the bars in Practice, the welcome and the tour. Mint, the colour Cranoly's links use |
+| Highlight | `rgba(0,0,0,.12)` | `--text-highlight-bg` | `==highlights==` and cloze words: grey, because yellow means a link |
+| Selection | `rgba(0,0,0,.14)` | `--selection` | Selected text |
+| Danger | `#d32f2f` | `--text-error` | Delete buttons, errors, writing issues. The only red |
+| Text muted | `#4d4d4d` | `--text-muted` | Secondary text, metadata |
+| Text faint | `#8c8c8c` | `--text-faint` | Placeholders, counts, hints |
+| Border | `#e5e5e5` | `--background-modifier-border` | Hairlines between rows |
+| Border strong | `#cfcfcf` | `--background-modifier-border-hover` | Resting outline of chips, fields, search and unchosen pills. Turns ink on hover or focus |
+| Border focus | `#a3a3a3` | `--background-modifier-border-focus` | Desktop dialog outline, dashed "add" outlines |
+| Wash | `rgba(0,0,0,.05)` | `--background-modifier-hover` | Hover fills, segmented-control tracks |
+| Wash strong | `rgba(0,0,0,.09)` | `--background-modifier-active` | The sidebar's selected row |
 
-### Graphite (dark)
+### Graphite (black)
 
 | Name | Value | Token |
 |------|-------|-------|
-| Paper | `#1b1b1e` | `--background-primary` |
-| Paper 2 | `#212125` (tracks `#2a2a30`) | `--background-secondary` (`--paper-2`) |
-| Card | `#26262b` | `--card` |
-| Text | `#f4efe6` · muted `#b9b4ac` · faint `#75717a` | `--text-normal` · `--text-muted` · `--text-faint` |
-| Edge (outlines) | `#4a4a52` | `--edge` |
+| Paper | `#000000` | `--background-primary` |
+| Paper 2 | `#0a0a0a` (tracks `#1a1a1a`) | `--background-secondary` (`--paper-2`) |
+| Card | `#0f0f0f` | `--card` |
+| Text | `#ffffff` · muted `#a6a6a6` · faint `#6b6b6b` | `--text-normal` · `--text-muted` · `--text-faint` |
+| Edge (outlines) | `#333333` | `--edge` |
 | Pop shadow | `#000000` | `--pop-color` |
-| Accent (toast, selection bar) | `#f4efe6` with `#16141a` text | `--accent`, `--text-on-accent` |
-| Orange soft | `rgba(255,91,58,.18)` | `--brand-soft` |
-| Link | `#c5e8b2` text over a `rgba(197,232,178,.14)` mark | `--link-text`, `--link-mark` |
-| Selection | `rgba(10,132,255,.42)` | `--selection` |
-| Borders | `#313136` · `#3a3a40` · `#4a4a52` | `--background-modifier-border` · `-hover` · `-focus` |
+| Brand and Sun | `#ffffff` with black text | `--brand`, `--sun` (`--brand-ink`, `--sun-ink`) |
+| Greys | Sky `#e6e6e6` · Lilac `#cccccc` · Peach `#b3b3b3`, with black text | `--sky`, `--lilac`, `--peach` |
+| Accent (toast, selection bar) | `#ffffff` with `#000000` text | `--accent`, `--text-on-accent` |
+| Brand soft | `rgba(255,255,255,.12)` | `--brand-soft` |
+| Link | `#ffd84d` text over a `rgba(255,216,77,.12)` mark; hover `#ffe27a` | `--link-text`, `--link-mark` |
+| Progress | `#c5e8b2` | `--progress` |
+| Highlight | `rgba(255,255,255,.2)` | `--text-highlight-bg` |
+| Selection | `rgba(255,255,255,.25)` | `--selection` |
+| Danger | `#ff6b6b` | `--text-error` |
+| Borders | `#262626` · `#333333` · `#4d4d4d` | `--background-modifier-border` · `-hover` · `-focus` |
 
-Orange, Sun, Sky, Lilac and Peach are the same in both themes. Text on them is always ink (`--tint-ink`, `#16141a`), even in Graphite.
+Text on Brand and Sun is the page colour (`--brand-ink`, `--sun-ink`): white in Paper, black in Graphite. Text on the greys is always black (`--tint-ink`). Yellow, mint and red appear nowhere else.
 
 ### Mind Map and heatmap
 
-The Mind Map is always dark, in Paper too: small, saturated dots, one colour per top-level folder, on a flat near-black. No title over it, no stars, glow, halos or twinkling. The page (and the small map in the side panel, and the tour's map) carries `data-theme="graphite"`, so its filters card, switches and labels are Graphite even when the app is Paper. The `--mm` colours are the same in both themes.
+The Mind Map is always black, in Paper too: small white and grey dots, one grey per top-level folder, on flat black. No title over it, no stars, glow, halos or twinkling. The page (and the small map in the side panel, and the tour's map) carries `data-theme="graphite"`, so its filters card, switches and labels are Graphite even when the app is Paper. Point at a dot and the lines to its linked notes turn mint.
 
 | Use | Value | Token |
 |-----|-------|-------|
-| Background | `#141417`, flat | `--mm-sky` (`--mm-panel` for the small map in the side panel) |
-| Notes at the top level | `#94a5f9` | `--mm-0` |
-| Folders, in order (violet, amber, sky, pink, teal, coral, indigo, cyan) | `#a677f8` `#fac038` `#45bff7` `#f66fb7` `#23e7cc` `#f76e64` `#7b7bf4` `#25d8f4` | `--mm-1` … `--mm-8` |
-| Tag | `#e088f2` | `--mm-tag` |
-| Not written yet | `#5b648f` | `--mm-ghost` |
+| Background | `#000000`, flat | `--mm-sky` (`--mm-panel` for the small map in the side panel) |
+| Notes at the top level | `#ffffff` | `--mm-0` |
+| Folders, in order | `#f2f2f2` `#d9d9d9` `#bfbfbf` `#a6a6a6` `#e6e6e6` `#cccccc` `#b3b3b3` `#999999` | `--mm-1` … `--mm-8` |
+| Tag | `#8c8c8c` | `--mm-tag` |
+| Not written yet | `#4d4d4d` | `--mm-ghost` |
 | Open or hovered note | `#ffffff` | `--mm-focus` |
-| Link line | `rgba(170,180,255,.16)` | `--mm-line` |
-| Hovered link line | `#c5e8b2` (link green) | `--mm-hot` |
+| Label | `#e6e6e6` | `--mm-label` |
+| Link line | `rgba(255,255,255,.14)` | `--mm-line` |
+| Lines to a hovered note's linked notes | `#c5e8b2` (mint, like progress) | `--mm-hot` |
 
 | Practice heatmap | Paper | Graphite | Token |
 |-----|-------|----------|-------|
-| Empty, then busier days | `#ebe4d8` `#ffd2c6` `#ffab95` `#ff8467` `#ff5b3a` | `#2a2a30`, then orange at 30 / 50 / 75 / 100% | `--heat-0` … `--heat-4` |
+| Empty, then busier days | `#ebebeb` `#c7c7c7` `#9e9e9e` `#616161` `#000000` | `#1a1a1a` `#4d4d4d` `#808080` `#b3b3b3` `#ffffff` | `--heat-0` … `--heat-4` |
 
 Dots are 1.6px across plus 0.7px for every square root of a note's links (the open note is 1.6 times bigger); the tap area stays 6px wider than the dot. Labels are 10.5px at 70% and appear when you zoom in or hover.
 
@@ -117,7 +122,7 @@ Dots are 1.6px across plus 0.7px for every square root of a note's links (the op
 
 ## Spacing and shapes
 
-**Spacing:** no fixed scale; gaps and padding step through 6, 8, 10, 12, 14, 16, 18 and 22px · **Density:** comfortable in lists, roomy in the welcome
+**Spacing:** one rhythm between things: 24px between a page's sections (cards, panels, columns), 16px from a search box to its list, 8px between the items in a row (chips, pills, buttons). Inside components, padding steps through 6, 8, 10, 12, 14, 16, 18 and 22px · **Density:** comfortable in lists, roomy in the welcome
 
 ### Border Radius
 
@@ -140,22 +145,24 @@ Dots are 1.6px across plus 0.7px for every square root of a note's links (the op
 
 | Use | Value |
 |-----|-------|
-| Things you press and cards that pop: buttons, the word of the day card, language tiles, flashcards, menus, the tab bar, toasts, the selection bar, the ＋ button | `2px solid var(--edge)` |
+| Things you press and cards that pop: buttons, the word of the day card, language tiles, flashcards, menus, toasts, the selection bar | `2px solid var(--edge)` |
+| Glass icons: the phone bar's five and the round buttons at the top of the Notes screen and of a note | no outline: `LiquidButton`'s soft inset rims (see Round Icon Button) |
+| The phone bar | `1px solid var(--background-modifier-border-hover)` over a 14px backdrop blur, no shadow |
 | Small controls: switch track and knob, tags, the progress bar, chosen pills and chips | `1.5px solid var(--edge)` |
 | Resting chips, search, fields and unchosen pills | `1.5px solid var(--background-modifier-border-hover)`, turning ink on hover or focus |
 | Row dividers, the phone edit toolbar's top edge | `1px solid var(--background-modifier-border)` |
 | Focus on fields and search | ink outline plus a `0 0 0 3px var(--brand-soft)` ring |
-| Small pop | `0 3px 0 var(--pop-color)` (`--pop-sm`): primary buttons, toasts, the selection bar, language tiles, the ＋ button |
-| Pop | `0 4px 0 var(--pop-color)` (`--pop`): the tab bar, primary buttons on hover |
+| Small pop | `0 3px 0 var(--pop-color)` (`--pop-sm`): primary buttons, toasts, the selection bar, language tiles |
+| Pop | `0 4px 0 var(--pop-color)` (`--pop`): primary buttons on hover |
 | Large pop | `5px 5px 0 var(--pop-color)` (`--pop-lg`): menus, the command palette, hover previews |
 | Flashcard | `6px 6px 0 var(--pop-color)` on the face you can see |
 | Soft shadows | Only two: the segmented control's chosen item (`0 1px 0` plus an 8px blur) and desktop dialogs (`--shadow-l`) |
 
-Shadows are hard: no blur, offset straight down or down-right, in pure ink, so pieces look like card stock lifted off the page.
+Shadows are hard: no blur, offset straight down or down-right, in pure ink, so pieces look like card stock lifted off the page. In Graphite they're black on black, so depth there comes from the `#333333` edge. The glass icons are the one soft thing: their rims are inset, inside the disc, and nothing glows outside it.
 
 ### Layout
 
-- **App:** Apple Notes layout. Sidebar (236px), notes list (320px), then the note, with the text column capped at 700px, plus an optional side panel (300px). On phones (820px and narrower) it opens on the Notes screen and shows one screen at a time, with a small floating bar: ‹ back, Notes, ＋, Search, › forward. The Notes screen's title is small (17px Fraunces 700) and centred between ☰ on the left and ••• and ✎ on the right; ☰ slides in the sidebar as a drawer.
+- **App:** Apple Notes layout. Sidebar (236px), notes list (320px), then the note, with the text column capped at 700px, plus an optional side panel (300px). On phones (820px and narrower) it opens on the Notes screen and shows one screen at a time, with a small floating glass bar: ‹ back, Notes, ＋, Search, › forward. The Notes screen's title is small (17px Fraunces 700) and centred between ☰ on the left and ••• and ✎ on the right, all three glass icons; ☰ slides in the sidebar as a drawer.
 - **Sidebar order:** Folders first (All Notes, then your folders), a hairline, then Mind Map, Practice, Dictionary, Search, Add a word and Scan text. Learn the basics and Settings sit at the foot.
 - **Dictionary:** the narrow page column; sticky letter headers, hairline rows.
 - **Card padding:** 14 to 22px · **Element gap:** 6 to 12px · **Phone gutter:** 16px
@@ -163,35 +170,37 @@ Shadows are hard: no blur, offset straight down or down-right, in pure ink, so p
 ## Components
 
 ### Primary Button
-**Role:** the main action on a screen: Start, Get started, Continue, Save, Add word, Start using Cranoly
+**Role:** the main action on a screen: Start, Get started, Continue, Save, Add word, Format, Start using Cranoly Mono
 
-Orange fill, ink text, `2px` ink outline, pill. 40px tall with 20px sides (large: 52px, 16px text), Instrument Sans 650 at 14px. Resting `0 3px 0` hard shadow. Hover: lighter orange, a 1px lift onto `0 4px 0`, and on pointer devices the label **tumbles** (see Motion). Press: drops 2px onto `0 1px 0` and **squishes** to .955.
+Brand fill (black with white text in Paper, white with black text in Graphite), `2px` ink outline, pill. 40px tall with 20px sides (large: 52px, 16px text), Instrument Sans 650 at 14px. Resting `0 3px 0` hard shadow. Hover: `--brand-hover`, a 1px lift onto `0 4px 0`, and on pointer devices the label **tumbles** (see Motion). Press: drops 2px onto `0 1px 0` and **squishes** to .955.
 
 ### Secondary Button
 **Role:** everything next to the primary: Later, Cancel, Close
 
-White card fill, `2px` ink outline, ink text, pill, no shadow at rest. Hover lifts 1px onto `0 3px 0`. Press drops back and squishes.
+Card fill, `2px` ink outline, ink text, pill, no shadow at rest. Hover lifts 1px onto `0 3px 0`. Press drops back and squishes.
 
 ### Ghost and Danger Buttons
-Ghost: no fill or outline; hover is the 6% ink wash; when on, it gets a white fill and ink outline. Danger: `#e5383b` fill, white text, `0 3px 0`. Danger outline: red text and a red outline.
+Ghost: no fill or outline; hover is the 6% ink wash; when on, it gets a white fill and ink outline. Danger: `--text-error` fill (`#d32f2f`, or `#ff6b6b` in Graphite), `0 3px 0`. Danger outline: red text and a red outline. Red is only ever for Delete and errors.
 
 ### Round Icon Button
-**Role:** compact tools: ＋, ⚙, ⋯, close, speaker
+**Role:** compact tools: ☰, •••, ✎, the phone bar, ⚙, close, speaker
 
-Round (999px): 48px beside the word of the day, 52px around the flashcard, 32px in panel toolbars, 42px on the phone Notes header (☰, ⋯, new note). Stand-alone ones (the speaker) are white with a `1.5px` ink outline. Hover: ＋ and ⚙ **turn 90°**.
+**Glass** (`GlassIcon` in `src/components/ui/glass-icon.tsx`, built on `LiquidButton` from `src/components/ui/liquid-glass-button.tsx`): the phone bar's five icons (44px; ＋ 52px) and the round buttons at the top of the Notes screen and of a note (☰, •••, ✎, 40px). A clear disc with soft inset rims (dark on Paper, light on Graphite) over an SVG displacement filter that bends what's behind it. No fill, outline or glow of its own; icons are ink. Pressed, it squishes to .94; disabled, it fades to 35%. Inside the phone bar the distortion is off, so the sliding disc under the current tab stays round.
+
+The rest keep Cranoly's: 48px beside the word of the day, 32px in panel toolbars. Stand-alone ones (the speaker) are card-coloured with a `1.5px` ink outline. Hover: ⚙ **turns 90°**.
 
 ### Chip
-**Role:** quick picks and toggles: starter words in the welcome, Shuffle and Answer first in practice
+**Role:** quick picks and toggles: starter words in the welcome, what Format with AI should do
 
-36px pill, white fill, `1.5px #d6cec1` outline that turns ink on hover, 600 at 14px. On: Sun fill with an ink outline, and the chip **pops**.
+36px pill, white fill, `1.5px #d6cec1` outline that turns ink on hover, 600 at 14px. On: Sun fill (black, or white in Graphite) with an ink outline and the page colour as text, and the chip **pops**.
 
 ### Language and Folder Pills
 **Role:** switching language on Practice and the Dictionary (`.lang-switch`), and folders on the phone notes list
 
-32 to 34px pills, 650 to 700 at 13.5 to 14px, muted text, `1.5px #d6cec1` outline. The chosen one sits on a **Sun pill with an ink outline that slides** from the previous choice.
+32 to 34px pills, 650 to 700 at 13.5 to 14px, muted text, `1.5px #d6cec1` outline. The chosen one sits on a **Sun pill (black, or white in Graphite) with an ink outline that slides** from the previous choice.
 
 ### Tag
-Lilac by default (or Sun, Sky, Peach), `1.5px` ink outline, 8px radius, 700 at 0.8em. Clickable tags lift 1px onto `0 2px 0` on hover.
+A grey by default (Lilac, Sky or Peach, picked by the tag's name) with black text, or Sun (black with white text, white with black in Graphite); `1.5px` ink outline, 8px radius, 700 at 0.8em. Clickable tags lift 1px onto `0 2px 0` on hover.
 
 ### Segmented Control
 **Role:** one choice out of two to four: theme (Paper · Graphite · System), side-panel tabs
@@ -201,20 +210,20 @@ A track in the 6% ink wash with a 16px radius and 4px padding (side-panel tabs: 
 ### Switch
 **Role:** on/off settings (Shuffle decks, Blur answers, …)
 
-Track 44×26 pill in Paper 2 with a `1.5px` ink outline. Knob 19px, white, with its own `1.5px` ink outline. On: orange track, white knob. Motion: the knob **springs** across and **stretches** while held.
+Track 44×26 pill in Paper 2 with a `1.5px` ink outline. Knob 19px, white, with its own `1.5px` ink outline. On: Brand track (black, or white in Graphite) and a knob in the page colour. Motion: the knob **springs** across and **stretches** while held.
 
 ### Search and Fields
-Search: 38px pill, white, `1.5px #d6cec1` outline. Selects and inputs: 40px, 12px radius, same outline. Focus: ink outline plus a 3px orange-soft ring.
+Search: 38px pill, white, `1.5px #d6cec1` outline. Selects and inputs: 40px, 12px radius, same outline. Focus: ink outline plus a 3px brand-soft (grey) ring.
 
 ### Text Link
 **Role:** `[[linked words]]` in notes and links in copy
 
-Ink text with a mint highlighter stroke over its lower 42% (`linear-gradient(transparent 58%, var(--link-mark) 58%)`). Hover fills the whole word in the darker mint. A link to a note not written yet is at 60% opacity with a dashed green underline. Green appears nowhere else.
+Paper: black text with a yellow highlighter stroke over its lower 42% (`linear-gradient(transparent 58%, var(--link-mark) 58%)`, `#ffd84d`). Graphite: yellow text (`#ffd84d`) over a faint yellow mark. Hover fills the whole word. A link to a note not written yet is at 60% opacity with a dashed underline. Search matches and "form of" links in the word sheet wear the same, because they take you somewhere. Yellow appears nowhere else.
 
 ### Note Row
 **Role:** an item in the notes list
 
-12px radius, 9 to 10px padding, a hairline between rows (hidden next to the selected row). Title 700, then the preview in muted ink and the date and counts in faint 12px. The selected row sits on a **Sun highlight that glides** from the previous row instead of jumping.
+12px radius, 9 to 10px padding, a hairline between rows (hidden next to the selected row). Title 700, then the preview in muted ink and the date and counts in faint 12px. The selected row sits on a **Sun highlight (black with white text, or white with black in Graphite) that glides** from the previous row instead of jumping.
 
 ### Sidebar Row
 34px tall, 10px radius, 550 at 14.5px with a muted icon and a faint count. Selected: 700 weight on a 10% ink wash that **glides** between rows.
@@ -230,27 +239,27 @@ Laptop: the first thing in the note toolbar, a 32px secondary pill with an icon 
 White card, `1.5px` resting outline, 16px radius, 12px 16px padding. A 12px uppercase muted "Properties" label, then rows split by hairlines: the key muted in the left 30%, the value in ink. Tags are tag chips, lists are small Paper 2 chips, dates read in words, an empty value reads "Empty" in faint ink. Tapping it in the editor shows the YAML as typed, in the code font with keys in 650 ink.
 
 ### Card Arrow
-The arrow on a flashcard line (→, or ⇄ both ways) is quiet: a small chip in a dull neutral grey (`--sep-bg` `#e9e7e3`, Graphite `#303036`) with grey text (`--sep-ink`) and a `1.5px` hairline. In the editor it's grey text. Never Sun or orange.
+The arrow on a flashcard line (→, or ⇄ both ways) is quiet: a small chip in a neutral grey (`--sep-bg` `#ececec`, Graphite `#1f1f1f`) with grey text (`--sep-ink`) and a `1.5px` hairline. In the editor it's grey text. Never Sun or Brand.
 
 ### Dictionary
-- **Word of the day:** Sky, `2px` ink outline, 18px radius, the word in Fraunces at 24px, its meaning hidden until tapped; a round speaker button beside it.
+- **Word of the day:** Sky (a light grey) with black text, `2px` ink outline, 18px radius, the word in Fraunces at 24px, its meaning hidden until tapped; a round speaker button beside it.
 - **Rows:** the word in Fraunces 17px (its article faint), the meaning muted below, a speaker at the end; hairline dividers; filed under sticky letter headers by the word, not its article.
 
 ### Language Tile
 **Role:** picking languages in the welcome
 
-White card, `2px` ink outline, 18px radius, `0 3px 0`. Language name in Fraunces 19px with "hello" in that language below it, muted. On: Sun fill and a round ink check that **pops** in at the corner. Press drops 2px onto its shadow.
+White card, `2px` ink outline, 18px radius, `0 3px 0`. Language name in Fraunces 19px with "hello" in that language below it, muted. On: Sun fill (black, or white in Graphite) and a round check that **pops** in at the corner. Press drops 2px onto its shadow.
 
 ### Flashcard
-**Role:** Cranoly's signature object
+**Role:** Cranoly Mono's signature object
 
-Question side white, answer side Sun (ink text). `2px` ink outline, 28px radius in practice (24px in the welcome), and a `6px 6px 0` hard shadow on the face you can see. Short answers are Fraunces 800 at 34 to 48px. Cloze gaps are dashed ink boxes on Paper 2. A large “Reveal answer” button sits between 52px round previous and next buttons. It **flips** on the glide spring.
+Question side card-coloured, answer side Sun: black with white text in Paper, white with black text in Graphite. `2px` ink outline, 28px radius in practice (24px in the welcome), and a `6px 6px 0` hard shadow on the face you can see. Short answers are Fraunces 800 at 34 to 48px. Cloze gaps are dashed ink boxes on Paper 2. Each face has a round speaker at the top. It **flips** on the glide spring when tapped.
 
 ### Progress Bar
-10px pill in Paper 2 with a `1.5px` ink outline. The fill is orange with an ink right edge. The welcome uses an 8px one between **‹ Back** (from its second screen on) and Skip; never a row of little bars.
+10px pill in Paper 2 with a `1.5px` ink outline. The fill is **mint** (`#c5e8b2`, `--progress`) with an ink right edge, in both themes, and so are the tour's and the welcome's. The welcome uses an 8px one between **‹ Back** (from its second screen on) and Skip. Never a row of little bars.
 
 ### Backup Status
-One line in Paper 2 with a `1.5px` resting outline and a 12px radius, 600 at 13px: a check and "Saved 2 min ago to Documents › Cranoly · 42 notes", or "Saving…", or the problem in the error red. When a laptop browser wants a tap before writing to the folder again, a Sun tint row with an ink outline explains it, with an **Allow** button.
+One line in Paper 2 with a `1.5px` resting outline and a 12px radius, 600 at 13px: a check and "Saved 2 min ago to Documents › Cranoly · 42 notes", or "Saving…", or the problem in the error red. When a laptop browser wants a tap before writing to the folder again, a grey tint row with an ink outline explains it, with an **Allow** button.
 
 ### Bring In Sheet
 **Role:** what bringing in a backup from another device would change, before it does
@@ -260,10 +269,10 @@ One line in Paper 2 with a `1.5px` resting outline and a 12px radius, 600 at 13p
 ### Selection Bar
 **Role:** the bar above selected text: Flashcard · Link | Explain · Hear · …
 
-Ink pill (white in Graphite), `2px` ink outline, `0 3px 0`, 4px padding. Buttons are 30px pills, 650 at 13px; hover turns them Sun with ink text. Flashcard and Link come first at 750, then a 1.5px divider. It **springs in** from the selection.
+Ink pill (white in Graphite), `2px` ink outline, `0 3px 0`, 4px padding. Buttons are 30px pills, 650 at 13px; hover lays an 18% wash of the bar's text colour under them (Sun would be ink on ink here). Flashcard and Link come first at 750, then a 1.5px divider. It **springs in** from the selection.
 
 ### Edit Toolbar (phones)
-A full-width bar above the keyboard in Paper 2 with a hairline top edge. Tools are round, ink, and turn orange-soft when pressed. Flashcard and Link are labelled at the front.
+A full-width bar above the keyboard in Paper 2 with a hairline top edge. Tools are round, ink, and turn brand-soft (grey) when pressed. Flashcard and Link are labelled at the front.
 
 ### Menu
 White, `2px` ink outline, 16px radius, 6px padding, `5px 5px 0`. **Springs from its button** with its items arriving 12ms apart.
@@ -271,19 +280,34 @@ White, `2px` ink outline, 16px radius, 6px padding, `5px 5px 0`. **Springs from 
 ### Sheet
 **Role:** bottom sheets on phones (Add a word, New flashcard, the note menu) and dialogs on desktop
 
-Phones: Paper, a `2px` ink top edge, 30px top corners, an ink grab handle; rows have a 14px radius and turn orange-soft when pressed. It **rises** on the sheet curve. Desktop: a dialog in Paper 2 with a 1px outline, 12px radius and a soft shadow; it **springs in**.
+Phones: Paper, a `2px` ink top edge, 30px top corners, an ink grab handle; rows have a 14px radius and turn brand-soft (grey) when pressed. It **rises** on the sheet curve. Desktop: a dialog in Paper 2 with a 1px outline, 12px radius and a soft shadow; it **springs in**.
 
 ### Toast
 **Role:** confirmations with an optional Undo
 
-Ink pill (white in Graphite), `2px` ink outline, `0 3px 0`, 600. The action is Sun-coloured text (dark orange `#b54708` in Graphite). It **springs up** from the bottom.
+Ink pill (white in Graphite), `2px` ink outline, `0 3px 0`, 600. The action (Undo) is a small pill outlined in the toast's own text colour; hover adds a wash of it. It **springs up** from the bottom.
 
 ### Phone Bar
 **Role:** ‹ back, Notes, ＋, Search, › forward (everything else is in the ☰ drawer on the Notes screen)
 
-A white pill (card colour in Graphite), 54px tall and only as wide as its five buttons (about 250px), with a `2px` ink outline and `0 4px 0`, centred 10px above the bottom edge. Icons only, no labels. Notes and Search are 50×44 tabs; the active one's icon sits on a 46×34 **orange pill that slides** between them, and the icon **pops**. The centre ＋ is a 42px Sun circle with a `2px` ink outline and `0 3px 0`; it drops 2px and **turns 90°** when pressed. ‹ and › are 40×44 ink chevrons (24px, stroke 2.3); with nowhere to go they fade to faint at 50%. Pressed, each **nudges 3px** the way it goes.
+A frosted pill 64px tall and only as wide as its five glass icons, 10px apart: ‹, Notes, ＋, Search and ›. The icons are 44px and ＋ is 52px. The bar is `--nav-bg` (white at 88%, or near-black at 86%) over a 14px backdrop blur, with a 1px grey outline and no shadow, centred 10px above the bottom edge. Icons only, no labels. The current tab's icon sits on a **Brand disc (black, or white in Graphite) that slides** between Notes and Search, and turns the page colour. ＋ opens **New** (see ＋ Sheet). ‹ and › fade to 35% with nowhere to go; pressed, each **nudges 3px** the way it goes.
 
 ‹ and › walk the trail of places you visited, like a browser: a place is a screen, plus the open note on a note screen and the folder on Notes. The trail lasts for the session (a reload keeps it), skips deleted notes, and going somewhere new from the middle drops what was ahead. Android's back button follows the same trail, after closing anything open; from Notes it leaves the app.
+
+### ＋ Sheet (New)
+**Role:** what ＋ opens: a new note first, then Scan, then Paste a list
+
+Three rows 12px apart, each a card with a `1.5px` resting outline and an 18px radius: a 22px icon, then the name in 650 at 17px with a muted line under it at 13.5px. **New note** comes first and is the main one: a Brand row (black, or white in Graphite) with the page colour as text and a little more height. It makes a blank note in the folder you're in and opens it with its title ready to type. **Scan** reads a page or a word list from a photo; **Paste a list** takes words and their meanings, one per line. Rows squish to .985 when pressed. Adding a single word lives in the Dictionary (**Add a word**) and in notes (select it, then **Flashcard**).
+
+### Practice Feed
+**Role:** practising cards, one per screen
+
+Cards sit in a vertical, scroll-snapped feed. Swipe up for the next card and down for the one before; every swipe stops at the next card (`scroll-snap-stop: always`), and a card turns back to its question when it leaves. Tap a card to flip it. The header is three balanced columns: Close, the deck name with the count, then Shuffle and Answer first (icons only on phones). The mint progress bar sits under it. Only the cards next to the one on screen are drawn. The last slide is the summary. On a laptop: the arrow keys, J and K, Page Up and Page Down, or the wheel; Space flips.
+
+### Format with AI
+**Role:** Claude formats a note inside the app
+
+A sheet: what to do as chips (Tidy up, Arrange by topic, Add a short summary, Link and translate words, Make flashcards), then **Format** (primary). Without a key, the key box takes its place: a password field, a link to the Anthropic console and **Save key**. While Claude writes, the reply appears in a card-coloured preview (16px radius, `1.5px` resting outline) with **Stop**. Then **Add below**, **Replace note** (primary) and a quiet **Try again**; a toast offers Undo. Problems are said plainly in the error red. It looks like the rest of the app: no gradients, shimmer or glow.
 
 ### Eyebrow
 14px 600 muted text on its own line above a page title. Nothing before it: no rule, dash or dot.
@@ -335,7 +359,7 @@ Browsers without `linear()` (before Chrome 113 or Safari 17.2) get the nearest `
 | Moment | What moves | Duration · curve | Detail |
 |--------|-----------|------------------|--------|
 | **Press** anything pressable | `scale: .955` (wide rows `.985`) | press · elastic | Down and back on the same spring. Uses the independent `scale` property, so it adds to a button's own 2px drop instead of fighting it |
-| **Switch** toggled | knob `translate: 18px 0` | press · elastic | The knob overshoots ~2.5px and rocks back. The track turns orange over color · color |
+| **Switch** toggled | knob `translate: 18px 0` | press · elastic | The knob overshoots ~2.5px and rocks back. The track turns Brand over color · color |
 | **Switch** held | knob `scale: 1.3 1` | press · elastic | The knob stretches towards its travel (origin left when off, right when on), like iOS |
 | **Segmented control or side-panel tabs** changed | the white chosen card's edges | glide · glide | The leading edge leaves first and the trailing edge follows 18ms later, so the card **stretches** by about 40% of the distance, then settles. An edge landing at the container's side uses Out, so it never pokes past. Moves over 240px use Snap at 420ms with no stretch |
 | Label under a moving pill | text colour | fade · color, 60ms delay | Swaps as the pill arrives under it |
@@ -343,11 +367,12 @@ Browsers without `linear()` (before Chrome 113 or Safari 17.2) get the nearest `
 | **Sidebar** selection changed | the grey highlight | glide · glide | The same stretch |
 | **Language pills, phone folder pills** changed | the Sun pill | glide · glide | The same stretch |
 | **Read / Edit** button | the new word rises 55% and fades in | pop · elastic | The same spring in the tour's demo |
-| **Tab bar** changed | the orange pill slides under the new icon; the icon pops from `scale: .7` | glide · glide; pop · bounce | A light haptic tap in the Android app |
+| **Tab bar** changed | the Brand disc slides under the new icon | glide · glide | A light haptic tap in the Android app |
+| **Practice feed** swiped | the next card scrolls into place and snaps | the phone's own scroll | One card per swipe; the card that left turns back to its question |
 | **Chip** turned on | Sun fill; the chip pops from `scale: .92` | color · color; pop · bounce |  |
 | **Language tile** picked | Sun fill; the corner check pops in from `scale: 0` and `rotate: -25deg` | color · color; pop · bounce |  |
-| **Primary button** hover (pointer devices) | label tumbles: the front face goes to `rotate: 1 0 0 85deg`, `translate: 0 -0.95em -1.5em` and fades; the back face (CSS text only) springs in from `rotate: 1 0 0 -90deg`, `translate: 0 0.95em -1.5em` | medium (travel) and default (turn) · elastic; fade 150ms out, 75ms in | Slush's button, applied to the label inside a clipped pill with 500px perspective. On Start, Add a word, Get started, Continue, Download, Add word, Save, New note and Start using Cranoly |
-| **Round button** hover | ＋ and ⚙ `rotate: 90deg` | press · elastic | The phone ＋ also turns when pressed |
+| **Primary button** hover (pointer devices) | label tumbles: the front face goes to `rotate: 1 0 0 85deg`, `translate: 0 -0.95em -1.5em` and fades; the back face (CSS text only) springs in from `rotate: 1 0 0 -90deg`, `translate: 0 0.95em -1.5em` | medium (travel) and default (turn) · elastic; fade 150ms out, 75ms in | Slush's button, applied to the label inside a clipped pill with 500px perspective. On Start, Add a word, Get started, Continue, Download, Add word, Save, Format, New note and Start using Cranoly Mono |
+| **Round button** hover | ⚙ and a desktop ＋ `rotate: 90deg` | press · elastic | Glass icons squish to .94 instead |
 | Logo hover | `rotate: 360deg` | long · elastic |  |
 | Arrow in a button or row, hover | `translate: 3px 0` | press · elastic |  |
 | **Theme** switched | the theme icon spins in from `rotate: -120deg`, `scale: .6` | default · elastic | Colours change over color · color |
@@ -444,10 +469,12 @@ Main buttons get the tumbling label with `<Tumble label="Start">…</Tumble>` (s
 ## Do's and Don'ts
 
 ### Do
-- Keep **orange for the main action** and for "where you are" (the active tab, switches that are on, progress).
-- Use **Sun for what's chosen or being learned**: the answer side, the selected note, chosen pills and chips.
-- Keep **green for links only** and **blue for selected text only**.
-- Outline what you press in `2px` ink and give it a hard pop shadow; small controls get `1.5px`.
+- Keep it **black and white**: ink, the page colour and greys.
+- Use **Brand** (solid ink) for the main action and for "where you are": the current tab's disc, switches that are on, ＋'s New note.
+- Use **Sun** (also solid ink here) for what's chosen or being learned: the answer side, the selected note, chosen pills and chips.
+- Keep **yellow for links only**, **mint for progress only** and **red for Delete and errors only**.
+- Make round icon buttons glass (`GlassIcon`). Outline everything else you press in `2px` ink with a hard pop shadow; small controls get `1.5px`.
+- Space evenly: 24px between sections, 16px from a search box to its list, 8px between items in a row.
 - Make every control a pill.
 - Animate every state change with the Motion tokens. Selections slide, presses squish, checks pop.
 - Use tabular figures for every number that changes.
@@ -457,9 +484,10 @@ Main buttons get the tumbling label with `<Tumble label="Start">…</Tumble>` (s
 - Don't switch to Slush's look: no hairline-only outlines, no shadowless buttons, no new palette or type scale. Borrow its motion only.
 - Don't use blurred shadows on cards or buttons. Shadows are hard and ink-coloured; the two soft exceptions are listed above.
 - Don't use gradients as colour. The one exception: the link highlighter (its hard stop reads as a flat stroke).
-- Don't use glowing or pulsing dots anywhere.
+- Don't make anything glow: no glowing or pulsing dots, halos, coloured shadows, shimmer or sparkle effects, AI features included.
+- Don't add colour: tags, folders, callouts, the heatmap and the Mind Map are greys.
 - Don't draw a little bar, dash or dot in front of a label, and don't write em or en dashes in anything the app says. Short sentences, colons and commas instead.
-- Don't put anything but ink text on Sun, Sky, Lilac or Peach, in either theme.
+- Don't put anything but the page colour on Brand and Sun (`--brand-ink`, `--sun-ink`), or anything but black on the greys, in either theme. Don't put Sun on an ink surface (the toast, the selection bar): it's ink on ink.
 - Don't fade between selected items. The indicator must travel. In React, use `useSlider` and a `.slider-pill` in the container instead of styling the chosen item's own background.
 - Don't use Elastic for moves over ~40px (use Glide), or Bounce for anything bigger than an icon or chip.
 - Don't animate `width`, `height`, `top` or `left` on content. The slider pill (a tiny absolute element) is the only exception.
@@ -470,78 +498,85 @@ Main buttons get the tumbling label with `<Tumble label="Start">…</Tumble>` (s
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 1 | Paper | `#fbf7f0` | App canvas, notes, phone sheets |
-| 2 | Paper 2 | `#f4eee3` | Sidebar, panels, tracks, desktop dialogs |
-| 3 | Card | `#ffffff` | Buttons, cards, menus, fields, the flashcard's question side |
-| 4 | Tints | Sun / Sky / Lilac / Peach | Chosen things, word of the day, tags, the flashcard's answer side |
-| 5 | Ink | `#16141a` | Toasts and the selection bar: the inverted layer |
+| 1 | Paper | `#ffffff` (Graphite `#000000`) | App canvas, notes, phone sheets |
+| 2 | Paper 2 | `#f5f5f5` (Graphite `#0a0a0a`) | Sidebar, panels, tracks, desktop dialogs |
+| 3 | Card | `#ffffff` (Graphite `#0f0f0f`) | Buttons, cards, menus, fields, the flashcard's question side |
+| 4 | Greys and Sun | Sky / Lilac / Peach greys; Sun in solid ink | Chosen things, word of the day, tags, the flashcard's answer side |
+| 5 | Ink | `#000000` (Graphite `#ffffff`) | Toasts and the selection bar: the inverted layer |
+| 6 | Glass | `LiquidButton` | The phone bar's icons and the round header buttons |
 
 ## Imagery
 
-No photography and no 3D renders. Cranoly's signature object is the **flashcard**: a white card with an ink outline and a hard shadow that flips to yellow. Icons are Lucide line icons in ink or muted ink. The app icon is a black serif "C" on a mint tile.
+No photography and no 3D renders. Cranoly Mono's signature object is the **flashcard**: a card with an ink outline and a hard shadow that flips to solid ink. Icons are Lucide line icons in ink or muted ink. The app icon is a white serif "C" on black.
 
 ## Agent Prompt Guide
 
 Quick Color Reference:
-- text: #16141a (Graphite: #f4efe6)
-- background: #fbf7f0 / #f4eee3 / #ffffff
-- outline and shadow: #16141a, 2px on pressables and cards, 1.5px on small controls; hard shadows 0 3px 0 / 0 4px 0 / 5px 5px 0
-- action: #ff5b3a with #16141a text
-- chosen: #ffd84d with #16141a text
-- tints: #cfe3ff, #e4dbff, #ffe1d8
-- links: #c5e8b2 highlighter under ink text
+- text: #000000 (Graphite: #ffffff)
+- background: #ffffff / #f5f5f5 / #ffffff (Graphite: #000000 / #0a0a0a / #0f0f0f)
+- outline and shadow: #000000 (Graphite edge #333333), 2px on pressables and cards, 1.5px on small controls; hard shadows 0 3px 0 / 0 4px 0 / 5px 5px 0
+- action and chosen: #000000 with #ffffff text (Graphite: #ffffff with #000000 text)
+- greys for tags and the word of the day: #f2f2f2, #e6e6e6, #d9d9d9 with black text
+- links: #ffd84d highlighter under black text (Graphite: #ffd84d text)
+- progress: #c5e8b2
+- round icon buttons: liquid glass, no fill or outline
 
 Example Component Prompts:
 
-1. **Primary button:** "A 40px pill, #ff5b3a fill, 2px #16141a outline, a hard 0 3px 0 #16141a shadow, label 'Start' in Instrument Sans 650 14px in #16141a. Hover: #ff6f52, a 1px lift onto 0 4px 0, and the label tumbles: the front face rotates 85° on the X axis and fades while a copy springs in from -90°, on `--ease-elastic` over 850ms. Press: drop 2px onto 0 1px 0 and squish to .955."
+1. **Primary button:** "A 40px pill, #000000 fill, 2px #000000 outline, a hard 0 3px 0 #000000 shadow, label 'Start' in Instrument Sans 650 14px in #ffffff. Hover: #1f1f1f, a 1px lift onto 0 4px 0, and the label tumbles: the front face rotates 85° on the X axis and fades while a copy springs in from -90°, on `--ease-elastic` over 850ms. Press: drop 2px onto 0 1px 0 and squish to .955."
 
-2. **Segmented control:** "Theme picker with Paper · Graphite · System. A track in rgba(22,20,26,.06) with a 16px radius and 4px padding. Items are Instrument Sans 650 in #4b4752 with a 12px radius. The chosen one sits on a white card with a 0 1px 0 #d6cec1 line and a soft 8px shadow, and the card slides to a new choice with `--ease-glide` over 460ms: its leading edge moves first and the trailing edge follows 18ms later."
+2. **Segmented control:** "Theme picker with Paper · Graphite · System. A track in rgba(0,0,0,.05) with a 16px radius and 4px padding. Items are Instrument Sans 650 in #4d4d4d with a 12px radius. The chosen one sits on a white card with a 0 1px 0 #cfcfcf line and a soft 8px shadow, and the card slides to a new choice with `--ease-glide` over 460ms: its leading edge moves first and the trailing edge follows 18ms later."
 
-3. **Notes list:** "Rows with a 12px radius on #fbf7f0, separated by 1px #e8e2d8 hairlines: title in Instrument Sans 700, a muted date and preview line. The selected row sits on a #ffd84d highlight that glides from the previously selected row with `--ease-glide`. Pressing a row squishes it to .985."
+3. **Notes list:** "Rows with a 12px radius on #ffffff, separated by 1px #e5e5e5 hairlines: title in Instrument Sans 700, a muted date and preview line. The selected row sits on a #000000 highlight with white text that glides from the previously selected row with `--ease-glide`. Pressing a row squishes it to .985."
 
-4. **Flashcard:** "A 28px-radius white card with a 2px #16141a outline and a hard 6px 6px 0 #16141a shadow. The word is Fraunces 800 at 44px, line height 1, -0.04em, centred. Tapping flips it 180° on the Y axis over 850ms with `--ease-glide` to a #ffd84d answer side."
+4. **Flashcard:** "A 28px-radius white card with a 2px #000000 outline and a hard 6px 6px 0 #000000 shadow. The word is Fraunces 800 at 44px, line height 1, -0.04em, centred. Tapping flips it 180° on the Y axis over 850ms with `--ease-glide` to a #000000 answer side with white text."
 
-5. **Mind Map:** "A full-bleed flat near-black (#141417), in both themes. Notes are flat dots about 2 to 4px across in saturated colours (one per folder: #a677f8, #fac038, #45bff7, #f66fb7), joined by 0.7px lines in rgba(170,180,255,.16). No title, stars or glow; the filters card floats top right in Graphite colours."
+5. **Mind Map:** "A full-bleed flat black (#000000), in both themes. Notes are flat dots about 2 to 4px across in white and greys (one grey per folder: #f2f2f2, #d9d9d9, #bfbfbf, #a6a6a6), joined by 0.7px lines in rgba(255,255,255,.14); pointing at a dot turns the lines to its linked notes mint (#c5e8b2). No title, stars or glow; the filters card floats top right in Graphite colours."
+
+6. **Glass icon:** "A 44px round button with no fill or outline: soft inset rims, dark on white and light on black, over a backdrop that bends slightly. A 20px Lucide icon in ink in the middle. Pressed, it squishes to .94 on `--ease-elastic`. Nothing glows around it."
 
 ## Gradient System
 
-None, except two: the link highlighter (a hard-stop gradient that draws a flat mint stroke under linked words) and the Mind Map's sky. Every other surface is a flat fill. Depth comes from ink outlines, hard shadows and motion.
+None, except the link highlighter: a hard-stop gradient that draws a flat yellow stroke under linked words. The Mind Map's sky is flat black. Every other surface is a flat fill. Depth comes from ink outlines, hard shadows, glass and motion.
 
 ## Quick Start
 
 ### CSS Custom Properties
 
-The key tokens, for pages built outside the app. The app's full set is at the top of `src/app/globals.css`.
+The key tokens, for pages built outside the app. The app's full set is in `src/app/globals.css`: Cranoly's at the top, and the Cranoly Mono block near the end that overrides them.
 
 ```css
 :root {
   /* Colors: Paper */
-  --background-primary: #fbf7f0;
-  --background-secondary: #f4eee3;
-  --paper-2: #f4eee3;
+  --background-primary: #ffffff;
+  --background-secondary: #f5f5f5;
+  --paper-2: #f2f2f2;
   --card: #ffffff;
-  --text-normal: #16141a;
-  --text-muted: #4b4752;
-  --text-faint: #8c8793;
-  --text-error: #e5383b;
-  --edge: #16141a;
-  --pop-color: #16141a;
-  --tint-ink: #16141a;
-  --brand: #ff5b3a;
-  --brand-hover: #ff6f52;
-  --brand-ink: #16141a;
-  --brand-soft: #ffe1d8;
-  --sun: #ffd84d;
-  --sky: #cfe3ff;
-  --lilac: #e4dbff;
-  --peach: #ffe1d8;
-  --link-mark: #c5e8b2;
-  --link-mark-hover: #b3dd9d;
-  --selection: rgba(0, 122, 255, 0.24);
-  --background-modifier-border: #e8e2d8;
-  --background-modifier-border-hover: #d6cec1;
-  --background-modifier-hover: rgba(22, 20, 26, 0.06);
-  --background-modifier-active: rgba(22, 20, 26, 0.1);
+  --text-normal: #000000;
+  --text-muted: #4d4d4d;
+  --text-faint: #8c8c8c;
+  --text-error: #d32f2f;
+  --edge: #000000;
+  --pop-color: #000000;
+  --tint-ink: #000000;
+  --brand: #000000;
+  --brand-hover: #1f1f1f;
+  --brand-ink: #ffffff;
+  --brand-soft: #ececec;
+  --sun: #000000;
+  --sun-ink: #ffffff;
+  --sky: #f2f2f2;
+  --lilac: #e6e6e6;
+  --peach: #d9d9d9;
+  --link-mark: #ffd84d;
+  --link-mark-hover: #ffcc1a;
+  --progress: #c5e8b2;
+  --text-highlight-bg: rgba(0, 0, 0, 0.12);
+  --selection: rgba(0, 0, 0, 0.14);
+  --background-modifier-border: #e5e5e5;
+  --background-modifier-border-hover: #cfcfcf;
+  --background-modifier-hover: rgba(0, 0, 0, 0.05);
+  --background-modifier-active: rgba(0, 0, 0, 0.09);
 
   /* Depth */
   --pop-sm: 0 3px 0 var(--pop-color);
@@ -576,23 +611,34 @@ The key tokens, for pages built outside the app. The app's full set is at the to
 }
 
 :root[data-theme="graphite"] {
-  --background-primary: #1b1b1e;
-  --background-secondary: #212125;
-  --paper-2: #2a2a30;
-  --card: #26262b;
-  --text-normal: #f4efe6;
-  --text-muted: #b9b4ac;
-  --text-faint: #75717a;
-  --edge: #4a4a52;
+  --background-primary: #000000;
+  --background-secondary: #0a0a0a;
+  --paper-2: #1a1a1a;
+  --card: #0f0f0f;
+  --text-normal: #ffffff;
+  --text-muted: #a6a6a6;
+  --text-faint: #6b6b6b;
+  --text-error: #ff6b6b;
+  --edge: #333333;
   --pop-color: #000000;
-  --brand-soft: rgba(255, 91, 58, 0.18);
-  --link-mark: rgba(197, 232, 178, 0.14);
-  --link-mark-hover: rgba(197, 232, 178, 0.26);
-  --selection: rgba(10, 132, 255, 0.42);
-  --background-modifier-border: #313136;
-  --background-modifier-border-hover: #3a3a40;
+  --brand: #ffffff;
+  --brand-hover: #e6e6e6;
+  --brand-ink: #000000;
+  --brand-soft: rgba(255, 255, 255, 0.12);
+  --sun: #ffffff;
+  --sun-ink: #000000;
+  --sky: #e6e6e6;
+  --lilac: #cccccc;
+  --peach: #b3b3b3;
+  --link-text: #ffd84d;
+  --link-mark: rgba(255, 216, 77, 0.12);
+  --link-mark-hover: rgba(255, 216, 77, 0.24);
+  --text-highlight-bg: rgba(255, 255, 255, 0.2);
+  --selection: rgba(255, 255, 255, 0.25);
+  --background-modifier-border: #262626;
+  --background-modifier-border-hover: #333333;
   --background-modifier-hover: rgba(255, 255, 255, 0.07);
-  --background-modifier-active: rgba(255, 255, 255, 0.11);
+  --background-modifier-active: rgba(255, 255, 255, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -609,6 +655,8 @@ Fraunces runs with `font-variation-settings: "SOFT" 100, "WONK" 0` on `body`.
 
 ## Similar Brands
 
+- **Cranoly:** the app Mono is forked from: the same notebook in colour (orange actions, Sun yellow, pastel tags and mint links).
+- **shadcn's liquid glass button:** the glass icons (`LiquidButton`).
 - **Tutora:** Cranoly's original brand, and the source of its look: warm paper, ink outlines, hard pop shadows, orange, and pastel chips.
 - **Slush (slush.app):** the source of the motion only: the spring curves, sliding selections, the press squish and the tumbling labels.
 - **Apple Notes:** the app layout: folders, a date-grouped list and a calm editor.

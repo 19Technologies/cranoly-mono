@@ -1,5 +1,5 @@
 {
-  "name": "cranoly",
+  "name": "cranoly-mono",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
     "apk": "npm run build:app && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@capacitor-community/text-to-speech": "^8.0.2",
     "@capacitor/android": "^8.5.2",
     "@capacitor/app": "^8.1.1",
@@ -24,6 +25,9 @@
     "@codemirror/view": "^6.43.13",
     "@lezer/highlight": "^1.2.4",
     "@lezer/markdown": "^1.7.2",
+    "@radix-ui/react-slot": "^1.4.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "fflate": "^0.8.3",
     "js-yaml": "^4.3.2",
     "lucide-react": "^1.47.0",
@@ -33,16 +37,19 @@
     "react-force-graph-2d": "^1.29.1",
     "react-markdown": "^10.1.0",
     "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.2",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }
 }

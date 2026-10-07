@@ -24,6 +24,7 @@ import AddWord from "./AddWord";
 import FormatSheet from "./FormatSheet";
 import ScanSheet from "./ScanSheet";
 import BringIn from "./BringIn";
+import PlusSheet from "./PlusSheet";
 import { startBackup } from "@/lib/backup";
 
 function Toasts() {
@@ -220,7 +221,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     }
   }, [ready, pathname, router]);
 
-  // The Cranoly folder: saved as you go (the phone's Documents › Cranoly, or a folder chosen on a laptop).
+  // The Cranoly Mono folder: saved as you go (the phone's Documents › Cranoly Mono, or a folder chosen on a laptop).
   useEffect(() => {
     if (ready) return startBackup((path) => router.push(path));
   }, [ready, router]);
@@ -271,6 +272,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <FormatSheet />
       <ScanSheet />
       <BringIn />
+      <PlusSheet />
       <WordSheet />
       <NewWordsSheet />
       <Toasts />

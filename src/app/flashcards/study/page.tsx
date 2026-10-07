@@ -3,9 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  ArrowLeft, ArrowRight, ArrowUpRight, Check, Repeat2, RotateCcw, Shuffle, Volume2, X,
-} from "lucide-react";
+import { ArrowUpRight, Check, Repeat2, RotateCcw, Shuffle, Volume2, X } from "lucide-react";
 import { languageOf } from "@/lib/languages";
 import { say } from "@/lib/smart";
 import { prepareSpeech, useVoiceWarmup } from "@/lib/voices";
@@ -25,6 +23,87 @@ const KIND_LABEL: Record<Card["kind"], string> = {
   cloze: "Fill the gap",
 };
 
+const short = (s: string) => s.replace(/[*_=`[\]]/g, "").length <= 42 && !s.includes("\n");
+
+/** One card, filling the screen: tap to flip, hear either side, open the note it came from. */
+function CardSlide({ card, reversed, flipped, onFlip, onOpen }: {
+  card: Card;
+  reversed: boolean;
+  flipped: boolean;
+  onFlip: () => void;
+  onOpen: () => void;
+}) {
+  const { notes, settings } = useVault();
+  const source = notes[card.noteId];
+  const front = reversed ? card.back : card.front;
+  const back = reversed ? card.front : card.back;
+  // Card fronts are in the language being learned, answers in your own (except fill-the-gap cards).
+  const learning = languageOf(cardLanguage(card, notes, settings));
+  const own = card.kind === "cloze" ? learning : languageOf(settings.native);
+  const frontLang = reversed ? own : learning;
+  const backLang = reversed ? learning : own;
+  return (
+    <div className="flip-wrap" onClick={(e) => !(e.target as HTMLElement).closest("button, a") && onFlip()}>
+      <div
+        className={`flip-card${flipped ? " is-flipped" : ""}`}
+        role="button"
+        tabIndex={-1}
+        aria-label={flipped ? "Answer shown. Tap to show the question" : "Tap to reveal the answer"}
+      >
+        <div className="face face-front">
+          <span className="face-kind">{reversed ? "Reversed" : KIND_LABEL[card.kind]}</span>
+          <button
+            className="face-say"
+            onPointerDown={() => prepareSpeech([front], frontLang.code, "now")}
+            onClick={() => say(front, frontLang)}
+            aria-label="Hear the question"
+            title="Hear it"
+          >
+            <Volume2 size={16} />
+          </button>
+          <div className={`face-content${short(front) ? " is-short" : ""}`}>
+            <MarkdownView content={front} interactive={false} />
+          </div>
+          <span className="face-hint">
+            <span className="hint-touch">Tap to flip · Swipe up for the next</span>
+            <span className="hint-keys">Click or press Space to flip · Scroll or ↓ for the next</span>
+          </span>
+        </div>
+        <div className="face face-back">
+          <span className="face-kind">Answer</span>
+          <button
+            className="face-say"
+            onPointerDown={() => prepareSpeech([back], backLang.code, "now")}
+            onClick={() => say(back, backLang)}
+            aria-label="Hear the answer"
+            title="Hear it"
+          >
+            <Volume2 size={16} />
+          </button>
+          {card.kind !== "cloze" && (
+            <div className="face-question">
+              <MarkdownView content={front} interactive={false} />
+            </div>
+          )}
+          <div className={`face-content${short(back) ? " is-short" : ""}`}>
+            <MarkdownView content={back} interactive={false} />
+          </div>
+          {source && (
+            <button className="face-source" onClick={onOpen} title="Open the note (O)">
+              {titleOf(source.path)} <ArrowUpRight size={12} />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A study session as a feed: one card per screen, swipe (or scroll) up for the next and down for the
+ * one before, tap to flip. Only the cards near the one on screen are drawn, so long decks stay quick.
+ * The last screen is the summary.
+ */
 function Session({ cards: initial, title, shuffle, startWithBack, limit }: {
   cards: Card[];
   title: string;
@@ -40,23 +119,21 @@ function Session({ cards: initial, title, shuffle, startWithBack, limit }: {
     return (shuffle ? shuffled(initial) : initial).slice(0, limit);
   });
   const [order, setOrder] = useState(() => (shuffle ? shuffled(cards) : cards));
+  // The screen in view: a card, or order.length for the summary at the end.
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [reversed, setReversed] = useState(startWithBack);
-  const [done, setDone] = useState<{ elapsed: number; seen: number } | null>(null);
-  const [dx, setDx] = useState(0);
-  const [bump, setBump] = useState<"next" | "prev" | null>(null);
+  // How the session went, worked out when the summary comes into view.
+  const [summary, setSummary] = useState({ elapsed: 0, revealed: 0 });
   const seen = useRef(new Set<string>());
   const started = useRef(0);
-  const drag = useRef<{ x: number; y: number } | null>(null);
+  const feed = useRef<HTMLDivElement>(null);
+  const atEnd = index >= order.length;
+  const card = atEnd ? undefined : order[index];
 
   useEffect(() => {
     started.current = Date.now();
   }, []);
-
-  const card = order[index];
-  const front = reversed ? card?.back : card?.front;
-  const back = reversed ? card?.front : card?.back;
 
   // Hearing a card should be instant: the voice loads with the session, and this card and the next
   // are prepared before you tap them.
@@ -82,29 +159,38 @@ function Session({ cards: initial, title, shuffle, startWithBack, limit }: {
     setFlipped(!flipped);
   }, [card, flipped]);
 
-  const move = useCallback(
-    (delta: 1 | -1) => {
-      if (delta === 1 && index === order.length - 1) {
-        haptic("success");
-        setDone({ elapsed: Date.now() - started.current, seen: seen.current.size });
-        return;
-      }
-      if (delta === -1 && index === 0) return;
-      setFlipped(false);
-      setBump(delta === 1 ? "next" : "prev");
-      setIndex((i) => i + delta);
+  /** Bring a screen into view (the swipe does this by itself; keys and buttons use it). */
+  const goTo = useCallback(
+    (i: number) => {
+      const el = feed.current;
+      if (!el) return;
+      el.scrollTo({ top: Math.max(0, Math.min(i, order.length)) * el.clientHeight, behavior: "smooth" });
     },
-    [index, order.length],
+    [order.length],
   );
+
+  // Which screen is in view follows the scroll.
+  const onScroll = () => {
+    const el = feed.current;
+    if (!el || !el.clientHeight) return;
+    const i = Math.round(el.scrollTop / el.clientHeight);
+    if (i === index) return;
+    setIndex(i);
+    setFlipped(false);
+    if (i >= order.length) {
+      haptic("success");
+      setSummary({ elapsed: Date.now() - started.current, revealed: seen.current.size });
+    } else haptic();
+  };
 
   const restart = useCallback(
     (mix: boolean) => {
       setOrder(mix ? shuffled(cards) : cards);
       setIndex(0);
       setFlipped(false);
-      setDone(null);
       seen.current = new Set();
       started.current = Date.now();
+      feed.current?.scrollTo({ top: 0 });
     },
     [cards],
   );
@@ -129,60 +215,25 @@ function Session({ cards: initial, title, shuffle, startWithBack, limit }: {
       const el = e.target as HTMLElement;
       if (el.closest("input, textarea")) return;
       const onButton = !!el.closest("button, a");
-      if ((e.key === " " || e.key === "Enter") && !onButton && !done) {
+      if ((e.key === " " || e.key === "Enter") && !onButton && !atEnd) {
         e.preventDefault();
         flip();
-      } else if (e.key === "ArrowRight" && !done) move(1);
-      else if (e.key === "ArrowLeft" && !done) move(-1);
-      else if (e.key === "s") restart(true);
-      else if (e.key === "r" && !done) setReversed((r) => !r);
-      else if (e.key === "o" && !done) openSource();
+      } else if (["ArrowDown", "ArrowRight", "PageDown", "j"].includes(e.key)) {
+        e.preventDefault();
+        goTo(index + 1);
+      } else if (["ArrowUp", "ArrowLeft", "PageUp", "k"].includes(e.key)) {
+        e.preventDefault();
+        goTo(index - 1);
+      } else if (e.key === "s") restart(true);
+      else if (e.key === "r" && !atEnd) setReversed((r) => !r);
+      else if (e.key === "o" && !atEnd) openSource();
       else if (e.key === "Escape") leave();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flip, move, restart, openSource, leave, done]);
+  }, [flip, goTo, index, restart, openSource, leave, atEnd]);
 
-  if (done) {
-    return (
-      <div className="study-done">
-        <div className="hero-art done-art" aria-hidden>
-          <span className="bubble b1">Super!</span>
-          <span className="bubble b2">Toll gemacht</span>
-          <span className="bubble b3">Weiter so!</span>
-          <span className="bubble b4">Prima!</span>
-        </div>
-        <div className="done-badge">
-          <Check size={34} strokeWidth={2.5} />
-        </div>
-        <h1>Deck complete</h1>
-        <p>
-          You went through <b>{order.length}</b> {order.length === 1 ? "card" : "cards"} in{" "}
-          <b>{formatDuration(done.elapsed)}</b>
-          {done.seen < order.length && <> and revealed {done.seen} answers</>}.
-        </p>
-        <div className="btn-row">
-          <button className="btn" onClick={() => restart(false)}>
-            <RotateCcw size={14} /> Study again
-          </button>
-          <button className="btn" onClick={() => restart(true)}>
-            <Shuffle size={14} /> Shuffle &amp; go again
-          </button>
-          <button className="btn btn-primary" onClick={leave}>
-            Done
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const source = notes[card.noteId];
-  // Card fronts are in the language being learned, answers in your own (except fill-the-gap cards).
-  const learning = languageOf(cardLanguage(card, notes, settings));
-  const own = card.kind === "cloze" ? learning : languageOf(settings.native);
-  const frontLang = reversed ? own : learning;
-  const backLang = reversed ? learning : own;
-  const short = (s: string) => s.replace(/[*_=`[\]]/g, "").length <= 42 && !s.includes("\n");
+  const progress = atEnd ? 1 : (index + (flipped ? 1 : 0.5)) / order.length;
 
   return (
     <div className="study">
@@ -193,129 +244,74 @@ function Session({ cards: initial, title, shuffle, startWithBack, limit }: {
         <div className="study-title">
           <span>{title}</span>
           <small>
-            {index + 1} / {order.length}
+            {Math.min(index + 1, order.length)} / {order.length}
           </small>
         </div>
         <div className="btn-row">
-          <button className="btn btn-ghost" onClick={() => restart(true)} title="Shuffle (S)">
+          <button className="btn btn-ghost" onClick={() => restart(true)} title="Shuffle (S)" aria-label="Shuffle">
             <Shuffle size={15} /> <span className="hide-sm">Shuffle</span>
           </button>
           <button
             className={`btn btn-ghost${reversed ? " is-on" : ""}`}
             onClick={() => setReversed((r) => !r)}
             aria-pressed={reversed}
+            aria-label="Answer first"
             title="Show the answer side first (R)"
           >
-            <Repeat2 size={15} /> <span className="hide-sm">Reverse</span>
+            <Repeat2 size={15} /> <span className="hide-sm">Answer first</span>
           </button>
         </div>
       </header>
       <div className="progress" aria-hidden>
-        <span style={{ width: `${((index + (flipped ? 1 : 0.5)) / order.length) * 100}%` }} />
+        <span style={{ width: `${progress * 100}%` }} />
       </div>
 
-      <div className="study-stage">
-        <div
-          key={card.id + String(reversed)}
-          className={`flip-wrap${bump ? ` enter-${bump}` : ""}`}
-          style={{ transform: dx ? `translateX(${dx}px) rotate(${dx / 28}deg)` : undefined, transition: dx ? "none" : undefined }}
-          onPointerDown={(e) => {
-            if ((e.target as HTMLElement).closest("button, a")) return;
-            drag.current = { x: e.clientX, y: e.clientY };
-            e.currentTarget.setPointerCapture(e.pointerId);
-          }}
-          onPointerMove={(e) => drag.current && setDx(e.clientX - drag.current.x)}
-          onPointerUp={(e) => {
-            if (!drag.current) return;
-            const d = e.clientX - drag.current.x;
-            const dy = e.clientY - drag.current.y;
-            drag.current = null;
-            setDx(0);
-            if (d < -70) move(1);
-            else if (d > 70) move(-1);
-            else if (Math.abs(d) < 8 && Math.abs(dy) < 8) flip();
-          }}
-          onPointerCancel={() => {
-            drag.current = null;
-            setDx(0);
-          }}
-        >
-          <div
-            className={`flip-card${flipped ? " is-flipped" : ""}`}
-            role="button"
-            tabIndex={0}
-            aria-label={flipped ? "Answer shown. Press Space to show the question" : "Press Space to reveal the answer"}
-          >
-            <div className="face face-front">
-              <span className="face-kind">{reversed ? "Reversed" : KIND_LABEL[card.kind]}</span>
-              <button
-                className="face-say"
-                onPointerDown={() => prepareSpeech([front], frontLang.code, "now")}
-                onClick={() => say(front, frontLang)}
-                aria-label="Hear the question"
-                title="Hear it"
-              >
-                <Volume2 size={16} />
-              </button>
-              <div className={`face-content${short(front) ? " is-short" : ""}`}>
-                <MarkdownView content={front} interactive={false} />
-              </div>
-              <span className="face-hint">
-                <span className="hint-touch">Tap to flip</span>
-                <span className="hint-keys">Tap or press Space to flip</span>
-              </span>
+      <div ref={feed} className="feed" onScroll={onScroll} aria-label="Cards">
+        {order.map((c, i) => (
+          <section key={`${c.id}|${reversed}`} className="feed-slide" aria-hidden={i !== index}>
+            {Math.abs(i - index) <= 2 && (
+              <CardSlide
+                card={c}
+                reversed={reversed}
+                flipped={i === index && flipped}
+                onFlip={() => i === index && flip()}
+                onOpen={openSource}
+              />
+            )}
+          </section>
+        ))}
+        <section className="feed-slide feed-end" aria-hidden={!atEnd}>
+          <div className="study-done">
+            <div className="done-badge">
+              <Check size={34} strokeWidth={2.5} />
             </div>
-            <div className="face face-back">
-              <span className="face-kind">Answer</span>
-              <button
-                className="face-say"
-                onPointerDown={() => prepareSpeech([back], backLang.code, "now")}
-                onClick={() => say(back, backLang)}
-                aria-label="Hear the answer"
-                title="Hear it"
-              >
-                <Volume2 size={16} />
+            <h1>Deck complete</h1>
+            <p>
+              You went through <b>{order.length}</b> {order.length === 1 ? "card" : "cards"}
+              {summary.elapsed > 0 && (
+                <>
+                  {" "}in <b>{formatDuration(summary.elapsed)}</b>
+                </>
+              )}
+              {summary.revealed < order.length && <> and revealed {summary.revealed} answers</>}.
+            </p>
+            <div className="btn-row">
+              <button className="btn" onClick={() => restart(false)}>
+                <RotateCcw size={14} /> Study again
               </button>
-              {card.kind !== "cloze" && (
-                <div className="face-question">
-                  <MarkdownView content={front} interactive={false} />
-                </div>
-              )}
-              <div className={`face-content${short(back) ? " is-short" : ""}`}>
-                <MarkdownView content={back} interactive={false} />
-              </div>
-              {source && (
-                <button className="face-source" onClick={openSource} title="Open the note (O)">
-                  {titleOf(source.path)} <ArrowUpRight size={12} />
-                </button>
-              )}
+              <button className="btn" onClick={() => restart(true)}>
+                <Shuffle size={14} /> Shuffle &amp; go again
+              </button>
+              <button className="btn btn-primary" onClick={leave}>
+                Done
+              </button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="study-controls">
-        <button className="btn btn-round" onClick={() => move(-1)} disabled={index === 0} aria-label="Previous card">
-          <ArrowLeft size={18} />
-        </button>
-        <button className="btn btn-primary btn-flip" onClick={flip}>
-          {flipped ? "Show question" : "Reveal answer"}
-        </button>
-        <button className="btn btn-round" onClick={() => move(1)} aria-label={index === order.length - 1 ? "Finish" : "Next card"}>
-          {index === order.length - 1 ? <Check size={18} /> : <ArrowRight size={18} />}
-        </button>
-      </div>
-      <div className="study-options">
-        <button className="chip" onClick={() => restart(true)}>
-          <Shuffle size={15} /> Shuffle
-        </button>
-        <button className={`chip${reversed ? " on" : ""}`} onClick={() => setReversed((r) => !r)} aria-pressed={reversed}>
-          <Repeat2 size={15} /> Answer first
-        </button>
+        </section>
       </div>
       <p className="study-keys">
-        <kbd>Space</kbd> flip <kbd>←</kbd><kbd>→</kbd> move <kbd>S</kbd> shuffle <kbd>R</kbd> reverse <kbd>O</kbd> open note{" "}
-        <kbd>Esc</kbd> exit
+        <kbd>Space</kbd> flip <kbd>↑</kbd><kbd>↓</kbd> move <kbd>S</kbd> shuffle <kbd>R</kbd> answer first <kbd>O</kbd> open
+        note <kbd>Esc</kbd> exit
       </p>
     </div>
   );

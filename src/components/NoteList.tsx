@@ -15,6 +15,7 @@ import { parseDay, useToday } from "@/lib/useToday";
 import { setUI } from "@/lib/ui";
 import { useSlider } from "@/lib/useSlider";
 import { haptic } from "@/lib/native";
+import { GlassIcon } from "./ui/glass-icon";
 
 const DAY = 86_400_000;
 
@@ -367,9 +368,9 @@ export default function NoteList({ variant }: { variant: "column" | "page" }) {
           </button>
         )}
         {variant === "page" && (
-          <button className="icon-btn nl-menu" aria-label="Menu" title="Folders, Mind Map, Practice and more" onClick={() => setUI({ mobileLeft: true })}>
-            <Menu size={21} />
-          </button>
+          <GlassIcon className="nl-menu" size={40} aria-label="Menu" title="Folders, Mind Map, Practice and more" onClick={() => setUI({ mobileLeft: true })}>
+            <Menu size={20} />
+          </GlassIcon>
         )}
         <div className="nl-name">
           <h1>{name}</h1>
@@ -381,12 +382,12 @@ export default function NoteList({ variant }: { variant: "column" | "page" }) {
         </div>
         {variant === "page" ? (
           <div className="nl-actions">
-            <button className="icon-btn" aria-label="More" onClick={() => setMore(true)}>
-              <MoreHorizontal size={21} />
-            </button>
-            <button className="icon-btn nl-compose" aria-label="New note" title="New note" onClick={compose}>
-              <SquarePen size={21} />
-            </button>
+            <GlassIcon size={40} aria-label="More" onClick={() => setMore(true)}>
+              <MoreHorizontal size={20} />
+            </GlassIcon>
+            <GlassIcon className="nl-compose" size={40} aria-label="New note" title="New note" onClick={compose}>
+              <SquarePen size={19} />
+            </GlassIcon>
           </div>
         ) : (
           <button className="icon-btn nl-compose" aria-label="New note" title="New note" onClick={compose}>

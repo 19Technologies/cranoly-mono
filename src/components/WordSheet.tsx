@@ -151,7 +151,7 @@ function Explain({ word, noteId }: { word: string; noteId: string | null }) {
         <Result key={current} word={current} lang={lang} noteId={noteId} onLookUp={setCurrent} />
       ) : (
         <div className="ws-empty">
-          <p>Online lookups are off, so Cranoly can’t ask Wiktionary what “{word}” means.</p>
+          <p>Online lookups are off, so Cranoly Mono can’t ask Wiktionary what “{word}” means.</p>
           <button className="btn" onClick={() => vault.updateSettings({ onlineLookups: true })}>
             Turn on online lookups
           </button>

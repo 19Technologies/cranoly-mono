@@ -128,8 +128,8 @@ function DemoStudy() {
         <div className="ob-face ob-back">Hello</div>
       </div>
       <div className="ob-keys">
-        <kbd>Space</kbd> flip <kbd>←</kbd>
-        <kbd>→</kbd> move <span className="ob-no-grade">No grading. Just flip through.</span>
+        <kbd>Space</kbd> flip <kbd>↑</kbd>
+        <kbd>↓</kbd> move <span className="ob-no-grade">No grading. Just scroll through.</span>
       </div>
     </div>
   );
@@ -225,7 +225,7 @@ function DemoShortcuts() {
   );
 }
 
-/** The Cranoly folder filling up as you write: each note a file, in its folder, and the backup file. */
+/** The Cranoly Mono folder filling up as you write: each note a file, in its folder, and the backup file. */
 function DemoFolder() {
   const rows: Array<[ReactNode, string, string]> = [
     [<Folder key="i" size={15} />, "German", "is-dir"],
@@ -233,12 +233,12 @@ function DemoFolder() {
     [<FileText key="i" size={14} />, "Lesson 13.md", "is-file"],
     [<Folder key="i" size={15} />, "Daily", "is-dir"],
     [<FileText key="i" size={14} />, `${isoDay(new Date())}.md`, "is-file"],
-    [<FileJson key="i" size={14} />, "Cranoly backup (Phone).json", "is-backup"],
+    [<FileJson key="i" size={14} />, "Cranoly Mono backup (Phone).json", "is-backup"],
   ];
   return (
     <div className="ob-demo ob-demo-folder" aria-hidden>
       <span className="ob-tree-root">
-        <FolderOpen size={16} /> Cranoly
+        <FolderOpen size={16} /> Cranoly Mono
       </span>
       <ul className="ob-tree">
         {rows.map(([icon, name, kind], i) => (
@@ -290,7 +290,7 @@ function DemoTheme() {
         </select>
       </label>
       <p className="ob-fine">
-        Tip: add Cranoly to your home screen from Settings → Install the app. It works offline.
+        Tip: add Cranoly Mono to your home screen from Settings → Install the app. It works offline.
       </p>
     </div>
   );
@@ -307,7 +307,7 @@ const STEPS: Step[] = [
   {
     eyebrow: "Welcome",
     title: "Notes that connect.",
-    body: "Cranoly is a notebook for learning languages. Your notes link together, and your flashcards live right inside them.",
+    body: "Cranoly Mono is a notebook for learning languages. Your notes link together, and your flashcards live right inside them.",
     demo: <DemoWelcome />,
   },
   {
@@ -346,8 +346,8 @@ const STEPS: Step[] = [
   },
   {
     eyebrow: "Step 4 · Study",
-    title: "Flip through your decks.",
-    body: "Open Practice and pick a deck. Tap or press Space to flip, swipe or use the arrows to move. Your study days fill the activity heatmap.",
+    title: "Scroll through your decks.",
+    body: "Open Practice and pick a deck. Cards scroll like a feed, one per screen: tap or press Space to flip, swipe up or press ↓ for the next. Your study days fill the activity heatmap.",
     demo: <DemoStudy />,
   },
   {
@@ -378,7 +378,7 @@ const STEPS: Step[] = [
     title: "Your notes are safe.",
     body: (
       <>
-        Everything you write is also saved in a folder called <b>Cranoly</b>: each note is its own file, in the same folders
+        Everything you write is also saved in a folder called <b>Cranoly Mono</b>: each note is its own file, in the same folders
         you see here. On a phone it&apos;s in Documents. On a laptop you choose where; pick Google Drive and it&apos;s online
         too. To use your notes on another device, share a copy from one and tap <b>Bring in changes</b> on the other. It&apos;s
         all in Settings › Backup and sync.
@@ -430,7 +430,7 @@ function Tour() {
   };
 
   return (
-    <div className="ob-layer" data-no-swipe role="dialog" aria-modal="true" aria-label="Learn Cranoly">
+    <div className="ob-layer" data-no-swipe role="dialog" aria-modal="true" aria-label="Learn Cranoly Mono">
       <div className="ob-backdrop" onClick={close} />
       <div className="ob-card">
         <div className="ob-top">

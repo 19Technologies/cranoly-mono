@@ -449,7 +449,6 @@ export default function SettingsPage() {
   return (
     <div className="page page-narrow">
       <header className="page-header">
-        <p className="eyebrow">Settings</p>
         <h1>Settings</h1>
       </header>
 

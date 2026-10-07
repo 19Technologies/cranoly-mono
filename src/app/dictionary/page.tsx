@@ -88,7 +88,6 @@ export default function DictionaryPage() {
   return (
     <div className="page page-narrow dict-page">
       <header className="page-header">
-        <p className="eyebrow">Your words</p>
         <div className="dict-title">
           <h1>Dictionary</h1>
           <button className="btn btn-primary" onClick={add}>
@@ -117,18 +116,17 @@ export default function DictionaryPage() {
       ) : (
         <>
           {daily && !query && (
-            <section className="dict-daily">
-              <h3>Word of the day</h3>
+            <section className="dict-daily" aria-label="Word of the day">
               <div className="dict-daily-row">
                 <button
                   className="dict-daily-card"
                   onClick={() => setRevealed((r) => !r)}
-                  aria-label={revealed ? "Hide the meaning" : "Show the meaning"}
+                  aria-label={revealed ? "Hide the meaning" : "Word of the day. Show the meaning"}
                 >
                   <b>
                     <Word entry={daily} />
                   </b>
-                  <span>{revealed ? daily.meanings.join(", ") : "Tap to see the meaning"}</span>
+                  <span>{revealed ? daily.meanings.join(", ") : "Word of the day. Tap to see the meaning."}</span>
                 </button>
                 <button className="icon-btn" onPointerDown={press(daily.word)} onClick={() => say(daily.word, lang)} aria-label={`Hear ${daily.word}`}>
                   <Volume2 size={19} />

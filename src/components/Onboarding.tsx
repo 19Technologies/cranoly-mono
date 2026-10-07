@@ -297,7 +297,6 @@ function DemoTheme() {
 }
 
 interface Step {
-  eyebrow: string;
   title: string;
   body: ReactNode;
   demo: ReactNode;
@@ -305,13 +304,11 @@ interface Step {
 
 const STEPS: Step[] = [
   {
-    eyebrow: "Welcome",
     title: "Notes that connect.",
     body: "Cranoly Mono is a notebook for learning languages. Your notes link together, and your flashcards live right inside them.",
     demo: <DemoWelcome />,
   },
   {
-    eyebrow: "Step 1 · Read and edit",
     title: "Read or edit.",
     body: (
       <>
@@ -323,7 +320,6 @@ const STEPS: Step[] = [
     demo: <DemoModes />,
   },
   {
-    eyebrow: "Step 2 · Links",
     title: "Link your ideas.",
     body: (
       <>
@@ -334,7 +330,6 @@ const STEPS: Step[] = [
     demo: <DemoLinks />,
   },
   {
-    eyebrow: "Step 3 · Flashcards",
     title: "Write cards as you write notes.",
     body: (
       <>
@@ -345,19 +340,16 @@ const STEPS: Step[] = [
     demo: <DemoCards />,
   },
   {
-    eyebrow: "Step 4 · Study",
     title: "Scroll through your decks.",
     body: "Open Practice and pick a deck. Cards scroll like a feed, one per screen: tap or press Space to flip, swipe up or press ↓ for the next. Your study days fill the activity heatmap.",
     demo: <DemoStudy />,
   },
   {
-    eyebrow: "Step 5 · Connections",
     title: "See how it all fits.",
     body: "The right sidebar shows which notes link to the one you're reading. The Mind Map draws all your notes as dots, joined by their links. Tap any dot to open that note.",
     demo: <DemoGraph />,
   },
   {
-    eyebrow: "Step 6 · Smart tools",
     title: "Your notebook helps you learn.",
     body: (
       <>
@@ -368,13 +360,11 @@ const STEPS: Step[] = [
     demo: <DemoSmart />,
   },
   {
-    eyebrow: "Step 7 · Speed",
     title: "Move fast.",
     body: "A few shortcuts and gestures get you anywhere in a second.",
     demo: <DemoShortcuts />,
   },
   {
-    eyebrow: "Step 8 · Backup and sync",
     title: "Your notes are safe.",
     body: (
       <>
@@ -387,7 +377,6 @@ const STEPS: Step[] = [
     demo: <DemoFolder />,
   },
   {
-    eyebrow: "Last step",
     title: "Make it yours.",
     body: "Pick a look and the language you’re learning. You can change both any time in Settings.",
     demo: <DemoTheme />,
@@ -445,7 +434,6 @@ function Tour() {
           </button>
         </div>
         <div className="ob-body" key={step}>
-          <p className="eyebrow">{s.eyebrow}</p>
           <h1 className="ob-title">{s.title}</h1>
           <p className="ob-text">{s.body}</p>
           {s.demo}

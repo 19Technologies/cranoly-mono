@@ -189,7 +189,6 @@ export default function FormattingPage() {
   return (
     <div className="page page-narrow fmt-page">
       <header className="page-header">
-        <p className="eyebrow">Help</p>
         <h1>Formatting guide</h1>
         <p className="page-lede">
           Notes use Markdown, a few symbols that turn into headings, lists and more. Type them yourself, or use the buttons

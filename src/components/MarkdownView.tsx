@@ -1,10 +1,9 @@
 "use client";
 
 import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
-import ReactMarkdown, { type Components } from "react-markdown";
+import ReactMarkdown, { type Components, type ExtraProps } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
-import type { Element, ElementContent } from "hast";
 import { usePathname, useRouter } from "next/navigation";
 import { remarkWiki } from "@/lib/remark-wiki";
 import { slugify, tintFor } from "@/lib/links";
@@ -22,10 +21,12 @@ interface Ctx {
 const MarkdownCtx = createContext<Ctx>({ interactive: true, depth: 0 });
 const TaskLineCtx = createContext<number | null>(null);
 
-function hastText(node: ElementContent | Element | undefined): string {
+type Element = NonNullable<ExtraProps["node"]>;
+
+function hastText(node: Element | Element["children"][number] | undefined): string {
   if (!node) return "";
   if (node.type === "text") return node.value;
-  if ("children" in node) return node.children.map((c) => hastText(c as ElementContent)).join("");
+  if ("children" in node) return node.children.map(hastText).join("");
   return "";
 }
 

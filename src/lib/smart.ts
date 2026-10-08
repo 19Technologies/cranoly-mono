@@ -30,7 +30,7 @@ export function withEditor(fn: (view: EditorView) => void) {
 }
 
 /** The selected text, or the word at the caret. */
-export function selectionOrWord(view: EditorView) {
+function selectionOrWord(view: EditorView) {
   const sel = view.state.selection.main;
   const range = sel.empty ? view.state.wordAt(sel.head) : sel;
   if (!range) return null;

@@ -43,7 +43,7 @@ const INLINE: Array<[RegExp, (match: string) => string]> = [
 ];
 
 /** Split a note into prose (checked) and markup (skipped), keeping every character in order. */
-export function annotate(text: string): Segment[] {
+function annotate(text: string): Segment[] {
   const out: Segment[] = [];
   const pushText = (t: string) => {
     if (!t) return;

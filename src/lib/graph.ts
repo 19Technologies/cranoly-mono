@@ -2,7 +2,7 @@
 import { Note, titleOf } from "./vault";
 import { VaultIndex } from "./links";
 
-export type NodeKind = "note" | "tag" | "ghost";
+type NodeKind = "note" | "tag" | "ghost";
 
 export interface GraphNode {
   id: string;
@@ -16,7 +16,7 @@ export interface GraphNode {
   y?: number;
 }
 
-export interface GraphLink {
+interface GraphLink {
   source: string | GraphNode;
   target: string | GraphNode;
   kind: "link" | "tag";

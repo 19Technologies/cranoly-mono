@@ -16,12 +16,3 @@ export const parseDay = (day: string) => {
   const [y, m, d] = day.split("-").map(Number);
   return new Date(y, m - 1, d);
 };
-
-function hourNow() {
-  return new Date().getHours();
-}
-
-/** The current hour (0 to 23), or null while rendering on the server. */
-export function useHour() {
-  return useSyncExternalStore(subscribe, hourNow, () => null);
-}

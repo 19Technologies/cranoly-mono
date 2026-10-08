@@ -2,7 +2,7 @@
 import { Note, titleOf } from "./vault";
 import { blankFrontmatter, propertyTags } from "./properties";
 
-export interface WikiRef {
+interface WikiRef {
   target: string;
   heading?: string;
   alias?: string;
@@ -53,7 +53,7 @@ export function stripCode(content: string) {
     .join("\n");
 }
 
-export function extractLinks(content: string): WikiRef[] {
+function extractLinks(content: string): WikiRef[] {
   const refs: WikiRef[] = [];
   stripCode(content)
     .split("\n")
@@ -66,7 +66,7 @@ export function extractLinks(content: string): WikiRef[] {
   return refs;
 }
 
-export function extractTags(content: string): string[] {
+function extractTags(content: string): string[] {
   // Tags listed in the properties block count too ("tags: [German, Class]").
   const tags = new Set<string>(propertyTags(content));
   const text = stripCode(blankFrontmatter(content)).replace(WIKI_RE, " ");
@@ -97,7 +97,7 @@ export function extractHeadings(content: string): Heading[] {
   return out;
 }
 
-export interface Backlink {
+interface Backlink {
   from: Note;
   snippet: string;
 }

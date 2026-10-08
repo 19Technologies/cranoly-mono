@@ -1,0 +1,467 @@
+/* ==========================================================================
+   Cranoly Mono: black and white. Links are yellow; progress is mint (the colour Cranoly's links use).
+   These override the colour tokens above for both themes. Red stays only for errors and deleting.
+   ========================================================================== */
+:root,
+:root[data-theme="paper"] {
+  color-scheme: light;
+  --brand: #000000;
+  --brand-hover: #1f1f1f;
+  --brand-ink: #ffffff;
+  --brand-soft: #ececec;
+  --sun: #000000;
+  --sun-ink: #ffffff;
+  --sky: #f2f2f2;
+  --lilac: #e6e6e6;
+  --peach: #d9d9d9;
+  --tint-ink: #000000;
+  --card: #ffffff;
+  --edge: #000000;
+  --pop-color: #000000;
+  --paper-2: #f2f2f2;
+  --progress: #c5e8b2;
+
+  --background-primary: #ffffff;
+  --background-primary-alt: #f5f5f5;
+  --background-secondary: #f5f5f5;
+  --background-modifier-hover: rgba(0, 0, 0, 0.05);
+  --background-modifier-active: rgba(0, 0, 0, 0.09);
+  --background-modifier-border: #e5e5e5;
+  --background-modifier-border-hover: #cfcfcf;
+  --background-modifier-border-focus: #a3a3a3;
+  --background-modifier-cover: rgba(0, 0, 0, 0.35);
+
+  --text-normal: #000000;
+  --text-muted: #4d4d4d;
+  --text-faint: #8c8c8c;
+  --text-error: #d32f2f;
+  /* Highlights (and ==cloze== words) are grey: yellow means a link. */
+  --text-highlight-bg: rgba(0, 0, 0, 0.12);
+
+  /* Links: a yellow highlighter under black text. */
+  --link: #000000;
+  --link-hover: #000000;
+  --link-text: #000000;
+  --link-mark: #ffd84d;
+  --link-mark-hover: #ffcc1a;
+  --link-underline: rgba(0, 0, 0, 0.45);
+
+  --accent: #000000;
+  --text-accent: #000000;
+  --text-on-accent: #ffffff;
+
+  --sep-bg: #ececec;
+  --sep-ink: #7a7a7a;
+
+  --tint-bg-sun: #f2f2f2;
+  --tint-bg-sky: #f5f5f5;
+  --tint-bg-lilac: #f0f0f0;
+  --tint-bg-aqua: #f2f2f2;
+  --tint-bg-rose: #f0f0f0;
+  --tint-bg-red: #f7e8e8;
+  --tint-bg-orange: #f2f2f2;
+  --heat-0: #ebebeb;
+  --heat-1: #c7c7c7;
+  --heat-2: #9e9e9e;
+  --heat-3: #616161;
+  --heat-4: #000000;
+  --selection: rgba(0, 0, 0, 0.14);
+  --focus-ring: rgba(0, 0, 0, 0.6);
+  --scrollbar: rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme="graphite"],
+[data-theme="graphite"] {
+  color-scheme: dark;
+  --brand: #ffffff;
+  --brand-hover: #e6e6e6;
+  --brand-ink: #000000;
+  --brand-soft: rgba(255, 255, 255, 0.12);
+  --sun: #ffffff;
+  --sun-ink: #000000;
+  --sky: #e6e6e6;
+  --lilac: #cccccc;
+  --peach: #b3b3b3;
+  --tint-ink: #000000;
+  --card: #0f0f0f;
+  --edge: #333333;
+  --pop-color: #000000;
+  --paper-2: #1a1a1a;
+  --progress: #c5e8b2;
+
+  --background-primary: #000000;
+  --background-primary-alt: #0a0a0a;
+  --background-secondary: #0a0a0a;
+  --background-modifier-hover: rgba(255, 255, 255, 0.07);
+  --background-modifier-active: rgba(255, 255, 255, 0.12);
+  --background-modifier-border: #262626;
+  --background-modifier-border-hover: #333333;
+  --background-modifier-border-focus: #4d4d4d;
+  --background-modifier-cover: rgba(0, 0, 0, 0.6);
+
+  --text-normal: #ffffff;
+  --text-muted: #a6a6a6;
+  --text-faint: #6b6b6b;
+  --text-error: #ff6b6b;
+  --text-highlight-bg: rgba(255, 255, 255, 0.2);
+
+  /* Links: yellow text with a faint yellow mark. */
+  --link: #ffd84d;
+  --link-hover: #ffe27a;
+  --link-text: #ffd84d;
+  --link-mark: rgba(255, 216, 77, 0.12);
+  --link-mark-hover: rgba(255, 216, 77, 0.24);
+  --link-underline: rgba(255, 216, 77, 0.45);
+
+  --accent: #ffffff;
+  --text-accent: #ffffff;
+  --text-on-accent: #000000;
+
+  --sep-bg: #1f1f1f;
+  --sep-ink: #8c8c8c;
+
+  --tint-bg-sun: rgba(255, 255, 255, 0.08);
+  --tint-bg-sky: rgba(255, 255, 255, 0.06);
+  --tint-bg-lilac: rgba(255, 255, 255, 0.06);
+  --tint-bg-aqua: rgba(255, 255, 255, 0.06);
+  --tint-bg-rose: rgba(255, 255, 255, 0.06);
+  --tint-bg-red: rgba(255, 107, 107, 0.12);
+  --tint-bg-orange: rgba(255, 255, 255, 0.06);
+  --heat-0: #1a1a1a;
+  --heat-1: #4d4d4d;
+  --heat-2: #808080;
+  --heat-3: #b3b3b3;
+  --heat-4: #ffffff;
+  --selection: rgba(255, 255, 255, 0.25);
+  --focus-ring: rgba(255, 255, 255, 0.6);
+  --scrollbar: rgba(255, 255, 255, 0.16);
+}
+
+/* The Mind Map: white and grey dots on black; the lines to a dot's linked notes turn mint, like progress. */
+:root {
+  /* GraphCanvas reads one per folder, by number (--mm-1 to --mm-8). */
+  --mm-0: #ffffff;
+  --mm-1: #f2f2f2;
+  --mm-2: #d9d9d9;
+  --mm-3: #bfbfbf;
+  --mm-4: #a6a6a6;
+  --mm-5: #e6e6e6;
+  --mm-6: #cccccc;
+  --mm-7: #b3b3b3;
+  --mm-8: #999999;
+  --mm-tag: #8c8c8c;
+  --mm-ghost: #4d4d4d;
+  --mm-focus: #ffffff;
+  --mm-line: rgba(255, 255, 255, 0.14);
+  --mm-hot: #c5e8b2;
+  --mm-label: #e6e6e6;
+  --mm-sky: #000000;
+  --mm-panel: #000000;
+}
+
+/* Callouts keep their icons; their colour is grey, like everything else. */
+:root [data-callout] {
+  --callout-color: 150, 150, 150;
+}
+
+/* Progress is mint. */
+.progress span,
+.ob-progress i,
+.wc-progress i {
+  background: var(--progress);
+}
+
+/* A switch that's on: a white track with a black knob in the dark, the other way round in the light. */
+.switch input:checked + .switch-track::after {
+  background: var(--brand-ink);
+}
+
+/* ==========================================================================
+   Glass icons (src/components/ui/liquid-glass-button.tsx): the bar and the round header buttons.
+   ========================================================================== */
+:root,
+:root[data-theme="paper"] {
+  --nav-bg: rgba(255, 255, 255, 0.88);
+}
+:root[data-theme="graphite"],
+[data-theme="graphite"] {
+  --nav-bg: rgba(12, 12, 12, 0.86);
+}
+.glass-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  padding: 0;
+  color: var(--text-normal);
+  border-radius: 999px;
+  transition:
+    color var(--dur-color) var(--ease-color),
+    opacity var(--dur-color) var(--ease-color),
+    scale var(--dur-press) var(--ease-elastic);
+}
+.glass-icon:active:not(:disabled) {
+  scale: 0.94;
+}
+.glass-icon:disabled {
+  opacity: 0.35;
+}
+/* The screen you're on: its icon sits on the disc that slides between Notes and Search. */
+.glass-icon.is-on {
+  color: var(--brand-ink);
+}
+
+@media (max-width: 820px) {
+  /* Five glass icons, the same gap between each. */
+  .mobile-nav {
+    gap: 10px;
+    height: 64px;
+    padding: 0 10px;
+    background: var(--nav-bg);
+    border: 1px solid var(--background-modifier-border-hover);
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .mobile-nav .glass-icon.mnav-add,
+  .mobile-nav .glass-icon.mnav-tab,
+  .mobile-nav .glass-icon.mnav-arrow {
+    margin: 0;
+    color: var(--text-normal);
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .mobile-nav .glass-icon.mnav-tab.is-on {
+    color: var(--brand-ink);
+  }
+  .mobile-nav.has-slider > .slider-pill {
+    background: var(--brand);
+    border-radius: 999px;
+  }
+  .nl-actions {
+    gap: 8px;
+  }
+}
+.mnav-arrow svg {
+  transition: translate 0.2s var(--ease-elastic, ease);
+}
+.mnav-arrow.is-back:active:not(:disabled) svg {
+  translate: -3px 0;
+}
+.mnav-arrow.is-forward:active:not(:disabled) svg {
+  translate: 3px 0;
+}
+
+/* The ＋ sheet: New note first and biggest, then Scan, then Paste a list. */
+.plus-list {
+  display: grid;
+  gap: 12px;
+  padding: 4px 0 8px;
+}
+.plus-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  text-align: left;
+  color: var(--text-normal);
+  background: var(--card);
+  border: 1.5px solid var(--background-modifier-border-hover);
+  border-radius: 18px;
+  transition: scale var(--dur-press) var(--ease-elastic);
+}
+.plus-item:active {
+  scale: 0.985;
+}
+.plus-item > svg {
+  flex: none;
+}
+.plus-item span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.plus-item b {
+  font-size: 17px;
+  font-weight: 650;
+}
+.plus-item small {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+.plus-item.is-main {
+  padding: 20px 16px;
+  color: var(--brand-ink);
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.plus-item.is-main small {
+  color: inherit;
+  opacity: 0.7;
+}
+/* ==========================================================================
+   Practice as a feed: one card per screen, swipe up for the next, down for the one before.
+   ========================================================================== */
+.feed {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+.feed::-webkit-scrollbar {
+  display: none;
+}
+.feed-slide {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 16px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.feed-slide .flip-wrap {
+  width: min(600px, 100%);
+  height: min(100%, 560px);
+}
+.feed-end .study-done {
+  margin: 0;
+}
+@media (max-width: 820px) {
+  .feed-slide .flip-wrap {
+    height: 100%;
+  }
+}
+/* The feed's header on phones: Close on the left, the deck and count in the middle, Shuffle and Answer
+   first as icons on the right, the three columns evenly balanced. */
+.study-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+.study-bar > :first-child {
+  justify-self: start;
+}
+.study-bar > .btn-row {
+  justify-self: end;
+}
+@media (max-width: 820px) {
+  .study-bar .btn-row {
+    display: flex;
+    gap: 4px;
+  }
+  .study-bar .btn-row .btn {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+/* Format with AI: the preview of Claude's reply before you keep it. */
+.ai-preview {
+  max-height: min(52vh, 460px);
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--card);
+  border: 1.5px solid var(--background-modifier-border-hover);
+  border-radius: 16px;
+}
+.ai-preview .markdown {
+  font-size: 15px;
+}
+
+/* ==========================================================================
+   Even spacing: 24px between a page's sections, 16px from a search box to its list, 8px between the
+   items in a row (chips, pills, buttons).
+   ========================================================================== */
+.card-panel {
+  margin-bottom: 24px;
+}
+.two-col {
+  gap: 24px;
+}
+.dict-daily {
+  margin-bottom: 24px;
+}
+.dict-search {
+  margin: 0 0 16px;
+}
+.lang-switch,
+.nl-chips,
+.format-tasks,
+.btn-row {
+  gap: 8px;
+}
+
+/* The toast's action (Undo): an outlined pill in the toast's own ink. Cranoly drew it in Sun, which is
+   black on the black toast here. */
+.toast-action,
+:root[data-theme="graphite"] .toast-action {
+  color: var(--text-on-accent);
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.toast-action:hover,
+:root[data-theme="graphite"] .toast-action:hover {
+  background: color-mix(in srgb, var(--text-on-accent) 16%, transparent);
+}
+
+/* The selection bar is ink, and so is Sun here, so a hovered button shows a wash of the bar's text
+   colour instead of a Sun fill. */
+.sel-bar button:hover {
+  color: var(--text-on-accent);
+  background: color-mix(in srgb, var(--text-on-accent) 18%, transparent);
+}
+
+/* Text on Sun is the page colour (--sun-ink). Cranoly's ink (--tint-ink) and its fixed dark greys are
+   black on black on a Sun surface here: the flashcard's answer side, the selected note, a chosen chip
+   or tile, the streak tile. */
+.face-back .markdown,
+.face-back .face-kind,
+.face-back .face-source {
+  color: var(--sun-ink);
+}
+.face-back .face-question .markdown {
+  color: color-mix(in srgb, var(--sun-ink) 60%, transparent);
+}
+.face-back .markdown mark {
+  color: var(--sun-ink);
+  background: linear-gradient(transparent 50%, color-mix(in srgb, var(--sun-ink) 28%, transparent) 50%);
+}
+.face-back .face-say {
+  color: var(--sun);
+  background: var(--sun-ink);
+}
+.nl-row.is-active .nl-preview,
+.nl-row.is-active .nl-meta {
+  color: var(--sun-ink);
+}
+.nl-chip.is-on,
+.nl-chips.has-slider .nl-chip.is-on {
+  color: var(--sun-ink);
+}
+.wc-lang.is-on span {
+  color: var(--sun-ink);
+}
+.wc-mini i {
+  color: inherit;
+}
+.stat span {
+  color: inherit;
+  opacity: 0.7;
+}
+/* The count beside the chosen sidebar row, readable on its highlight. */
+.sb-item.is-active small {
+  color: var(--text-muted);
+}
+/* The tour's word bubbles: Cranoly lightens their text in the dark, which on white and grey bubbles is
+   white on white here. */
+:root[data-theme="graphite"] .bubble.b1 {
+  color: var(--sun-ink);
+}
+:root[data-theme="graphite"] .bubble.b2,
+:root[data-theme="graphite"] .bubble.b3,
+:root[data-theme="graphite"] .bubble.b4 {
+  color: var(--tint-ink);
+}

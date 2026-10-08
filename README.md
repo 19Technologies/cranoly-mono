@@ -95,4 +95,5 @@ Built with Next.js 16 (App Router), React 19, `react-markdown` + `remark-gfm` + 
 | `src/components/` | App shell, sidebar, notes list, editor, markdown view, graph canvas, command palette, welcome, sheets (the ＋ sheet is `PlusSheet.tsx`) |
 | `src/components/ui/` | The glass button (`liquid-glass-button.tsx`) and `GlassIcon`, the round glass icon built on it |
 | `src/app/` | Routes: `/` (notes), `/notes`, `/search`, `/mind-map`, `/dictionary`, `/formatting`, `/flashcards`, `/flashcards/study`, `/settings`, plus `manifest.ts` and icons. `/home` and `/graph` redirect. |
+| `src/app/styles/` | The styles, by job (`01-base.css` to `17-flat.css`), loaded in that order by `globals.css`: a later file wins |
 | `public/sw.js` | Offline service worker (it leaves downloaded voices alone) |

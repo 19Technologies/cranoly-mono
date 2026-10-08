@@ -559,7 +559,7 @@ async function clipFor(text: string, lang: Language, when: "now" | "later"): Pro
 const isWarm = (code: string) => warmCode === code || loaded?.code === code;
 
 /** Load the engine and this language's voice in the background, so the first tap doesn't wait. */
-export function warmVoice(code: string) {
+function warmVoice(code: string) {
   const lang = languageOf(code);
   if (!lang.model || !voiceReady(code) || isWarm(code) || workerBroken) return;
   void inWorker("warm", lang).catch(() => {});
@@ -630,9 +630,6 @@ export async function speakNatural(text: string, code: string, onCold?: () => bo
   }
   play(await clipFor(text, lang, "now"));
 }
-
-/** For tests: whether a language's voice is loaded and ready to speak at once. */
-export const voiceWarm = isWarm;
 
 
 /** Total size of a download for these languages, in MB, counting the engine if it's still needed. */

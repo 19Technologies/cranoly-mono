@@ -4,8 +4,8 @@ import type { Incoming } from "./backup";
 import { useSyncExternalStore } from "react";
 import type { InstallPromptEvent } from "@/components/ServiceWorker";
 
-export type PaletteMode = "commands" | "notes" | null;
-export type SheetKind = "menu" | "tabs" | null;
+type PaletteMode = "commands" | "notes" | null;
+type SheetKind = "menu" | "tabs" | null;
 export type RightTab = "backlinks" | "outgoing" | "cards" | "outline" | "graph";
 
 export interface UIState {

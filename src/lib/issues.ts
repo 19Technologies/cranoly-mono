@@ -91,7 +91,7 @@ function tooltipFor(issue: Issue): Tooltip {
   return tip;
 }
 
-const issueField = StateField.define<Issue[]>({
+export const writingIssues = StateField.define<Issue[]>({
   create: () => [],
   update(issues, tr) {
     let next = issues;
@@ -124,5 +124,3 @@ const issueField = StateField.define<Issue[]>({
   ],
 });
 
-export const writingIssues = issueField;
-export const issueCount = (state: EditorState) => state.field(issueField, false)?.length ?? 0;

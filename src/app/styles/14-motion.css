@@ -1,0 +1,317 @@
+/* ==========================================================================
+   Motion (CRANOLY.md → Motion): presses squish, selections slide, checks pop,
+   main buttons' labels tumble. Curves and timings are the tokens in :root.
+   ========================================================================== */
+
+/* linear() springs need Chrome 113 / Safari 17.2; older engines get the nearest cubic-bezier. */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-glide: cubic-bezier(0.22, 1.12, 0.36, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.9, 0.64, 1);
+  }
+}
+
+/* Press: everything pressable squishes and springs back. */
+:is(.btn, .chip, .icon-btn, .tool, .sb-item, .nl-row, .nl-chip, .mnav-tab, .mnav-add, .mnav-arrow, .seg button, .side-tab, .lang-switch button,
+  .sheet-item, .dict-row, .dict-daily-card, .deck-row, .smart-deck, .wc-lang, .scan-btn, .tag, .learn-btn) {
+  transition:
+    scale var(--dur-press) var(--ease-elastic),
+    transform 0.12s var(--ease),
+    box-shadow 0.12s var(--ease),
+    background-color var(--dur-color) var(--ease-color),
+    color var(--dur-color) var(--ease-color),
+    border-color var(--dur-color) var(--ease-color);
+}
+:is(.btn, .chip, .icon-btn, .tool, .nl-chip, .mnav-tab, .mnav-add, .mnav-arrow, .seg button, .side-tab, .lang-switch button,
+  .dict-daily-card, .smart-deck, .wc-lang, .scan-btn, .tag, .learn-btn):active:not(:disabled) {
+  scale: 0.955;
+}
+/* Wide rows press less, so a whole row doesn't lurch. */
+:is(.sb-item, .nl-row, .sheet-item, .deck-row, .dict-row):active:not(:disabled) {
+  scale: 0.985;
+}
+
+/* Sliding selection (useSlider): one pill travels; the chosen item's text changes colour as it arrives. */
+:where(.has-slider) {
+  position: relative;
+}
+:where(.has-slider) > :where(:not(.slider-pill)) {
+  position: relative;
+  z-index: 1;
+}
+.slider-pill {
+  position: absolute;
+  z-index: 0;
+  top: var(--st, 0);
+  right: var(--sr, 0);
+  bottom: var(--sb, 0);
+  left: var(--sl, 0);
+  pointer-events: none;
+  transition:
+    left var(--s-dur, var(--dur-glide)) var(--se-l, var(--ease-glide)) var(--sd-l, 0ms),
+    right var(--s-dur, var(--dur-glide)) var(--se-r, var(--ease-glide)) var(--sd-r, 0ms),
+    top var(--s-dur, var(--dur-glide)) var(--se-t, var(--ease-glide)) var(--sd-t, 0ms),
+    bottom var(--s-dur, var(--dur-glide)) var(--se-b, var(--ease-glide)) var(--sd-b, 0ms),
+    opacity var(--dur-fade) var(--ease-color);
+}
+.has-slider[data-slider="set"] > .slider-pill {
+  transition: opacity var(--dur-fade) var(--ease-color);
+}
+.has-slider:not([data-slider="on"], [data-slider="set"]) > .slider-pill {
+  opacity: 0;
+  transition: none;
+}
+:is(.seg button, .side-tab, .lang-switch button, .nl-chip, .mnav-tab, .mnav-icon, .sb-item, .nl-row) {
+  transition:
+    scale var(--dur-press) var(--ease-elastic),
+    background-color var(--dur-color) var(--ease-color),
+    border-color var(--dur-color) var(--ease-color),
+    color var(--dur-fade) var(--ease-color) 60ms;
+}
+
+/* Each pill wears what the chosen item used to wear. */
+.seg.has-slider > .slider-pill,
+.side-tabs.has-slider > .slider-pill {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 1px 0 var(--background-modifier-border-hover), 0 2px 8px -4px rgba(0, 0, 0, 0.25);
+}
+.side-tabs.has-slider > .slider-pill {
+  border-radius: 9px;
+}
+.seg.has-slider button.is-on,
+.side-tabs.has-slider .side-tab.is-active {
+  background: transparent;
+  box-shadow: none;
+}
+.lang-switch.has-slider > .slider-pill,
+.nl-chips.has-slider > .slider-pill {
+  background: var(--sun);
+  color: var(--sun-ink);
+  border: 1.5px solid var(--edge);
+  border-radius: 999px;
+}
+.lang-switch.has-slider button.is-on,
+.nl-chips.has-slider .nl-chip.is-on {
+  background: transparent;
+  border-color: transparent;
+}
+.mobile-nav.has-slider > .slider-pill {
+  background: var(--brand);
+  border-radius: 999px;
+}
+.sb-group.has-slider > .slider-pill {
+  background: var(--background-modifier-active);
+  border-radius: 10px;
+}
+.sb-group.has-slider .sb-item.is-active {
+  background: transparent;
+}
+.nl-scroll.has-slider > .slider-pill {
+  background: var(--sun);
+  color: var(--sun-ink);
+  border-radius: 12px;
+}
+.nl-scroll.has-slider .nl-row.is-active {
+  background: transparent;
+}
+
+/* Pops: a check, a chosen chip, a tab's icon. */
+@keyframes pop-in {
+  from {
+    scale: 0;
+    rotate: -25deg;
+  }
+}
+@keyframes chip-on {
+  from {
+    scale: 0.92;
+  }
+}
+.wc-lang-check {
+  animation: pop-in var(--dur-pop) var(--ease-bounce);
+}
+.chip.on {
+  animation: chip-on var(--dur-pop) var(--ease-bounce);
+}
+
+/* Turns and nudges: ＋ and ⚙ rotate, arrows nudge, the logo spins, the theme icon swaps with a twist. */
+svg.lucide-plus,
+svg.lucide-settings,
+svg.lucide-arrow-right {
+  transition:
+    rotate var(--dur-press) var(--ease-elastic),
+    translate var(--dur-press) var(--ease-elastic);
+}
+.sb-brand > img {
+  transition: rotate var(--dur-long) var(--ease-elastic);
+}
+@media (hover: hover) {
+  :is(.icon-btn, .sb-item, .btn, .mnav-add):hover > svg.lucide-plus,
+  :is(.icon-btn, .sb-item):hover > svg.lucide-settings {
+    rotate: 90deg;
+  }
+  :is(.btn, .deck-row):hover svg.lucide-arrow-right {
+    translate: 3px 0;
+  }
+  .sb-brand:hover > img {
+    rotate: 360deg;
+  }
+}
+.mnav-add:active > svg.lucide-plus {
+  rotate: 90deg;
+}
+@keyframes theme-swap {
+  from {
+    opacity: 0;
+    rotate: -120deg;
+    scale: 0.6;
+  }
+}
+.theme-toggle > svg {
+  animation: theme-swap var(--dur-default) var(--ease-elastic);
+}
+
+/* Tumble: a main button's label rolls over like a cube face (slush.app's button, label only). */
+.tumble {
+  display: inline-grid;
+  gap: inherit;
+}
+.tumble-front {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:has(> .tumble) {
+    overflow: hidden;
+  }
+  .tumble-front,
+  .tumble::after {
+    transition:
+      translate var(--dur-medium) var(--ease-elastic),
+      rotate var(--dur-default) var(--ease-elastic),
+      opacity var(--dur-fade) ease-out;
+  }
+  .tumble::after {
+    content: attr(data-label) / "";
+    grid-area: 1 / 1;
+    align-self: center;
+    justify-self: center;
+    opacity: 0;
+  }
+  :is(.btn:hover:not(:disabled), .btn:focus-visible) > .tumble > .tumble-front {
+    opacity: 0;
+  }
+  :is(.btn:hover:not(:disabled), .btn:focus-visible) > .tumble::after {
+    opacity: 1;
+    translate: 0 0 0;
+    transition:
+      translate var(--dur-medium) var(--ease-elastic),
+      rotate var(--dur-default) var(--ease-elastic),
+      opacity 75ms ease-in;
+  }
+}
+
+/* Arrivals: sheets rise, dialogs and menus spring from where they open, toasts spring up. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    scale: 0.94;
+  }
+}
+@keyframes item-in {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+    scale: 0.96;
+  }
+}
+@keyframes sel-in {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+}
+.sheet-backdrop {
+  animation: fade-in var(--dur-fade) var(--ease-color);
+}
+.sheet {
+  animation: dialog-in var(--dur-press) var(--ease-elastic);
+}
+@media (max-width: 820px) {
+  .sheet {
+    animation: sheet-in var(--dur-sheet) var(--ease-sheet);
+  }
+}
+.menu {
+  transform-origin: top left;
+  animation: menu-in var(--dur-press) var(--ease-elastic);
+}
+.menu .sheet-list > * {
+  animation: item-in 320ms var(--ease-out) both;
+}
+.menu .sheet-list > :nth-child(2) { animation-delay: 12ms; }
+.menu .sheet-list > :nth-child(3) { animation-delay: 24ms; }
+.menu .sheet-list > :nth-child(4) { animation-delay: 36ms; }
+.menu .sheet-list > :nth-child(5) { animation-delay: 48ms; }
+.menu .sheet-list > :nth-child(6) { animation-delay: 60ms; }
+.menu .sheet-list > :nth-child(7) { animation-delay: 72ms; }
+.menu .sheet-list > :nth-child(8) { animation-delay: 84ms; }
+.menu .sheet-list > :nth-child(9) { animation-delay: 96ms; }
+.menu .sheet-list > :nth-child(n + 10) { animation-delay: 108ms; }
+.toast {
+  animation: toast-in var(--dur-press) var(--ease-elastic);
+}
+.sel-bar {
+  transform-origin: 50% 100%;
+  animation: sel-in var(--dur-press) var(--ease-elastic);
+}
+
+/* The flashcard flips on the gentle spring, so it settles like a real card. */
+.flip-card,
+.wc-face {
+  transition: transform var(--dur-medium) var(--ease-glide);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-delay: 0s !important;
+    animation-delay: 0s !important;
+  }
+  .tumble::after {
+    display: none;
+  }
+  .tumble-front {
+    opacity: 1 !important;
+    translate: none !important;
+    rotate: none !important;
+  }
+  /* The tour's folder demo just shows the files. */
+  .ob-tree-row {
+    animation: none !important;
+    opacity: 1;
+  }
+}

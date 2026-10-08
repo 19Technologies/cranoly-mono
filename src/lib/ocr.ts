@@ -167,7 +167,7 @@ function paragraph(lines: Line[]) {
  * - columns of short lines side by side (a word list, a table) are read across, row by row: "Hund = dog";
  * - prose is joined back into paragraphs, a list keeps its lines.
  */
-export function assemble(blocks: ScanBlock[], width: number) {
+function assemble(blocks: ScanBlock[], width: number) {
   const all = blocks
     .map((b): Block => {
       const paragraphs = b.paragraphs

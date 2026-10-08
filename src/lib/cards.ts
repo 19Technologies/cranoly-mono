@@ -7,7 +7,7 @@ import { Note, folderOf, titleOf } from "./vault";
 import { stripCode } from "./links";
 import { blankFrontmatter } from "./properties";
 
-export type CardKind = "basic" | "reversed" | "multiline" | "cloze";
+type CardKind = "basic" | "reversed" | "multiline" | "cloze";
 
 export interface Card {
   id: string;
@@ -41,13 +41,13 @@ const CLOZE = /==([^=\n]+)==/g;
 const QUESTION = /^\s*\?{1,2}\s*$/;
 const HEADING = /^\s*#{1,6}\s/;
 
-export function deckFor(note: Note, tags: string[]) {
+function deckFor(note: Note, tags: string[]) {
   const tagged = tags.find((t) => t.startsWith("flashcards/"));
   if (tagged) return tagged.slice("flashcards/".length);
   return folderOf(note.path) || titleOf(note.path);
 }
 
-export function extractCards(note: Note, tags: string[]): Card[] {
+function extractCards(note: Note, tags: string[]): Card[] {
   const deck = deckFor(note, tags);
   const lines = note.content.split("\n");
   // The properties block at the top never holds cards ("title: Hold On" is not a word and its meaning).

@@ -82,7 +82,7 @@ export function fromRecentNotes(cards: Card[], notes: Record<string, Note>, toda
  * The language a note is in, when where it lives says so: its words note ("Spanish words"), or a top-level folder
  * named after the language ("German/Greetings"). Other notes don't belong to one language.
  */
-export function noteLanguage(path: string | undefined, settings: Settings) {
+function noteLanguage(path: string | undefined, settings: Settings) {
   if (!path) return null;
   const slash = path.indexOf("/");
   const top = slash === -1 ? null : path.slice(0, slash).toLowerCase();

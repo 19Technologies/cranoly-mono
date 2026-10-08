@@ -29,7 +29,7 @@ const phoneCan = (tag: string) => {
   return phoneLanguages.some((l) => l === t || l.slice(0, 2) === t.slice(0, 2));
 };
 
-export const canSpeak = () => isApp() || (typeof window !== "undefined" && "speechSynthesis" in window);
+const canSpeak = () => isApp() || (typeof window !== "undefined" && "speechSynthesis" in window);
 
 function voiceFor(tag: string) {
   const voices = speechSynthesis.getVoices();

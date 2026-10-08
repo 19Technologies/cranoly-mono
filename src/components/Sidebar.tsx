@@ -40,7 +40,7 @@ function FolderName({ path, onDone }: { path: string; onDone: () => void }) {
   );
 }
 
-export function ThemeToggle({ className = "icon-btn" }: { className?: string }) {
+function ThemeToggle({ className = "icon-btn" }: { className?: string }) {
   const { settings } = useVault();
   const dark =
     settings.theme === "graphite" ||

@@ -2,12 +2,12 @@
 // Only the looked-up word is sent, and only when the user asks for it.
 import type { Language } from "./languages";
 
-export interface Sense {
+interface Sense {
   text: string;
   example?: { text: string; translation?: string };
 }
 
-export interface Entry {
+interface Entry {
   partOfSpeech: string;
   senses: Sense[];
   /** For inflected forms ("ging"), the dictionary form ("gehen"). */

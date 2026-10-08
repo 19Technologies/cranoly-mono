@@ -16,7 +16,7 @@ export interface Note {
 }
 
 export type ViewMode = "read" | "edit" | "split";
-export type Theme = "paper" | "graphite" | "system";
+type Theme = "paper" | "graphite" | "system";
 
 export interface Settings {
   theme: Theme;
@@ -38,7 +38,7 @@ export interface Settings {
 }
 
 
-export interface Workspace {
+interface Workspace {
   tabs: string[];
   active: string | null;
   history: string[];
@@ -74,7 +74,7 @@ export const STORAGE_KEY = "cranoly-vault";
 // Earlier names of the app, newest first. Their vaults move to STORAGE_KEY on first load.
 const OLDER_KEYS = ["green-graphite-vault", "kurzbite-vault-v2"];
 
-export const DEFAULT_SETTINGS: Settings = {
+const DEFAULT_SETTINGS: Settings = {
   theme: "graphite",
   shuffle: false,
   startWithBack: false,

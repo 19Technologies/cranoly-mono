@@ -20,7 +20,7 @@ export interface Entry {
 }
 
 /** Lower case, without accents: "Café" and "cafe" match. */
-export const fold = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+const fold = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 
 /** A card front that is a word or a short phrase, not a question or a sentence. */
 function isWord(front: string) {

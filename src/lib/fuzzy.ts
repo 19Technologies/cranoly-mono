@@ -5,7 +5,7 @@ export interface FuzzyHit {
   indices: number[];
 }
 
-export function fuzzy(query: string, text: string): FuzzyHit | null {
+function fuzzy(query: string, text: string): FuzzyHit | null {
   const q = query.toLowerCase().replace(/\s+/g, "");
   if (!q) return { score: 0, indices: [] };
   const t = text.toLowerCase();

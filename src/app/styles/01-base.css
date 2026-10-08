@@ -1,0 +1,352 @@
+/* ==========================================================================
+   Cranoly: a notebook for learning languages, with flashcards inside the notes.
+   Green (#C5E8B2) appears only on links; icon groups are liquid-glass pills.
+   ========================================================================== */
+
+/* Graphite also applies inside anything marked data-theme="graphite": the Mind Map stays dark in Paper. */
+
+:root {
+  /* Mind Map: always dark, whatever the theme. Saturated dots (a colour per top-level folder) on a flat,
+     near-black background: no stars, no glow. */
+
+  --font-heading: var(--font-display), ui-serif, Georgia, serif;
+
+  /* Motion (CRANOLY.md → Motion). Elastic, Bounce, Snap and Color are slush.app's own curves. */
+  --ease-elastic: linear(0, 0.5737 7.6%, 0.8382 11.87%, 0.9463 14.19%, 1.0292 16.54%, 1.0886 18.97%, 1.1258 21.53%, 1.137 22.97%, 1.1424 24.48%, 1.1423 26.1%, 1.1366 27.86%, 1.1165 31.01%, 1.0507 38.62%, 1.0219 42.57%, 0.9995 46.99%, 0.9872 51.63%, 0.9842 58.77%, 1.0011 81.26%, 1);
+  --ease-glide: linear(0, 0.3336 3%, 0.6 6%, 0.7936 9%, 0.922 12%, 0.9987 15%, 1.0449 19%, 1.0522 24%, 1.0342 30%, 1.0128 37%, 1.0011 45%, 0.9985 55%, 0.9996 68%, 1);
+  --ease-bounce: linear(0, 1.3, 1, 0.92, 1, 0.99, 1, 1.004, 0.998, 1);
+  --ease-snap: cubic-bezier(0.65, 0.05, 0, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-color: cubic-bezier(0.216, 0.62, 0.356, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-fade: 150ms;
+  --dur-color: 200ms;
+  --dur-pop: 420ms;
+  --dur-glide: 460ms;
+  --dur-press: 500ms;
+  --dur-sheet: 520ms;
+  --dur-default: 750ms;
+  --dur-medium: 850ms;
+  --dur-long: 1000ms;
+  --ease: var(--ease-out);
+
+  --font-text: var(--font-ui), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-monospace: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-text-size: 16px;
+  --font-ui-smaller: 12px;
+  --font-ui-small: 13px;
+  --font-ui-medium: 15px;
+
+  --radius-s: 4px;
+  --radius-l: 12px;
+  --right-w: 300px;
+  --header-h: 40px;
+  --line-width: 700px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-family: var(--font-text);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  /* Fraunces at its softest: rounder, friendlier letters (other fonts ignore the axis). */
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+}
+body {
+  overflow: hidden;
+}
+/* Selected text: the familiar system blue, in both themes. */
+::selection {
+  background: var(--selection);
+}
+@layer base {
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+  }
+}
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+  border-radius: var(--radius-s);
+}
+code,
+kbd,
+pre {
+  font-family: var(--font-monospace);
+}
+kbd {
+  display: inline-block;
+  padding: 0 5px;
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+.only-mobile-flex {
+  display: none !important;
+}
+.only-wide-flex {
+  display: contents;
+}
+
+/* ==========================================================================
+   Workspace shell
+   ========================================================================== */
+
+/* Side docks */
+.sidebar-left,
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--background-secondary);
+}
+.shell[data-left="closed"] .sidebar-left {
+  border-right: 0;
+}
+.right-panel {
+  border-left: 1px solid var(--background-modifier-border);
+}
+.shell[data-right="closed"] .right-panel {
+  border-left: 0;
+}
+.side-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  height: var(--header-h);
+  padding: 0 8px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.side-tabs-bar {
+  min-width: var(--right-w);
+}
+.side-tabs {
+  display: flex;
+  gap: 2px;
+}
+.side-tab {
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+}
+.side-tab:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+.side-tab.is-active {
+  color: var(--text-normal);
+  background: var(--background-modifier-active);
+}
+.drawer-scrim {
+  display: none;
+}
+
+/* Main column: tab bar + view */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--background-primary);
+}
+.view {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  position: relative;
+}
+.boot {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--text-faint);
+}
+.tabs {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 1 200px;
+  min-width: 80px;
+  margin-bottom: -1px;
+  font-size: var(--font-ui-small);
+  border-bottom: 0;
+  cursor: default;
+}
+.tab:not(.is-active) + .tab:not(.is-active)::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 9px;
+  bottom: 9px;
+  width: 1px;
+  background: var(--background-modifier-border);
+}
+
+/* ==========================================================================
+   Controls
+   ========================================================================== */
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  color: var(--text-muted);
+}
+.icon-btn:hover:not(:disabled) {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+.icon-btn.is-on {
+  color: var(--text-normal);
+}
+.icon-btn:disabled {
+  color: var(--text-faint);
+  opacity: 0.6;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.5;
+}
+.btn-ghost {
+  box-shadow: none;
+  color: var(--text-muted);
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--text-normal);
+}
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.link-btn {
+  color: var(--text-accent);
+}
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* Toggle switch */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.switch-track {
+  position: relative;
+  flex: none;
+  transition: background-color var(--dur-color) var(--ease-color);
+}
+/* The knob springs across and stretches while held (CRANOLY.md → Motion → Switch). */
+.switch-track::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  transform-origin: left center;
+  transition:
+    translate var(--dur-press) var(--ease-elastic),
+    scale var(--dur-press) var(--ease-elastic),
+    background-color var(--dur-color) var(--ease-color);
+}
+.switch input:checked + .switch-track::after {
+  translate: 18px 0;
+  transform-origin: right center;
+}
+.switch:active .switch-track::after {
+  scale: 1.3 1;
+}
+.switch input:focus-visible + .switch-track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-faint);
+}
+.search-box input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font-size: var(--font-ui-small);
+  color: var(--text-normal);
+  background: none;
+  border: 0;
+  outline: 0;
+}
+.search-box input::placeholder {
+  color: var(--text-faint);
+}

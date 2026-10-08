@@ -228,7 +228,7 @@ export const inFolder = (path: string, folder: string) => {
 };
 
 /** Where words added with ＋ go, unless you pick another note. */
-export const WORDS_NOTE = "My words";
+const WORDS_NOTE = "My words";
 
 /** "My words", or one note per language ("Spanish words") once you learn more than one. */
 export function wordsNoteTitle(settings: Settings = state.settings) {

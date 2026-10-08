@@ -1,0 +1,150 @@
+/* ==========================================================================
+   Flat: nothing casts a shadow, rises off the page or turns in 3D. Edges and fills do the work.
+   Rings (a shadow with no offset and no blur, like the focus ring) stay: they're flat outlines.
+   ========================================================================== */
+:root {
+  --pop: none;
+  --pop-sm: none;
+  --pop-lg: none;
+  --shadow-s: none;
+  --shadow-l: none;
+}
+.suggest,
+.bubble,
+.face,
+.answer,
+.learn-btn,
+.ob-card,
+.ob-face,
+.ob-suggest,
+.ob-definition,
+.wc-front,
+.wc-mini,
+.wc-card.is-flipped .wc-back,
+.editor .cm-tooltip.cm-issue-tip,
+.btn:active:not(:disabled),
+a.tag:hover,
+button.tag:hover,
+.mnav-add:active,
+.wc-lang:active,
+.scan-btn:active {
+  box-shadow: none;
+}
+/* The segmented control's chosen card (the theme picker, the side panel's tabs) stood out only by its soft
+   shadow, which in black left nothing to see. Flat, it gets an ink ring instead. */
+.seg button.is-on,
+.side-tab.is-active,
+.seg.has-slider > .slider-pill,
+.side-tabs.has-slider > .slider-pill {
+  box-shadow: inset 0 0 0 1.5px var(--edge);
+}
+/* No lifting on hover or sinking on press; pressing still squishes (scale), which is flat. */
+.btn:hover:not(:disabled),
+.btn:active:not(:disabled),
+a.tag:hover,
+button.tag:hover,
+.deck-row:hover,
+a.smart-deck:hover,
+.learn-btn:hover,
+.learn-btn:active,
+.mnav-add:active,
+.wc-lang:active,
+.scan-btn:active {
+  transform: none;
+}
+
+/* Glass, flat: a see-through fill and a thin edge (src/components/ui/liquid-glass-button.tsx). */
+:root,
+:root[data-theme="paper"] {
+  --glass-fill: rgba(0, 0, 0, 0.05);
+  --glass-edge: rgba(0, 0, 0, 0.14);
+}
+:root[data-theme="graphite"],
+[data-theme="graphite"] {
+  --glass-fill: rgba(255, 255, 255, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.18);
+}
+/* The bar is frosted already, so its icons don't blur again; the one on the sliding disc lets the disc
+   show cleanly. */
+.mobile-nav .glass-layer {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.glass-icon.is-on .glass-layer {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Flashcards flip flat: the side you see narrows to a line, then the other side opens out. */
+.flip-wrap,
+.wc-card,
+.ob-flip {
+  perspective: none;
+}
+.flip-card {
+  transform-style: flat;
+  transition: none;
+}
+.flip-card.is-flipped,
+.face-back,
+.wc-face,
+.wc-back,
+.wc-card.is-flipped .wc-front,
+.wc-card.is-flipped .wc-back {
+  transform: none;
+}
+.face,
+.wc-face,
+.ob-face {
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+}
+.face-front,
+.flip-card.is-flipped .face-back,
+.wc-front,
+.wc-card.is-flipped .wc-back {
+  scale: 1 1;
+  visibility: visible;
+  transition:
+    scale 0.2s var(--ease-elastic) 0.14s,
+    visibility 0s linear 0.14s;
+}
+.face-back,
+.flip-card.is-flipped .face-front,
+.wc-back,
+.wc-card.is-flipped .wc-front {
+  scale: 0 1;
+  visibility: hidden;
+  transition:
+    scale 0.14s cubic-bezier(0.5, 0, 1, 1),
+    visibility 0s linear 0.14s;
+}
+/* The tour's demo card turns the same way, on a loop. */
+@keyframes ob-flip {
+  0%, 40% { transform: scaleX(1); }
+  45%, 95% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+@keyframes ob-flip-back {
+  0%, 45% { transform: scaleX(0); }
+  50%, 90% { transform: scaleX(1); }
+  95%, 100% { transform: scaleX(0); }
+}
+/* A button's label slides up on hover (laptop) instead of rolling over in 3D. */
+@media (hover: hover) and (pointer: fine) {
+  .tumble {
+    perspective: none;
+    transform-style: flat;
+  }
+  .tumble::after {
+    translate: 0 0.95em;
+    rotate: none;
+  }
+  :is(.btn:hover:not(:disabled), .btn:focus-visible) > .tumble > .tumble-front {
+    translate: 0 -0.95em;
+    rotate: none;
+  }
+  :is(.btn:hover:not(:disabled), .btn:focus-visible) > .tumble::after {
+    rotate: none;
+  }
+}

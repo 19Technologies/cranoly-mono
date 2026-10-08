@@ -60,7 +60,7 @@ if (typeof window !== "undefined") {
 /** A screen's path as the trail keeps it: "/" stands for whichever note is open, other screens keep their query. */
 export const placePath = (pathname: string, search: string) => (pathname === "/" ? "/" : pathname + search);
 
-export const samePlace = (a: Place, b: Place) =>
+const samePlace = (a: Place, b: Place) =>
   a.path === b.path && (a.path !== "/" || (a.note ?? null) === (b.note ?? null)) && (a.path !== "/notes" || (a.folder ?? "") === (b.folder ?? ""));
 
 /** Ignore every place until `path` shows up (used while the phone's start page redirects). */
@@ -137,9 +137,4 @@ export function useTrail() {
     () => version,
     () => -1,
   );
-}
-
-/** For tests and debugging. */
-export function trailState() {
-  return { places, at };
 }

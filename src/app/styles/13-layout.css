@@ -1,0 +1,619 @@
+/* ==========================================================================
+   Apple Notes layout: folders · notes list · note. No tabs, no browser chrome.
+   ========================================================================== */
+:root {
+  --left-w: 236px;
+  --list-w: 320px;
+}
+.shell {
+  --col-left: var(--left-w);
+  --col-list: var(--list-w);
+  --col-right: var(--right-w);
+  display: grid;
+  grid-template-columns: var(--col-left) var(--col-list) minmax(0, 1fr) var(--col-right);
+  grid-template-rows: minmax(0, 1fr);
+  height: 100dvh;
+}
+.shell[data-left="closed"] {
+  --col-left: 0px;
+}
+.shell[data-list="hidden"] {
+  --col-list: 0px;
+}
+.shell[data-right="closed"] {
+  --col-right: 0px;
+}
+.sidebar-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+.list-col {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--background-primary);
+  border-right: 1px solid var(--background-modifier-border);
+}
+.main {
+  grid-column: 3;
+  grid-row: 1;
+}
+.right-panel {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+/* Sidebar: places and folders */
+.sidebar-left {
+  border-right: 1px solid var(--background-modifier-border);
+}
+.sb-head,
+.sb-body,
+.sb-foot {
+  min-width: var(--left-w);
+}
+.sb-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 54px;
+  padding: 0 10px 0 16px;
+}
+.sb-head .icon-btn {
+  width: 32px;
+  height: 32px;
+  color: var(--text-muted);
+}
+.sb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-normal);
+  text-decoration: none;
+}
+.sb-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 8px 12px;
+}
+.sb-group {
+  display: grid;
+  gap: 1px;
+}
+/* The places (Mind Map, Practice…) come after the folders, set apart by a hairline. */
+.sb-body > nav.sb-group {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+.sb-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 2px 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.sb-label .icon-btn {
+  width: 26px;
+  height: 26px;
+  color: var(--text-muted);
+}
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 14.5px;
+  font-weight: 550;
+  text-align: left;
+  text-decoration: none;
+  color: var(--text-normal);
+  border-radius: 10px;
+}
+.sb-item svg {
+  flex: none;
+  color: var(--text-muted);
+}
+.sb-item span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-item small {
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+.sb-item:hover {
+  background: var(--background-modifier-hover);
+}
+.sb-item.is-active {
+  font-weight: 700;
+  background: var(--background-modifier-active);
+}
+.sb-item.is-active svg {
+  color: var(--text-normal);
+}
+.sb-item.is-drop {
+  outline: 2px dashed var(--edge);
+  outline-offset: -2px;
+}
+.sb-input {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 6px;
+  font: inherit;
+  color: var(--text-normal);
+  background: var(--card);
+  border: 1.5px solid var(--edge);
+  border-radius: 7px;
+  outline: none;
+}
+.sb-foot {
+  display: grid;
+  flex: none;
+  gap: 1px;
+  padding: 8px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+.sb-foot-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sb-foot-row .icon-btn {
+  width: 34px;
+  height: 34px;
+  color: var(--text-muted);
+}
+
+/* Notes list */
+.nl {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.nl-column {
+  min-width: var(--list-w);
+}
+.nl-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 54px;
+  padding: 0 10px 0 16px;
+}
+.nl-head .icon-btn {
+  width: 34px;
+  height: 34px;
+  color: var(--text-muted);
+}
+.nl-head .icon-btn:hover {
+  color: var(--text-normal);
+}
+.nl-sidebar-btn {
+  display: none;
+  margin-left: -8px;
+}
+.shell[data-left="closed"] .nl-sidebar-btn {
+  display: grid;
+}
+.nl-name {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.nl-name h1 {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nl-name small {
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+.nl-search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin: 0 12px 6px;
+  padding: 0 6px 0 11px;
+  color: var(--text-faint);
+  background: var(--background-modifier-hover);
+  border-radius: 10px;
+}
+.nl-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font: 500 14.5px var(--font-text);
+  color: var(--text-normal);
+  background: none;
+  border: 0;
+  outline: none;
+}
+.nl-search .icon-btn {
+  width: 26px;
+  height: 26px;
+}
+.nl-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 8px 28px;
+}
+.nl-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 14px 10px 4px;
+  font-family: var(--font-text);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+.nl-section ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nl-section li {
+  position: relative;
+}
+.nl-section li + li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background: var(--background-modifier-border);
+}
+.nl-section li:has(.is-active)::before,
+.nl-section li:has(.is-active) + li::before {
+  opacity: 0;
+}
+.nl-row {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 9px 10px 10px;
+  text-align: left;
+  color: var(--text-normal);
+  border-radius: 12px;
+  -webkit-touch-callout: none;
+}
+.nl-row:hover {
+  background: var(--background-modifier-hover);
+}
+.nl-row.is-active {
+  color: var(--sun-ink);
+  background: var(--sun);
+}
+.nl-title {
+  overflow: hidden;
+  font-size: 14.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nl-line {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+}
+.nl-line time {
+  flex: none;
+  font-weight: 600;
+}
+.nl-preview {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+.nl-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.nl-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nl-row.is-active .nl-preview,
+.nl-row.is-active .nl-meta {
+  opacity: 0.75;
+}
+.nl-empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.nl-empty p {
+  margin: 0;
+}
+.nl-count {
+  display: none;
+}
+.sheet-check {
+  margin-left: auto;
+}
+.folder-form {
+  display: grid;
+  gap: 12px;
+  padding: 4px 4px 8px;
+}
+.folder-form input {
+  height: 52px;
+  padding: 0 16px;
+  font: 500 17px var(--font-text);
+  color: var(--text-normal);
+  background: var(--card);
+  border: 1.5px solid var(--edge);
+  border-radius: 14px;
+  outline: none;
+}
+
+/* The note: a quiet toolbar, then the date as in Apple Notes */
+.note-toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  height: 54px;
+  padding: 0 12px;
+}
+.note-toolbar .icon-btn {
+  width: 34px;
+  height: 34px;
+  color: var(--text-muted);
+  border-radius: 9px;
+}
+.note-toolbar .icon-btn:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+.note-toolbar .icon-btn.is-on {
+  color: var(--text-normal);
+  background: var(--background-modifier-active);
+}
+.tb-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--background-modifier-border-hover);
+}
+.tb-space {
+  flex: 1;
+}
+.note-date {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  text-align: center;
+  color: var(--text-faint);
+}
+.note {
+  padding-top: 8px;
+}
+
+/* Tablets: the folders slide in over the list */
+@media (min-width: 821px) and (max-width: 1180px) {
+  .shell {
+    --col-left: 0px;
+  }
+  .nl-sidebar-btn {
+    display: grid;
+  }
+  .sidebar-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 60;
+    width: var(--left-w);
+    border-right: 1px solid var(--edge);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  .shell[data-mobile-left="open"] .sidebar-left {
+    transform: none;
+  }
+  .shell[data-mobile-left="open"] .drawer-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: var(--background-modifier-cover);
+  }
+}
+@media (max-width: 1400px) {
+  .shell {
+    --col-right: 0px;
+  }
+}
+
+/* Phones: one screen at a time, with the tab bar */
+@media (max-width: 820px) {
+  .shell {
+    --col-left: 0px;
+    --col-list: 0px;
+    --col-right: 0px;
+  }
+  .list-col,
+  .note-toolbar {
+    display: none !important;
+  }
+  .mobile-header {
+    gap: 6px;
+  }
+  .mobile-back {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 12px 0 2px;
+    font-size: 17px;
+    font-weight: 650;
+    color: var(--text-normal);
+    border-radius: 999px;
+  }
+  .mobile-back:active {
+    background: var(--background-modifier-hover);
+  }
+  .mobile-space {
+    flex: 1;
+  }
+  .notes-page {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Phone Notes screen: ☰ on the left, a small centred title, ••• and ✎ on the right. */
+  .nl-page .nl-head {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, auto) 1fr;
+    gap: 8px;
+    height: auto;
+    padding: 0 12px 8px;
+  }
+  .nl-page .nl-head .nl-menu {
+    justify-self: start;
+  }
+  .nl-page .nl-name {
+    justify-items: center;
+    text-align: center;
+  }
+  .nl-actions {
+    display: flex;
+    justify-self: end;
+  }
+  .nl-page .nl-head .icon-btn {
+    width: 42px;
+    height: 42px;
+    color: var(--text-normal);
+    background: var(--card);
+    border: 1.5px solid var(--edge);
+    border-radius: 999px;
+  }
+  .nl-page .nl-name h1 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .nl-page .nl-search {
+    height: 42px;
+    margin: 4px 16px 10px;
+  }
+  .nl-page .nl-search input {
+    font-size: 16px;
+  }
+  .nl-chips {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nl-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .nl-chip {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 5px;
+    height: 34px;
+    padding: 0 13px;
+    font-size: 14px;
+    font-weight: 650;
+    color: var(--text-muted);
+    border: 1.5px solid var(--background-modifier-border-hover);
+    border-radius: 999px;
+    -webkit-touch-callout: none;
+  }
+  .nl-chip.is-on {
+    color: var(--sun-ink);
+    background: var(--sun);
+    border-color: var(--edge);
+  }
+  .nl-page .nl-scroll {
+    overflow: visible;
+    padding: 0 16px;
+  }
+  .nl-page .nl-section h2 {
+    margin: 20px 4px 8px;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.015em;
+    color: var(--text-normal);
+  }
+  .nl-page .nl-section ul {
+    overflow: hidden;
+    background: var(--card);
+    border: 1.5px solid var(--background-modifier-border-hover);
+    border-radius: 18px;
+  }
+  .nl-page .nl-row {
+    gap: 3px;
+    padding: 12px 16px 13px;
+    border-radius: 0;
+  }
+  .nl-page .nl-row:hover {
+    background: none;
+  }
+  .nl-page .nl-row:active {
+    background: var(--background-modifier-hover);
+  }
+  .nl-page .nl-section li + li::before {
+    left: 16px;
+    right: 0;
+  }
+  .nl-page .nl-title {
+    font-size: 16.5px;
+  }
+  .nl-page .nl-line {
+    font-size: 14.5px;
+  }
+  .nl-page .nl-count {
+    display: block;
+    margin: 18px 0 0;
+    font-size: 13px;
+    text-align: center;
+    color: var(--text-faint);
+  }
+}

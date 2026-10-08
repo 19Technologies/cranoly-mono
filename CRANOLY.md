@@ -5,7 +5,7 @@
 
 **Lineage:** Cranoly Mono is a fork of Cranoly. It keeps Cranoly's shapes, ink outlines, type and motion (the micro-animations borrowed from slush.app, measured from its own CSS) and takes out the colour and the depth: black, white and greys, all flat. Two colours are left, each with one job: **yellow for links** and **mint for progress**. Its round icon buttons are flat glass.
 
-**Decided 7 October 2026:** both themes are black and white; links are yellow; progress bars are mint, the colour Cranoly's links use; the round icons are glass (`LiquidButton`); ＋ makes a note first; Practice is a feed you swipe up and down; Format with AI runs Claude inside the app; nothing glows. Later the same day: everything is flat (no shadows, nothing lifts or sinks, cards flip flat), the ＋ symbol sits dead centre in its circle, and every page starts with its title, with no small label above it. Everything in this file is live in the app. `src/app/globals.css` is the source of truth: Cranoly's tokens come first, and the **Cranoly Mono** block near the end overrides them.
+**Decided 7 October 2026:** both themes are black and white; links are yellow; progress bars are mint, the colour Cranoly's links use; the round icons are glass (`LiquidButton`); ＋ makes a note first; Practice is a feed you swipe up and down; Format with AI uses Claude; nothing glows. Later the same day: everything is flat (no shadows, nothing lifts or sinks, cards flip flat), the ＋ symbol sits dead centre in its circle, and every page starts with its title, with no small label above it. Everything in this file is live in the app. The styles are the source of truth: `src/app/globals.css` loads the files in `src/app/styles/` in cascade order, from Cranoly's tokens (`01-base.css`) to Mono's overrides (`16-mono.css`) and flatness (`17-flat.css`); a later file wins.
 
 Cranoly Mono feels like a printed notebook: black ink on white paper, or white on black, flat, with ink outlines and no shadows. The main thing to do and the thing you've chosen are solid ink (black on Paper, white on Graphite) with the page colour as their text. Yellow marks a link and nothing else; mint shows how far you've got. Every touch answers with a small spring: things squish when pressed, selections slide instead of jumping, and main buttons' labels slide. The app stays calm enough to write in.
 
@@ -153,7 +153,7 @@ Dots are 1.6px across plus 0.7px for every square root of a note's links (the op
 | Row dividers, the phone edit toolbar's top edge | `1px solid var(--background-modifier-border)` |
 | Focus on fields and search | ink outline plus a `0 0 0 3px var(--brand-soft)` ring |
 
-**Flat.** Nothing casts a shadow, lifts when you point at it, sinks when you press it, or turns in 3D. Pieces are told apart by ink outlines and fills alone. A ring (a shadow with no offset and no blur, like the focus ring) is a flat outline, so it's allowed. Cranoly's depth tokens (`--pop-sm`, `--pop`, `--pop-lg`, `--shadow-s`, `--shadow-l`) are `none` here, and the "Flat" section at the end of `globals.css` switches off every other shadow and 3D turn.
+**Flat.** Nothing casts a shadow, lifts when you point at it, sinks when you press it, or turns in 3D. Pieces are told apart by ink outlines and fills alone. A ring (a shadow with no offset and no blur, like the focus ring) is a flat outline, so it's allowed. Cranoly's depth tokens (`--pop-sm`, `--pop`, `--pop-lg`, `--shadow-s`, `--shadow-l`) are `none` here, and `src/app/styles/17-flat.css` switches off every other shadow and 3D turn.
 
 ### Layout
 
@@ -399,7 +399,7 @@ With `prefers-reduced-motion: reduce`, every animation and transition drops to 0
 ### Recipes
 
 ```css
-/* Press: everything pressable squishes and springs back (the full list is in globals.css → Motion). */
+/* Press: everything pressable squishes and springs back (the full list is in src/app/styles/14-motion.css). */
 :is(.btn, .chip, .icon-btn, .tool, .seg button, .dict-row, .wc-lang) {
   transition:
     scale var(--dur-press) var(--ease-elastic),
@@ -541,7 +541,7 @@ None, except the link highlighter: a hard-stop gradient that draws a flat yellow
 
 ### CSS Custom Properties
 
-The key tokens, for pages built outside the app. The app's full set is in `src/app/globals.css`: Cranoly's at the top, and the Cranoly Mono block near the end that overrides them.
+The key tokens, for pages built outside the app. The app's full set is in `src/app/styles/`: Cranoly's in `01-base.css`, and Mono's overrides in `16-mono.css`.
 
 ```css
 :root {

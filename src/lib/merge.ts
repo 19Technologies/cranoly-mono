@@ -46,7 +46,7 @@ export interface MergeResult {
 }
 
 /** Tombstones older than this are forgotten. */
-export const FORGET_AFTER = 90 * 24 * 3600 * 1000;
+const FORGET_AFTER = 90 * 24 * 3600 * 1000;
 
 export const modifiedOf = (n: Note) => n.modified ?? n.updated;
 
@@ -56,9 +56,9 @@ const sameNote = (a: Note, b: Note) => a.content === b.content && a.path === b.p
  * Two versions of a text with no common ancestor to compare against. "a"/"b": one already holds every
  * line of the other. "merged": both only added lines after the lines they share (both additions kept).
  */
-export type Combined = { kind: "a" } | { kind: "b" } | { kind: "conflict" } | { kind: "merged"; text: string };
+type Combined = { kind: "a" } | { kind: "b" } | { kind: "conflict" } | { kind: "merged"; text: string };
 
-export function combine(a: string, b: string): Combined {
+function combine(a: string, b: string): Combined {
   const A = a.split("\n");
   const B = b.split("\n");
   const inA = new Set(A);

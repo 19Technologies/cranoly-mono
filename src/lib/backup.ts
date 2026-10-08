@@ -39,7 +39,7 @@ function write(key: string, value: unknown) {
 }
 
 /** Which device this is: an id for bringing in notes, and a name for files and copies ("Phone"). */
-export function device(): Device {
+function device(): Device {
   const saved = read<Device | null>("cranoly-device", null);
   if (saved?.id) return saved;
   const phone = isApp() || matchMedia("(pointer: coarse) and (max-width: 820px)").matches;
@@ -56,13 +56,13 @@ const setBroughtIn = (m: Record<string, number>) => write("cranoly-brought-in", 
 /* What goes in the folder                                             */
 /* ------------------------------------------------------------------ */
 
-export const COPIES = "Daily copies";
+const COPIES = "Daily copies";
 const KEEP_DAYS = 7;
 
-export const backupName = (name = device().name) => `Cranoly Mono backup (${name}).json`;
+const backupName = (name = device().name) => `Cranoly Mono backup (${name}).json`;
 
 /** Everything in one object: the vault, plus which device saved it and what it had brought in. */
-export function backupOf(state: VaultState, savedAt = Date.now()) {
+function backupOf(state: VaultState, savedAt = Date.now()) {
   const me = device();
   const { ready: _ready, ...rest } = state;
   void _ready;
@@ -79,7 +79,7 @@ const clean = (segment: string) =>
   segment.replace(INVALID_TITLE_CHARS, " ").trim().replace(/[.\s]+$/, "") || "Untitled";
 
 /** The files: one .md per note (in its folders), the backup file and today's copy. */
-export function filesOf(state: VaultState, now = Date.now()): FolderFile[] {
+function filesOf(state: VaultState, now = Date.now()): FolderFile[] {
   const out: FolderFile[] = [];
   const taken = new Set<string>();
   const notes = Object.values(state.notes).sort((a, b) => a.created - b.created || a.id.localeCompare(b.id));
@@ -239,7 +239,7 @@ export function useBackupStatus() {
 /** Tests can make a browser save like the phone app does (to the Filesystem plugin's stand-in). */
 const actLikeApp = () => isApp() || (typeof window !== "undefined" && (window as { __cranolyAppFolder?: boolean }).__cranolyAppFolder === true);
 
-export const canChooseFolder = () => typeof window !== "undefined" && "showDirectoryPicker" in window && !actLikeApp();
+const canChooseFolder = () => typeof window !== "undefined" && "showDirectoryPicker" in window && !actLikeApp();
 
 /** How this device keeps its folder: the phone's own, one you choose (Chrome, Edge), or a .zip. */
 export const folderKind = (): "app" | "pick" | "zip" => (actLikeApp() ? "app" : canChooseFolder() ? "pick" : "zip");
@@ -413,7 +413,7 @@ let lastScan = 0;
  * Look in the laptop's folder for what changed outside Cranoly Mono: backups your other devices put there
  * (brought in), and notes edited or added as .md files. Nothing in the folder is ever deleted here.
  */
-export async function scanFolder(force = false) {
+async function scanFolder(force = false) {
   if (!picked || actLikeApp()) return;
   if (!force && Date.now() - lastScan < 10_000) return;
   if ((await picked.queryPermission?.({ mode: "readwrite" })) !== "granted") {
@@ -486,7 +486,7 @@ export async function scanFolder(force = false) {
 /* ------------------------------------------------------------------ */
 
 /** The folder as a .zip (the notes and the backup file, without the daily copies). */
-export function zipOf(state = getVault()) {
+function zipOf(state = getVault()) {
   const files: Record<string, Uint8Array> = {};
   for (const f of filesOf(state)) if (!f.path.startsWith(`${COPIES}/`)) files[`Cranoly Mono/${f.path}`] = strToU8(f.text);
   return zipSync(files, { level: 6 });
@@ -581,7 +581,7 @@ export function preview(incoming: Incoming): MergeResult {
   });
 }
 
-export function summaryOf(r: MergeResult, from: string) {
+function summaryOf(r: MergeResult, from: string) {
   const parts = [
     r.added && `${r.added} new`,
     r.updated && `${r.updated} updated`,

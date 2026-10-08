@@ -15,6 +15,7 @@ import {
 } from "@codemirror/language";
 import { tags as t } from "@lezer/highlight";
 import { GFM, parser } from "@lezer/markdown";
+import { defaultUrlTransform } from "react-markdown";
 import { CALLOUT_RE, calloutTitle } from "./callouts";
 import { frontmatterOf, parseProperties, showDate, type PropertyValue } from "./properties";
 import { TAG_RE, WIKI_RE, parseWikiInner, tintFor } from "./links";
@@ -366,7 +367,8 @@ function build(view: EditorView, exists: (target: string) => boolean): Decoratio
         let url: string | null = null;
         for (let c = node.node.firstChild; c; c = c.nextSibling) {
           if (c.name === "LinkMark") marks.push({ from: c.from, to: c.to });
-          if (c.name === "URL") url = doc.sliceString(c.from, c.to);
+          // The reading view's rule: javascript: and other unsafe links don't become links.
+          if (c.name === "URL") url = defaultUrlTransform(doc.sliceString(c.from, c.to)) || null;
         }
         if (!url || marks.length < 3 || /^\[\[/.test(doc.sliceString(node.from, node.from + 2))) return;
         out.push(

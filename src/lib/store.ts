@@ -38,7 +38,10 @@ function ensureLoaded() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
   state = loadState();
-  window.addEventListener("beforeunload", flush);
+  // Save the moment the page is hidden: phones close apps in the background without unloading them.
+  const flushPending = () => saveTimer && flush();
+  window.addEventListener("pagehide", flushPending);
+  document.addEventListener("visibilitychange", () => document.hidden && flushPending());
   window.addEventListener("storage", (e) => {
     if (e.key !== STORAGE_KEY || !e.newValue) return;
     try {

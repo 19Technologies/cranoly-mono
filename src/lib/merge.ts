@@ -110,19 +110,20 @@ export function mergeBackup(local: VaultState, incoming: Backup, ctx: MergeConte
   const pathTaken = (p: string, except?: string) =>
     Object.values(notes).some((n) => n.id !== except && n.path.toLowerCase() === p.toLowerCase());
 
-  /** Both versions changed: one note if they fit together, else the newer one plus a copy of the older. */
+  /**
+   * Both versions changed: one note if the texts fit together, with the newer version's title and pin (so a
+   * rename on one device and new lines on the other end up the same on both); else the newer one plus a copy
+   * of the older.
+   */
   const reconcile = (mine: Note, theirs: Note) => {
     const c = combine(mine.content, theirs.content);
-    if (c.kind === "a") return;
     const newer = modifiedOf(theirs) > modifiedOf(mine) ? theirs : mine;
-    if (c.kind === "b" || c.kind === "merged") {
-      notes[mine.id] = {
-        ...newer,
-        id: mine.id,
-        content: c.kind === "b" ? theirs.content : c.text,
-        updated: Math.max(mine.updated, theirs.updated),
-        modified: c.kind === "b" ? modifiedOf(theirs) : ctx.now,
-      };
+    if (c.kind !== "conflict") {
+      const content = c.kind === "a" ? mine.content : c.kind === "b" ? theirs.content : c.text;
+      const path = pathTaken(newer.path, mine.id) ? mine.path : newer.path;
+      const next = { ...newer, id: mine.id, path, content, updated: Math.max(mine.updated, theirs.updated) };
+      if (sameNote(next, mine)) return;
+      notes[mine.id] = { ...next, modified: sameNote(next, theirs) ? modifiedOf(theirs) : ctx.now };
       updated++;
       return;
     }

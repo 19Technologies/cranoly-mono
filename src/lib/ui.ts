@@ -37,7 +37,7 @@ export interface UIState {
   renameFolder: string | null;
   /** "Scan text" from a photo, and the note the text would go to. */
   scan: { noteId: string | null } | null;
-  /** "Format": the note being handed to an AI assistant, and pasted back. */
+  /** "Format": the note being handed to Claude, and its reply pasted back. */
   format: { noteId: string } | null;
   /** "Bring in changes": a backup picked from another device, waiting for a yes. */
   bringIn: Incoming | null;

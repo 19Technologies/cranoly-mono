@@ -1,9 +1,8 @@
-// Format: hand a note to Claude, ChatGPT or Gemini with a ready prompt, then paste the answer back.
-// Cranoly Mono runs no AI itself. The note leaves the device only when the learner taps the button,
-// and only to the assistant they picked.
+// Format: hand a note to Claude, signed in as the learner (the Claude app or claude.ai), with the request
+// typed in; then paste Claude's reply back. Cranoly Mono runs no AI and keeps no key: Anthropic doesn't let
+// other apps sign people in to Claude, so the note goes to Claude itself, and only when the learner taps.
 import { CALLOUTS } from "./callouts";
 import { frontmatterOf } from "./properties";
-import type { Assistant } from "./vault";
 
 export type FormatTask = "tidy" | "arrange" | "summary" | "translate" | "cards";
 
@@ -46,22 +45,15 @@ export const TASKS: Array<{ id: FormatTask; label: string; ask: (lang: PromptLan
   },
 ];
 
-export const ASSISTANTS: Array<{ id: Assistant; name: string; home: string; link?: (prompt: string) => string }> = [
-  { id: "claude", name: "Claude", home: "https://claude.ai/new", link: (p) => `https://claude.ai/new?q=${encodeURIComponent(p)}` },
-  { id: "chatgpt", name: "ChatGPT", home: "https://chatgpt.com/", link: (p) => `https://chatgpt.com/?q=${encodeURIComponent(p)}` },
-  // Gemini has no link that fills in a prompt, so it goes by clipboard only.
-  { id: "gemini", name: "Gemini", home: "https://gemini.google.com/app" },
-];
+const CLAUDE = "https://claude.ai/new";
 
-/** Longer links get cut off by some browsers and assistants; then the prompt goes by clipboard only. */
-export const MAX_LINK = 6000;
+/** Longer links get cut off by some browsers and apps; then the request goes by clipboard only. */
+const MAX_LINK = 6000;
 
-export const assistantOf = (id: string | undefined) => ASSISTANTS.find((a) => a.id === id) ?? ASSISTANTS[0];
-
-/** Where to send the learner: the assistant with the prompt filled in when the link isn't too long, else its home page. */
-export function openUrl(assistant: (typeof ASSISTANTS)[number], prompt: string) {
-  const link = assistant.link?.(prompt);
-  return link && link.length <= MAX_LINK ? { url: link, filled: true } : { url: assistant.home, filled: false };
+/** Claude with the request typed in, when it fits in a link; otherwise a new chat to paste it into. */
+export function claudeLink(prompt: string) {
+  const url = `${CLAUDE}?q=${encodeURIComponent(prompt)}`;
+  return url.length <= MAX_LINK ? { url, filled: true } : { url: CLAUDE, filled: false };
 }
 
 export function buildPrompt(
@@ -93,14 +85,7 @@ export function buildPrompt(
   ].join("\n");
 }
 
-/** The same request, split for the built-in AI: what to do (the system prompt) and the note itself. */
-export function formatParts(note: { title: string; content: string }, tasks: FormatTask[], lang: PromptLang) {
-  const all = buildPrompt(note, tasks, lang);
-  const at = all.lastIndexOf(`The note is called "${note.title}":`);
-  return { system: all.slice(0, at).trim(), user: all.slice(at).trim() };
-}
-
-/** The pasted answer, without the code fence or chatty lines assistants like to add. */
+/** The pasted reply, without the code fence or chatty lines Claude sometimes adds. */
 export function cleanResult(text: string) {
   let t = text.replace(/\r\n?/g, "\n").trim();
   // "Here is your formatted note:" and friends, on a line of their own at the top.

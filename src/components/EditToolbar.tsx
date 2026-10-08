@@ -47,7 +47,7 @@ function Tool({ label, onPress, wide, children }: { label: string; onPress: (vie
   );
 }
 
-/** Format: hide the keyboard and open the sheet that hands this note to an AI assistant. */
+/** Format: hide the keyboard and open the sheet that hands this note to Claude. */
 function format(view: EditorView) {
   const noteId = getVault().workspace.active;
   if (!noteId) return;

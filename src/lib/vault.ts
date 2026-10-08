@@ -35,11 +35,8 @@ export interface Settings {
   onlineLookups: boolean;
   /** The first-run welcome (language + first word) has been finished or skipped. */
   onboarded: boolean;
-  /** Where Format sends a note: the AI assistant the learner picked last. */
-  assistant: Assistant;
 }
 
-export type Assistant = "claude" | "chatgpt" | "gemini";
 
 export interface Workspace {
   tabs: string[];
@@ -89,7 +86,6 @@ export const DEFAULT_SETTINGS: Settings = {
   onlineLookups: true,
   onboarded: false,
   languages: ["de"],
-  assistant: "claude",
 };
 
 export const titleOf = (path: string) => path.slice(path.lastIndexOf("/") + 1);

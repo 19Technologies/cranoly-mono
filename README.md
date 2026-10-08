@@ -12,7 +12,7 @@ A black and white fork of Cranoly, the notebook for learning languages. You writ
 - **Titles first.** Every page starts with its title, with no small label above it.
 - **＋ makes a note.** ＋ opens **New**: **New note** first (the main one, a blank page in the folder you're in), then **Scan**, then **Paste a list**. A single word is added from the Dictionary (**Add a word**) or in a note (select it, then **Flashcard**).
 - **Practice is a feed.** Cards scroll up and down, one per screen: swipe up for the next card, down for the one before, tap to flip. On a laptop use the arrow keys, J and K, Page Up and Page Down, or the mouse wheel.
-- **Built-in AI.** **Format with AI** (in a note's ••• menu) runs Claude Opus 5.5 inside the app with your own Anthropic API key, added once in **Settings › AI**. The reply appears as it's written; then you choose **Add below** or **Replace note**, and Undo puts the note back. The key stays on the device and is never in a backup. A note goes to Anthropic only when you tap Format, and it's billed to your Anthropic account (a typical note costs a few cents).
+- **AI with your Claude login.** **Format with AI** (in a note's ••• menu) opens Claude signed in as you (the Claude app on a phone, claude.ai on a computer) with your note and the request typed in. Copy Claude's reply, tap **Paste Claude's reply**, and choose **Add below** or **Replace note**; Undo puts the note back. There's no API key to add and nothing to pay Mono: it uses your own Claude account. (Anthropic doesn't allow other apps to sign people in to Claude, so the note goes to Claude itself, and only when you tap Open Claude.)
 - **Even spacing.** One rhythm throughout: 24px between sections and 8px between chips and buttons.
 - **Its own app.** Cranoly Mono (app id `com.cranoly.mono`) installs next to Cranoly, and keeps its own **Cranoly Mono** folder, so the two never mix. **Bring in changes** reads Cranoly's backup files too, so your notes can move across.
 
@@ -38,7 +38,7 @@ A black and white fork of Cranoly, the notebook for learning languages. You writ
   - **Hear it**: pronunciation with the downloaded voice, or the device's own voice, in the editor and on flashcards.
   - **Check my writing**: LanguageTool underlines spelling and grammar mistakes; tap one to fix it, or fix it and save it as a card.
   - **Cards from anything**: pasted word lists ("Hund = dog") turn into cards, and **Find new words** lists every word in a text you don't have a card for yet.
-  - **Format with AI**: Claude tidies a note, arranges it, summarises it, translates it or makes cards from it, right in the app (see What Mono changes).
+  - **Format with AI**: Claude tidies a note, arranges it, summarises it, translates it or makes cards from it, signed in as you (see What Mono changes).
   - **Ask your notes**: type a question in search and get the best-matching passages back.
   - **Unlinked mentions** in the backlinks panel, and **smart decks** ("Not seen lately", "From this week's notes").
   - Explain, Check, Format with AI, and looking up the meaning of a word you're adding are the only features that send text anywhere, and only that word, the text you chose or the note you're formatting. They can be turned off. Voices and Scan text download their files once and then run entirely on the device.
@@ -87,11 +87,11 @@ npm run lint
 npm run build
 ```
 
-Built with Next.js 16 (App Router), React 19, `react-markdown` + `remark-gfm` + `remark-frontmatter`, `js-yaml`, and `react-force-graph-2d`. Mono adds Tailwind CSS 4 (utilities only, for the shadcn-style components in `src/components/ui`) and `@anthropic-ai/sdk` for Format with AI.
+Built with Next.js 16 (App Router), React 19, `react-markdown` + `remark-gfm` + `remark-frontmatter`, `js-yaml`, and `react-force-graph-2d`. Mono adds Tailwind CSS 4 (utilities only, for the shadcn-style components in `src/components/ui`).
 
 | Path | What it contains |
 | --- | --- |
-| `src/lib/` | Data model, link index, card parser, store, languages, word lookups (`lookup.ts`), your dictionary (`dictionary.ts`), properties (`properties.ts`), voices (`voices.ts`), scanning (`ocr.ts`), Claude (`ai.ts`), `cn` (`utils.ts`) |
+| `src/lib/` | Data model, link index, card parser, store, languages, word lookups (`lookup.ts`), your dictionary (`dictionary.ts`), properties (`properties.ts`), voices (`voices.ts`), scanning (`ocr.ts`), the Format request for Claude (`format.ts`), `cn` (`utils.ts`) |
 | `src/components/` | App shell, sidebar, notes list, editor, markdown view, graph canvas, command palette, welcome, sheets (the ＋ sheet is `PlusSheet.tsx`) |
 | `src/components/ui/` | The glass button (`liquid-glass-button.tsx`) and `GlassIcon`, the round glass icon built on it |
 | `src/app/` | Routes: `/` (notes), `/notes`, `/search`, `/mind-map`, `/dictionary`, `/formatting`, `/flashcards`, `/flashcards/study`, `/settings`, plus `manifest.ts` and icons. `/home` and `/graph` redirect. |

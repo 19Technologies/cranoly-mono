@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Check, KeyRound, RotateCcw, Square, LetterText } from "lucide-react";
+import { ArrowLeft, Check, ClipboardCopy, ClipboardPaste, ExternalLink } from "lucide-react";
 import Sheet from "./Sheet";
 import Tumble from "./Tumble";
 import MarkdownView from "./MarkdownView";
@@ -11,104 +11,79 @@ import { toast, useVault, vault } from "@/lib/store";
 import { setUI, useUI } from "@/lib/ui";
 import { LANGUAGES, cardExamples } from "@/lib/languages";
 import { titleOf } from "@/lib/vault";
-import { TASKS, cleanResult, formatParts, type FormatTask } from "@/lib/format";
-import { AiProblem, MODEL_NAME, askClaude, looksLikeKey, setAiKey, useAiKey } from "@/lib/ai";
+import { TASKS, buildPrompt, claudeLink, cleanResult, type FormatTask } from "@/lib/format";
 
 const close = () => setUI({ format: null });
 const nameOf = (code: string) => LANGUAGES.find((l) => l.code === code)?.name ?? "English";
 
-/** Paste your Anthropic API key once; it stays on this device. Also used in Settings › AI. */
-export function KeyBox({ onSaved }: { onSaved?: () => void }) {
-  const [key, setKey] = useState("");
-  const ok = looksLikeKey(key);
-  return (
-    <div className="ai-key">
-      <label className="add-field">
-        <span>Your Anthropic API key</span>
-        <input
-          type="password"
-          autoComplete="off"
-          spellCheck={false}
-          placeholder="sk-ant-…"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          aria-label="Anthropic API key"
-        />
-      </label>
-      <p className="format-fine">
-        Get one at{" "}
-        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">
-          console.anthropic.com
-        </a>{" "}
-        under API keys. It stays on this device and is never saved in your backups.
-      </p>
-      <button
-        className="btn btn-primary"
-        disabled={!ok}
-        onClick={() => {
-          setAiKey(key);
-          haptic("success");
-          toast("API key saved on this device");
-          onSaved?.();
-        }}
-      >
-        <KeyRound size={15} /> Save key
-      </button>
-      {key && !ok && <p className="format-fine">That doesn’t look like an Anthropic key. They start with sk-ant-.</p>}
-    </div>
-  );
+/** Claude is open. `filled`: with the request typed in. `copied`: the request is on the clipboard (null while copying). */
+interface Sent {
+  prompt: string;
+  url: string;
+  filled: boolean;
+  copied: boolean | null;
 }
-
-type Step = { at: "pick" } | { at: "writing"; text: string } | { at: "ready"; text: string } | { at: "failed"; message: string };
 
 function FormatFlow({ noteId }: { noteId: string }) {
   const { notes, settings } = useVault();
-  const key = useAiKey();
   const note = notes[noteId];
   const [tasks, setTasks] = useState<FormatTask[]>(["tidy"]);
-  const [step, setStep] = useState<Step>({ at: "pick" });
-  const stop = useRef<AbortController | null>(null);
-  // Stop writing if the sheet closes.
-  useEffect(() => () => stop.current?.abort(), []);
+  const [sent, setSent] = useState<Sent | null>(null);
+  const [reply, setReply] = useState<string | null>(null);
+  // Reading the clipboard isn't allowed everywhere; then the reply is pasted into a box by hand.
+  const [byHand, setByHand] = useState(false);
+  const [typed, setTyped] = useState("");
   if (!note) return null;
   const empty = !note.content.trim();
 
-  const run = async () => {
+  const send = () => {
     const ex = cardExamples(settings.learning, settings.native).both;
-    const { system, user } = formatParts({ title: titleOf(note.path), content: note.content }, tasks, {
+    const prompt = buildPrompt({ title: titleOf(note.path), content: note.content }, tasks, {
       learning: nameOf(settings.learning),
       native: nameOf(settings.native),
       word: ex.front,
       meaning: ex.back,
     });
-    haptic();
-    const ctl = new AbortController();
-    stop.current = ctl;
-    setStep({ at: "writing", text: "" });
-    // The preview redraws at most a few times a second while the reply streams in.
-    let latest = "";
-    let frame = 0;
+    const { url, filled } = claudeLink(prompt);
+    // Copy first, while the tap still counts, then open Claude. The Claude app may open a blank chat
+    // instead of the typed-in request, so the clipboard is the backup.
+    let copying: Promise<boolean>;
     try {
-      const text = await askClaude(
-        system,
-        user,
-        (sofar) => {
-          latest = sofar;
-          if (!frame) frame = requestAnimationFrame(() => ((frame = 0), setStep({ at: "writing", text: latest })));
-        },
-        ctl.signal,
+      copying = navigator.clipboard.writeText(prompt).then(
+        () => true,
+        () => false,
       );
-      cancelAnimationFrame(frame);
-      setStep({ at: "ready", text: cleanResult(text) });
-      haptic("success");
-    } catch (e) {
-      cancelAnimationFrame(frame);
-      const problem = e instanceof AiProblem ? e : new AiProblem("Something went wrong. Try again.");
-      setStep(problem.stopped ? { at: "pick" } : { at: "failed", message: problem.message });
-    } finally {
-      stop.current = null;
+    } catch {
+      copying = Promise.resolve(false);
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+    haptic();
+    setSent({ prompt, url, filled, copied: null });
+    setReply(null);
+    copying.then((copied) => setSent((s) => s && { ...s, copied }));
+  };
+
+  const take = (raw: string, prompt: string) => {
+    const text = raw.trim();
+    if (!text) return toast("Nothing to paste yet. Copy Claude’s reply first.");
+    if (text === prompt.trim()) return toast("That’s still the request. Copy Claude’s reply first.");
+    haptic("success");
+    setReply(cleanResult(text));
+  };
+
+  const paste = async (prompt: string) => {
+    try {
+      take(await navigator.clipboard.readText(), prompt);
+    } catch {
+      setByHand(true);
     }
   };
+
+  const copyAgain = (prompt: string) =>
+    navigator.clipboard?.writeText(prompt).then(
+      () => toast("Request copied"),
+      () => toast("Couldn’t copy. Select the request and copy it."),
+    );
 
   const apply = (how: "replace" | "below", text: string) => {
     const before = note.content;
@@ -118,14 +93,13 @@ function FormatFlow({ noteId }: { noteId: string }) {
     close();
   };
 
-  const title =
-    step.at === "writing" ? `${MODEL_NAME} is writing…` : step.at === "ready" ? "Formatted" : step.at === "failed" ? "Couldn’t format" : "Format with AI";
+  const title = reply ? "Formatted" : sent ? "Bring the reply back" : "Format with AI";
 
   return (
     <Sheet open title={title} onClose={close} className="add-sheet format-sheet">
-      {step.at === "pick" && (
+      {!sent && (
         <>
-          <p className="add-hint format-lede">Pick what to do. {MODEL_NAME} formats the note right here, and you choose whether to keep it.</p>
+          <p className="add-hint format-lede">Pick what to do. Claude opens with your note and the request typed in, and you choose whether to keep its reply.</p>
           <div className="format-tasks" role="group" aria-label="What to do">
             {TASKS.map((t) => {
               const on = tasks.includes(t.id);
@@ -144,24 +118,18 @@ function FormatFlow({ noteId }: { noteId: string }) {
               );
             })}
           </div>
-          {key ? (
-            <>
-              {empty && <p className="add-hint">This note is empty. Write something first.</p>}
-              <div className="add-actions">
-                <button className="btn btn-primary btn-lg" disabled={!tasks.length || empty} onClick={run}>
-                  <Tumble label="Format">
-                    <LetterText size={17} /> Format
-                  </Tumble>
-                </button>
-              </div>
-              <p className="format-fine">
-                The note goes to Anthropic only when you tap Format. A typical note costs a few cents on your Anthropic
-                account.
-              </p>
-            </>
-          ) : (
-            <KeyBox />
-          )}
+          {empty && <p className="add-hint">This note is empty. Write something first.</p>}
+          <div className="add-actions">
+            <button className="btn btn-primary btn-lg" disabled={!tasks.length || empty} onClick={send}>
+              <Tumble label="Open Claude">
+                <ExternalLink size={17} /> Open Claude
+              </Tumble>
+            </button>
+          </div>
+          <p className="format-fine">
+            Claude opens signed in as you: the Claude app on your phone, or claude.ai on a computer. There’s no key to add. Your note
+            leaves this device only when you tap Open Claude.
+          </p>
           <p className="format-fine">
             Rather do it yourself? See the{" "}
             <Link href="/formatting" onClick={close}>
@@ -172,46 +140,82 @@ function FormatFlow({ noteId }: { noteId: string }) {
         </>
       )}
 
-      {(step.at === "writing" || step.at === "ready") && (
+      {sent && reply === null && (
         <>
-          <div className={`ai-preview${step.at === "writing" ? " is-writing" : ""}`} aria-live="polite">
-            {step.text ? <MarkdownView content={step.text} interactive={false} /> : <p className="ai-waiting">Reading your note…</p>}
+          <p className="add-hint format-lede">
+            {sent.filled
+              ? "When Claude has answered, tap Copy under its reply, then come back and paste it here."
+              : "This note is too long to type in for you. Paste the request into Claude, then copy its reply and come back."}
+            {sent.copied ? " The request is on your clipboard too, in case Claude opens empty." : ""}
+          </p>
+          {!sent.filled && sent.copied === false && (
+            <label className="add-field">
+              <span>Couldn’t copy the request. Select it and copy it yourself.</span>
+              <textarea className="format-prompt" readOnly rows={5} value={sent.prompt} onFocus={(e) => e.currentTarget.select()} />
+            </label>
+          )}
+          <div className="add-actions">
+            <button className="btn btn-primary btn-lg" onClick={() => paste(sent.prompt)}>
+              <ClipboardPaste size={17} /> Paste Claude’s reply
+            </button>
           </div>
-          {step.at === "writing" ? (
-            <div className="add-actions">
-              <button className="btn btn-lg" onClick={() => stop.current?.abort()}>
-                <Square size={15} /> Stop
-              </button>
-            </div>
-          ) : (
+          {byHand && (
             <>
-              <div className="add-actions">
-                <button className="btn btn-lg" onClick={() => apply("below", step.text)}>
-                  Add below
-                </button>
-                <button className="btn btn-primary btn-lg" onClick={() => apply("replace", step.text)}>
-                  <Check size={17} /> Replace note
-                </button>
-              </div>
-              <div className="format-foot">
-                <button className="format-link" onClick={run}>
-                  <RotateCcw size={14} /> Try again
-                </button>
-              </div>
+              <label className="add-field">
+                <span>This phone doesn’t let apps read the clipboard. Paste the reply here.</span>
+                <textarea
+                  autoFocus
+                  rows={6}
+                  value={typed}
+                  placeholder="Press and hold, then Paste"
+                  onChange={(e) => setTyped(e.target.value)}
+                  onPaste={(e) => {
+                    const text = e.clipboardData.getData("text");
+                    if (!text.trim()) return;
+                    e.preventDefault();
+                    take(text, sent.prompt);
+                  }}
+                />
+              </label>
+              {typed.trim() && (
+                <div className="add-actions">
+                  <button className="btn btn-lg" onClick={() => take(typed, sent.prompt)}>
+                    Use this reply
+                  </button>
+                </div>
+              )}
             </>
           )}
+          <div className="format-foot">
+            <button className="format-link" onClick={() => setSent(null)}>
+              <ArrowLeft size={14} /> Back
+            </button>
+            <button className="format-link" onClick={() => window.open(sent.url, "_blank", "noopener,noreferrer")}>
+              <ExternalLink size={14} /> Open Claude again
+            </button>
+            <button className="format-link" onClick={() => copyAgain(sent.prompt)}>
+              <ClipboardCopy size={14} /> Copy the request
+            </button>
+          </div>
         </>
       )}
 
-      {step.at === "failed" && (
+      {reply !== null && (
         <>
-          <p className="add-hint format-lede ai-problem">{step.message}</p>
+          <div className="ai-preview" aria-live="polite">
+            <MarkdownView content={reply} interactive={false} />
+          </div>
           <div className="add-actions">
-            <button className="btn btn-lg" onClick={() => setStep({ at: "pick" })}>
-              Back
+            <button className="btn btn-lg" onClick={() => apply("below", reply)}>
+              Add below
             </button>
-            <button className="btn btn-primary btn-lg" onClick={run}>
-              <RotateCcw size={16} /> Try again
+            <button className="btn btn-primary btn-lg" onClick={() => apply("replace", reply)}>
+              <Check size={17} /> Replace note
+            </button>
+          </div>
+          <div className="format-foot">
+            <button className="format-link" onClick={() => setReply(null)}>
+              <ArrowLeft size={14} /> Paste a different reply
             </button>
           </div>
         </>
@@ -220,7 +224,7 @@ function FormatFlow({ noteId }: { noteId: string }) {
   );
 }
 
-/** Format: Claude tidies, arranges, summarises, translates or makes cards from the note, right in the app. */
+/** Format: hand the note to Claude, signed in as the learner, then paste the reply back and keep it or not. */
 export default function FormatSheet() {
   const { format } = useUI();
   if (!format) return null;

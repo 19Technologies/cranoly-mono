@@ -3,13 +3,11 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
-  ArrowDownToLine, Check, Download, FolderOpen, GraduationCap, KeyRound, RotateCcw, Save, Share, Share2, Smartphone, Hand, Sun, Moon, MonitorSmartphone, Type, X,
+  ArrowDownToLine, Check, Download, FolderOpen, GraduationCap, RotateCcw, Save, Share, Share2, Smartphone, Hand, Sun, Moon, MonitorSmartphone, Type, X,
 } from "lucide-react";
 import VoiceList from "@/components/Voices";
 import { download } from "@/components/CommandPalette";
 import { pickBackup } from "@/components/BringIn";
-import { KeyBox } from "@/components/FormatSheet";
-import { MODEL_NAME, maskKey, setAiKey, useAiKey } from "@/lib/ai";
 import { allowFolder, chooseFolder, downloadZip, folderKind, forgetFolder, saveNow, setAutoSave, shareCopy, useBackupStatus } from "@/lib/backup";
 import { toast, useVault, vault } from "@/lib/store";
 import type { Settings } from "@/lib/vault";
@@ -415,33 +413,6 @@ function BackupSettings() {
   );
 }
 
-/** Built-in AI: Claude with your own Anthropic API key, kept on this device only. */
-function AiSettings() {
-  const key = useAiKey();
-  return (
-    <section className="card-panel" id="ai">
-      <div className="card-panel-head"><h2>AI</h2></div>
-      <p className="setting-note">
-        Format with AI uses <b>{MODEL_NAME}</b> with your own Anthropic API key. The key stays on this device and is never
-        saved in your backups. A note goes to Anthropic only when you tap Format, and each one costs a few cents on your
-        Anthropic account.
-      </p>
-      {key ? (
-        <div className="ai-key-saved">
-          <span>
-            <KeyRound size={15} /> Key saved: <code>{maskKey(key)}</code>
-          </span>
-          <button className="btn" onClick={() => setAiKey(null)}>
-            <X size={14} /> Remove
-          </button>
-        </div>
-      ) : (
-        <KeyBox />
-      )}
-    </section>
-  );
-}
-
 export default function SettingsPage() {
   const { notes } = useVault();
   const [confirmReset, setConfirmReset] = useState(false);
@@ -454,7 +425,6 @@ export default function SettingsPage() {
 
       <Appearance />
       <BackupSettings />
-      <AiSettings />
       <LanguageSettings />
       <VoiceSettings />
       <InstallApp />

@@ -49,7 +49,7 @@ function NewWords({ text, noteId }: { text: string; noteId: string }) {
       for (let r = queue.shift(); r; r = queue.shift()) {
         update(r.word, { status: "loading" });
         try {
-          const result = await lookup(r.word, lang);
+          const result = await lookup(r.word, lang, settings.onlineLookups);
           update(
             r.word,
             result
@@ -89,11 +89,9 @@ function NewWords({ text, noteId }: { text: string; noteId: string }) {
         <p>
           <b>{rows.length}</b> {rows.length === 1 ? "word" : "words"} you don’t have cards for yet. Untick the ones you know.
         </p>
-        {settings.onlineLookups && (
-          <button className="btn btn-sm" onClick={lookUpAll} disabled={busy}>
-            {busy ? <Loader2 size={14} className="spin" /> : <BookA size={14} />} Look up meanings
-          </button>
-        )}
+        <button className="btn btn-sm" onClick={lookUpAll} disabled={busy}>
+          {busy ? <Loader2 size={14} className="spin" /> : <BookA size={14} />} Look up meanings
+        </button>
       </div>
       <ul className="nw-list">
         {rows.map((r) => (

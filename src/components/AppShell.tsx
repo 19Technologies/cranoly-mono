@@ -26,6 +26,7 @@ import ScanSheet from "./ScanSheet";
 import BringIn from "./BringIn";
 import PlusSheet from "./PlusSheet";
 import { startBackup } from "@/lib/backup";
+import { loadDictionary } from "@/lib/lookup";
 
 function Toasts() {
   const toasts = useToasts();
@@ -225,6 +226,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (ready) return startBackup((path) => router.push(path));
   }, [ready, router]);
+
+  // The dictionary for the language being learned, a few seconds after opening, so the first lookup is instant.
+  useEffect(() => {
+    if (!ready) return;
+    const timer = setTimeout(() => void loadDictionary(settings.learning), 3000);
+    return () => clearTimeout(timer);
+  }, [ready, settings.learning]);
 
   // The trail behind the phone bar's ‹ and ›: every screen, note (on "/") and folder (on "/notes") you visit.
   const placeDetail = pathname === "/" ? workspace.active : pathname === "/notes" ? workspace.folder : null;

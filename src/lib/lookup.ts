@@ -1,4 +1,5 @@
-// "Explain a word": meanings, examples and grammatical gender from Wiktionary.
+// "Explain a word": meanings and grammatical gender from the dictionary that ships with the app (the most
+// common words of 12 languages, from Wiktionary), and from Wiktionary online for words it doesn't have.
 // Only the looked-up word is sent, and only when the user asks for it.
 import type { Language } from "./languages";
 
@@ -102,6 +103,76 @@ async function genderOf(word: string, lang: Language) {
   return m?.[1] as Lookup["gender"];
 }
 
+/**
+ * A word in the dictionary that ships with the app: its spelling, part of speech, gender ("" unless a noun),
+ * up to three meanings, and the dictionary form when it's an inflected one ("ging" → "gehen").
+ */
+type Row = [word: string, pos: string, gender: "" | "m" | "f" | "n", senses: string[], formOf: string];
+
+/** Languages with a dictionary in public/dict (scripts/build-dicts.sh builds them from English Wiktionary). */
+const DICTIONARIES = new Set(["de", "es", "fr", "it", "pt", "nl", "sv", "pl", "ru", "ja", "zh", "tr"]);
+export const hasDictionary = (code: string) => DICTIONARIES.has(code);
+const DICTIONARY_VERSION = 1;
+const dictionaries = new Map<string, Promise<Record<string, Row[]> | null>>();
+const loaded = new Map<string, Record<string, Row[]>>();
+
+/** Load a language's dictionary once (about 1 MB); null when there's none or it can't be loaded. */
+export function loadDictionary(code: string) {
+  if (!hasDictionary(code)) return Promise.resolve(null);
+  let words = dictionaries.get(code);
+  if (!words) {
+    words = fetch(`/dict/${code}.json.gz?v=${DICTIONARY_VERSION}`)
+      .then(async (res) => {
+        if (!res.ok) return null;
+        const bytes = new Uint8Array(await res.arrayBuffer());
+        // Stored gzipped; a server may have unzipped it on the way already.
+        const gzipped = bytes[0] === 0x1f && bytes[1] === 0x8b;
+        const text = gzipped
+          ? await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).text()
+          : new TextDecoder().decode(bytes);
+        return (JSON.parse(text) as { words: Record<string, Row[]> }).words;
+      })
+      .catch(() => null);
+    dictionaries.set(code, words);
+    words.then((w) => (w ? loaded.set(code, w) : dictionaries.delete(code))); // a failure tries again next time
+  }
+  return words;
+}
+
+const PART_OF_SPEECH: Record<string, string> = {
+  noun: "Noun",
+  verb: "Verb",
+  adj: "Adjective",
+  adv: "Adverb",
+  pron: "Pronoun",
+  prep: "Preposition",
+  conj: "Conjunction",
+  intj: "Interjection",
+  num: "Numeral",
+  det: "Determiner",
+  article: "Article",
+  particle: "Particle",
+};
+
+/** The dictionary's entry for a word, shaped like Wiktionary's: the spelling typed comes first ("essen", not "Essen"). */
+function fromDictionary(words: Record<string, Row[]>, word: string, lang: Language): Lookup | null {
+  const rows = words[word.toLowerCase()];
+  if (!rows?.length) return null;
+  const exact = rows.filter((r) => r[0] === word);
+  const pick = exact.length ? exact : rows.filter((r) => r[0] === rows[0][0]);
+  const spelled = pick[0][0];
+  return {
+    word: spelled,
+    entries: pick.map(([, pos, , senses, formOf]) => ({
+      partOfSpeech: PART_OF_SPEECH[pos] ?? pos[0].toUpperCase() + pos.slice(1),
+      senses: senses.map((text) => ({ text })),
+      formOf: formOf || undefined,
+    })),
+    gender: pick.find((r) => r[2])?.[2] || undefined,
+    url: `${API}/wiki/${encodeURIComponent(spelled)}#${lang.name}`,
+  };
+}
+
 async function fetchLookup(word: string, lang: Language): Promise<Lookup | null> {
   const variants = [...new Set([word, word.toLowerCase(), word[0].toUpperCase() + word.slice(1).toLowerCase()])];
   for (const w of variants) {
@@ -116,16 +187,31 @@ async function fetchLookup(word: string, lang: Language): Promise<Lookup | null>
   return null;
 }
 
-/** Look a word up in the language being learned. Null when Wiktionary has no entry. */
-export function lookup(word: string, lang: Language) {
+/** The dictionary's entry for a word right away, if that language's dictionary is loaded and has it. */
+export function lookupNow(word: string, lang: Language) {
+  const words = loaded.get(lang.code);
+  const clean = word.trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+  return words && clean ? fromDictionary(words, clean, lang) : null;
+}
+
+/**
+ * Look a word up in the language being learned: in the dictionary that ships with the app first (instant,
+ * offline), and on Wiktionary only for words it doesn't have, when `online` lookups are allowed. Null when
+ * neither has an entry.
+ */
+export function lookup(word: string, lang: Language, online = true) {
   const clean = word.trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
   if (!clean) return Promise.resolve(null);
   const key = `${lang.code}:${clean}`;
   let hit = cache.get(key);
   if (!hit) {
-    hit = fetchLookup(clean, lang);
+    hit = loadDictionary(lang.code).then((words) => (words && fromDictionary(words, clean, lang)) ?? (online ? fetchLookup(clean, lang) : null));
     cache.set(key, hit);
-    hit.catch(() => cache.delete(key)); // don't remember failures (e.g. offline)
+    // Don't remember failures (offline) or a miss that didn't ask Wiktionary.
+    hit.then(
+      (r) => r || online || cache.delete(key),
+      () => cache.delete(key),
+    );
   }
   return hit;
 }

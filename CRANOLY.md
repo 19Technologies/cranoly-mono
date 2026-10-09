@@ -239,6 +239,7 @@ The arrow on a flashcard line (→, or ⇄ both ways) is quiet: a small chip in 
 ### Dictionary
 - **Word of the day:** Sky (a light grey) with black text, `2px` ink outline, 18px radius, the word in Fraunces at 24px, its meaning hidden until tapped; a round speaker button beside it. No heading above it: the card's second line says "Word of the day. Tap to see the meaning."
 - **Rows:** the word in Fraunces 17px (its article faint), the meaning muted below, a speaker at the end; hairline dividers; filed under sticky letter headers by the word, not its article.
+- **A search none of your words match** (one word): "None of your words match", then the word as the dictionary on the device knows it: a card-coloured card with a `1.5px` ink outline and a 16px radius, the word with its article in Fraunces 19px, its meaning muted below, and **Add** (primary), which opens Add a word with the word filled in. Words the dictionary doesn't have are looked up on Wiktionary; with online lookups off, it says so.
 
 ### Language Tile
 **Role:** picking languages in the welcome

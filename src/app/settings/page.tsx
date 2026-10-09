@@ -12,6 +12,7 @@ import { allowFolder, chooseFolder, downloadZip, folderKind, forgetFolder, saveN
 import { toast, useVault, vault } from "@/lib/store";
 import type { Settings } from "@/lib/vault";
 import { LANGUAGES, languageOf } from "@/lib/languages";
+import { hasDictionary } from "@/lib/lookup";
 import { ENGINE_MB, downloadVoice, useVoices } from "@/lib/voices";
 import { setUI, useUI } from "@/lib/ui";
 import { useSlider } from "@/lib/useSlider";
@@ -113,10 +114,15 @@ function LanguageSettings() {
         own words note, and Practice and the Dictionary let you switch between them.
         {!learning.grammar && ` Check my writing isn\u2019t available for ${learning.name} yet.`}
       </p>
+      <p className="setting-note">
+        {hasDictionary(learning.code)
+          ? `Meanings come from Wiktionary (CC BY-SA 4.0). The most common ${learning.name} words are on this device, so their meanings appear at once, even offline. Words it doesn\u2019t have are looked up online.`
+          : `Meanings come from Wiktionary (CC BY-SA 4.0), looked up online: there\u2019s no ${learning.name} dictionary on this device yet.`}
+      </p>
       <Toggle
         field="onlineLookups"
         label="Online lookups"
-        hint="Explain asks Wiktionary and Check asks LanguageTool. Only the word or text you chose is sent, and only when you tap. Everything else stays on this device."
+        hint="Words that aren’t in the dictionary on this device are looked up on Wiktionary, and Check asks LanguageTool. Only the word or text you chose is sent, and only when you ask. Everything else stays on this device."
       />
     </section>
   );

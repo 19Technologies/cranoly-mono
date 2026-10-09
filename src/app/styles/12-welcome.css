@@ -370,6 +370,32 @@
   margin: 18px 4px;
   color: var(--text-muted);
 }
+/* A searched word that isn't one of yours: looked up, with Add. */
+.dict-lookup .dict-none {
+  margin-bottom: 8px;
+}
+.dict-lookup-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1.5px solid var(--edge);
+  border-radius: 16px;
+}
+.dict-lookup-card > span {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  color: var(--text-muted);
+}
+.dict-lookup-card b {
+  font-family: var(--font-heading);
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: var(--text-normal);
+}
 .dict-group {
   margin-top: 10px;
 }

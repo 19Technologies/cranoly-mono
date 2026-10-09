@@ -7,10 +7,11 @@ import LanguageSwitch from "@/components/LanguageSwitch";
 import Sheet from "@/components/Sheet";
 import Tumble from "@/components/Tumble";
 import { entriesOf, letterOf, searchEntries, type Entry } from "@/lib/dictionary";
-import { languageOf } from "@/lib/languages";
+import { languageOf, type Language } from "@/lib/languages";
 import { say } from "@/lib/smart";
 import { useCards, useVault, vault } from "@/lib/store";
 import { setUI } from "@/lib/ui";
+import { useMeaning } from "@/lib/useMeaning";
 import { useToday } from "@/lib/useToday";
 import { prepareSpeech, useVoiceWarmup, useVoices } from "@/lib/voices";
 import { titleOf } from "@/lib/vault";
@@ -24,6 +25,36 @@ function Word({ entry }: { entry: Entry }) {
       {entry.article && <span className="dict-article">{entry.article} </span>}
       {entry.head}
     </>
+  );
+}
+
+/** A search none of your words match: the word looked up (the dictionary on this device first), ready to add. */
+function NotYours({ query, lang, online }: { query: string; lang: Language; online: boolean }) {
+  const word = query.trim();
+  const found = useMeaning(word, lang, online);
+  return (
+    <section className="dict-lookup" aria-live="polite">
+      <p className="dict-none">None of your words match “{word}”.</p>
+      {found.status === "found" && (
+        <div className="dict-lookup-card">
+          <span>
+            <b>{found.front}</b>
+            {found.meaning}
+          </span>
+          <button className="btn btn-primary" onClick={() => setUI({ addWord: { noteId: null, mode: "word", word } })}>
+            <Plus size={15} /> Add
+          </button>
+        </div>
+      )}
+      {found.status === "missing" && (
+        <p className="dict-none">
+          {online
+            ? "It isn’t in the dictionary either. Check the spelling, or add it with your own meaning."
+            : "It isn’t in the dictionary on this device. Turn on online lookups in Settings to ask Wiktionary too."}
+        </p>
+      )}
+      {found.status === "offline" && <p className="dict-none">It isn’t in this device’s dictionary, and looking further needs the internet.</p>}
+    </section>
   );
 }
 
@@ -150,7 +181,12 @@ export default function DictionaryPage() {
             )}
           </label>
 
-          {!shown.length && <p className="dict-none">No word or meaning matches “{query}”.</p>}
+          {!shown.length &&
+            (/^\S+$/.test(query.trim()) ? (
+              <NotYours key={query.trim()} query={query} lang={lang} online={settings.onlineLookups} />
+            ) : (
+              <p className="dict-none">No word or meaning matches “{query}”.</p>
+            ))}
 
           <div ref={list} className="dict-list">
             {groups.map((g) => (

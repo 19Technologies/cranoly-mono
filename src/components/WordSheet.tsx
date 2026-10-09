@@ -18,13 +18,14 @@ const close = () => setUI({ explain: null });
 
 /** One lookup. Keyed by word, so looking up another word starts fresh. */
 function Result({ word, lang, noteId, onLookUp }: { word: string; lang: Language; noteId: string | null; onLookUp: (w: string) => void }) {
-  const { notes } = useVault();
+  const { notes, settings } = useVault();
+  const online = settings.onlineLookups;
   const [status, setStatus] = useState<Status>({ kind: "loading" });
   const [card, setCard] = useState("");
 
   useEffect(() => {
     let live = true;
-    lookup(word, lang).then(
+    lookup(word, lang, online).then(
       (result) => {
         if (!live) return;
         setStatus({ kind: "done", result });
@@ -35,7 +36,7 @@ function Result({ word, lang, noteId, onLookUp }: { word: string; lang: Language
     return () => {
       live = false;
     };
-  }, [word, lang]);
+  }, [word, lang, online]);
 
   if (status.kind === "loading") {
     return (
@@ -58,7 +59,16 @@ function Result({ word, lang, noteId, onLookUp }: { word: string; lang: Language
     const parts = word.split(/\s+/).filter((w) => /\p{L}/u.test(w));
     return (
       <div className="ws-empty">
-        <p>Wiktionary has no {lang.name} entry for “{word}”.</p>
+        <p>
+          {online
+            ? `Wiktionary has no ${lang.name} entry for “${word}”.`
+            : `“${word}” isn’t in the dictionary on this device. With online lookups on, Wiktionary is asked too.`}
+        </p>
+        {!online && (
+          <button className="btn" onClick={() => vault.updateSettings({ onlineLookups: true })}>
+            Turn on online lookups
+          </button>
+        )}
         {parts.length > 1 && (
           <div className="ws-words">
             <span>Look up one word:</span>
@@ -147,16 +157,7 @@ function Explain({ word, noteId }: { word: string; noteId: string | null }) {
   const [current, setCurrent] = useState(word);
   return (
     <Sheet open title={`Explain · ${lang.name}`} onClose={close} className="word-sheet">
-      {settings.onlineLookups ? (
-        <Result key={current} word={current} lang={lang} noteId={noteId} onLookUp={setCurrent} />
-      ) : (
-        <div className="ws-empty">
-          <p>Online lookups are off, so Cranoly Mono can’t ask Wiktionary what “{word}” means.</p>
-          <button className="btn" onClick={() => vault.updateSettings({ onlineLookups: true })}>
-            Turn on online lookups
-          </button>
-        </div>
-      )}
+      <Result key={current} word={current} lang={lang} noteId={noteId} onLookUp={setCurrent} />
     </Sheet>
   );
 }

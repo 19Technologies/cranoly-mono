@@ -83,8 +83,11 @@ function Result({ word, lang, noteId, onLookUp }: { word: string; lang: Language
     );
   }
 
-  const front = card.split("::")[0].trim().toLowerCase();
-  const known = cardsOf(notes).some((c) => c.front.trim().toLowerCase() === front);
+  const cardFront = card.split("::")[0].trim().toLowerCase();
+  const known = cardsOf(notes).some((c) => c.front.trim().toLowerCase() === cardFront);
+  const front = withArticle(result, lang);
+  // The article in front ("der", or "l'" joined to the word), shown quietly.
+  const article = front.slice(0, front.length - result.word.length).trim();
   const note = noteId ? notes[noteId] : undefined;
   const save = () => {
     if (!note || !/\S\s*::\s*\S/.test(card)) return;
@@ -98,37 +101,53 @@ function Result({ word, lang, noteId, onLookUp }: { word: string; lang: Language
     <>
       <div className="ws-head">
         <h2 className="ws-word">
-          {result.gender && lang.articles?.[result.gender] && <span className="ws-article">{lang.articles[result.gender]}</span>}
-          {result.word}
+          {article.endsWith("'") ? (
+            <span>
+              <span className="ws-article">{article}</span>
+              {result.word}
+            </span>
+          ) : (
+            <>
+              {article && <span className="ws-article">{article}</span>}
+              {result.word}
+            </>
+          )}
         </h2>
-        <button className="icon-btn ws-say" onClick={() => say(withArticle(result, lang), lang)} aria-label={`Hear “${result.word}”`} title="Hear it">
+        <button className="icon-btn ws-say" onClick={() => say(front, lang)} aria-label={`Hear “${result.word}”`} title="Hear it">
           <Volume2 size={18} />
         </button>
       </div>
       <div className="ws-entries">
-        {result.entries.slice(0, 3).map((e, i) => (
-          <section key={i} className="ws-entry">
-            <span className="ws-pos">{e.partOfSpeech}</span>
-            {e.formOf && (
-              <button className="ws-formof" onClick={() => onLookUp(e.formOf!)}>
-                Look up <b>{e.formOf}</b> <ArrowUpRight size={13} />
-              </button>
-            )}
-            <ol>
-              {e.senses.slice(0, 4).map((s, j) => (
-                <li key={j}>
-                  {s.text}
-                  {s.example && (
-                    <span className="ws-example">
-                      <i>{s.example.text}</i>
-                      {s.example.translation && <> · {s.example.translation}</>}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </section>
-        ))}
+        {result.entries.slice(0, 3).map((e, i) => {
+          // An entry with another article than the word above: "Noun · die See".
+          const own = e.gender && withArticle({ ...result, gender: e.gender }, lang);
+          return (
+            <section key={i} className="ws-entry">
+              <span className="ws-pos">
+                {e.partOfSpeech}
+                {own && own !== front && <> · {own}</>}
+              </span>
+              {e.formOf && (
+                <button className="ws-formof" onClick={() => onLookUp(e.formOf!)}>
+                  Look up <b>{e.formOf}</b> <ArrowUpRight size={13} />
+                </button>
+              )}
+              <ol>
+                {e.senses.slice(0, 4).map((s, j) => (
+                  <li key={j}>
+                    {s.text}
+                    {s.example && (
+                      <span className="ws-example">
+                        <i>{s.example.text}</i>
+                        {s.example.translation && <> · {s.example.translation}</>}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          );
+        })}
       </div>
       <div className="ws-save">
         <label className="ws-card">

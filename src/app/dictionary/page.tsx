@@ -22,7 +22,7 @@ const hash = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >
 function Word({ entry }: { entry: Entry }) {
   return (
     <>
-      {entry.article && <span className="dict-article">{entry.article} </span>}
+      {entry.article && <span className="dict-article">{/['’]$/.test(entry.article) ? entry.article : `${entry.article} `}</span>}
       {entry.head}
     </>
   );

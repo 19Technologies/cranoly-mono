@@ -27,9 +27,9 @@ function isWord(front: string) {
   return !front.includes("\n") && front.length <= 60 && front.split(/\s+/).length <= 5 && /\p{L}/u.test(front) && !/[?.!]$/.test(front);
 }
 
-/** "der Bahnhof" → ["der", "Bahnhof"], using the language's articles (and l' in French and Italian). */
+/** "der Bahnhof" → ["der", "Bahnhof"], using the language's articles (and l' in French and Italian, lo in Italian). */
 function splitArticle(word: string, code: string): [string, string] {
-  const articles = Object.values(languageOf(code).articles ?? {});
+  const articles = [...Object.values(languageOf(code).articles ?? {}), ...(code === "it" ? ["lo"] : [])];
   const m = /^(\S+)\s+(.+)$/.exec(word);
   if (m && articles.some((a) => a.toLowerCase() === m[1].toLowerCase())) return [m[1], m[2]];
   const elided = /^(l['’])(.+)$/i.exec(word);

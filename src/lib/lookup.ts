@@ -13,6 +13,8 @@ interface Entry {
   senses: Sense[];
   /** For inflected forms ("ging"), the dictionary form ("gehen"). */
   formOf?: string;
+  /** A noun's own gender, where one spelling has two (der See, lake; die See, sea). */
+  gender?: "m" | "f" | "n";
 }
 
 export interface Lookup {
@@ -20,6 +22,10 @@ export interface Lookup {
   word: string;
   entries: Entry[];
   gender?: "m" | "f" | "n";
+  /** French: the h is mute, so the article is l' (l'homme, but le haricot). */
+  muteH?: boolean;
+  /** For a word that's only an inflected form ("ging"): its dictionary form and that form's first meaning. */
+  lemma?: { word: string; sense: string };
   url: string;
 }
 
@@ -105,9 +111,10 @@ async function genderOf(word: string, lang: Language) {
 
 /**
  * A word in the dictionary that ships with the app: its spelling, part of speech, gender ("" unless a noun),
- * up to three meanings, and the dictionary form when it's an inflected one ("ging" → "gehen").
+ * up to three meanings, the dictionary form when it's an inflected one ("ging" → "gehen"), and 1 for a French
+ * mute h.
  */
-type Row = [word: string, pos: string, gender: "" | "m" | "f" | "n", senses: string[], formOf: string];
+type Row = [word: string, pos: string, gender: "" | "m" | "f" | "n", senses: string[], formOf: string, muteH?: 1];
 
 /** Languages with a dictionary in public/dict (scripts/build-dicts.sh builds them from English Wiktionary). */
 const DICTIONARIES = new Set(["de", "es", "fr", "it", "pt", "nl", "sv", "pl", "ru", "ja", "zh", "tr"]);
@@ -154,21 +161,41 @@ const PART_OF_SPEECH: Record<string, string> = {
   particle: "Particle",
 };
 
+// An inflected form ("ging", "imágenes"), rather than a word of its own made from another ("das Essen").
+const INFLECTION = /\b(singular|plural|definite|genitive|dative|accusative|nominative|vocative|instrumental|locative|prepositional)\b/;
+const inflected = (r: Row) => !!r[4] && (r[1] !== "noun" || INFLECTION.test(r[3][0] ?? ""));
+
 /** The dictionary's entry for a word, shaped like Wiktionary's: the spelling typed comes first ("essen", not "Essen"). */
 function fromDictionary(words: Record<string, Row[]>, word: string, lang: Language): Lookup | null {
-  const rows = words[word.toLowerCase()];
+  // In the language's own way: Turkish "İyi" is "iyi".
+  const key = (w: string) => w.toLocaleLowerCase(lang.code);
+  const rows = words[key(word)];
   if (!rows?.length) return null;
   const exact = rows.filter((r) => r[0] === word);
   const pick = exact.length ? exact : rows.filter((r) => r[0] === rows[0][0]);
   const spelled = pick[0][0];
+  // The article goes with the entry the card's meaning comes from (see shortMeaning): "merci" is "thank you",
+  // not "la merci". An inflected form has none ("imágenes", not "la imágenes").
+  const main = pick.find((r) => !inflected(r));
+  // Only an inflected form: its card takes the dictionary form's meaning ("ging": "to go, to walk (gehen)"),
+  // from the first entry whose dictionary form is in the dictionary too.
+  let lemma: Row | undefined;
+  for (const r of main ? [] : pick) {
+    const base = (words[key(r[4])] ?? []).filter((b) => !b[4]);
+    lemma = base.find((b) => b[0] === r[4]) ?? base[0];
+    if (lemma) break;
+  }
   return {
     word: spelled,
-    entries: pick.map(([, pos, , senses, formOf]) => ({
+    entries: pick.map(([, pos, gender, senses, formOf]) => ({
       partOfSpeech: PART_OF_SPEECH[pos] ?? pos[0].toUpperCase() + pos.slice(1),
       senses: senses.map((text) => ({ text })),
       formOf: formOf || undefined,
+      gender: gender || undefined,
     })),
-    gender: pick.find((r) => r[2])?.[2] || undefined,
+    gender: main?.[2] || undefined,
+    muteH: main?.[5] === 1 || undefined,
+    lemma: lemma?.[3][0] ? { word: lemma[0], sense: lemma[3][0] } : undefined,
     url: `${API}/wiki/${encodeURIComponent(spelled)}#${lang.name}`,
   };
 }
@@ -216,25 +243,42 @@ export function lookup(word: string, lang: Language, online = true) {
   return hit;
 }
 
-/** A short meaning for a flashcard back: the first sense, trimmed. */
+/** A short meaning for a flashcard back: the first sense, trimmed; for an inflected form, its dictionary form's. */
 export function shortMeaning(result: Lookup) {
+  if (result.lemma) return `${short(result.lemma.sense)} (${result.lemma.word})`;
   const sense = result.entries.find((e) => !e.formOf)?.senses[0] ?? result.entries[0]?.senses[0];
-  if (!sense) return "";
-  // First sense, without notes in brackets or Latin species names ("house cat, Felis catus" → "house cat").
-  const parts = sense.text
-    .replace(/\s*\([^)]*\)/g, "")
-    .split(/;/)[0]
+  return sense ? short(sense.text) : "";
+}
+
+function short(text: string) {
+  // First sense, without notes in brackets or Latin species names ("house cat, Felis catus" → "house cat"): its
+  // first part, or a short one after a description ("A building for a family to reside in; house, home").
+  const chunks = text.replace(/\s*\([^)]*\)/g, "").split(/;/);
+  const words = (t: string) => t.trim().split(/\s+/).length;
+  const parts = (words(chunks[0]) > 4 ? (chunks.find((c) => words(c) <= 4 && !c.endsWith("…")) ?? chunks[0]) : chunks[0])
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
   const latin = /^[A-Z][a-z]+ [a-z]+(us|a|um|is|ae|ii|ensis|oides|atus|ata)( [a-z]+)?$/;
   const plain = parts.filter((part) => !latin.test(part));
-  const first = (plain.length ? plain : parts).slice(0, 3).join(", ");
+  const list = plain.length ? plain : parts;
+  // Synonyms, up to three, but not the description after them ("dog, domesticated for thousands of years" → "dog").
+  const long = list.findIndex((part, i) => i > 0 && part.split(" ").length > 3);
+  const first = list.slice(0, Math.min(3, long === -1 ? list.length : long)).join(", ");
   return first.length > 60 ? first.slice(0, 57).trimEnd() + "…" : first;
 }
 
-/** "Hund" → "der Hund" for languages with articles. */
+/** "Hund" → "der Hund" for languages with articles, with the article as it's said: "l'eau", "lo zio", "el agua". */
 export function withArticle(result: Lookup, lang: Language) {
   const article = result.gender && lang.articles?.[result.gender];
-  return article ? `${article} ${result.word}` : result.word;
+  if (!article) return result.word;
+  const w = result.word.toLowerCase();
+  if (lang.code === "fr" ? /^[aeiouâàäéèêëîïôöûùüœæ]/.test(w) || (w[0] === "h" && result.muteH) : lang.code === "it" && /^[aeiouàèéìíòóùú]/.test(w))
+    return `l'${result.word}`;
+  if (lang.code === "it" && article === "il" && /^(s[^aeiouàèéìòù]|z|gn|ps|pn|x|y)/.test(w)) return `lo ${result.word}`;
+  // A feminine noun stressed on its first a takes "el": "el área", or two syllables with no accent ("el agua").
+  const syllables = w.match(/[aeiouáéíóúü]+/g)?.length;
+  if (lang.code === "es" && article === "la" && (/^h?á/.test(w) || (/^h?a/.test(w) && syllables === 2 && /[aeiouns]$/.test(w) && !/[áéíóú]/.test(w))))
+    return `el ${result.word}`;
+  return `${article} ${result.word}`;
 }

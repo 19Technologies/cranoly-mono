@@ -228,7 +228,8 @@ export default function DictionaryPage() {
               <button
                 className="btn"
                 onClick={() => {
-                  const word = open.word;
+                  // The word without its article: "der See" is looked up as "See".
+                  const word = open.head;
                   setOpen(null);
                   setUI({ explain: { word, noteId: open.sources[0]?.noteId ?? null } });
                 }}

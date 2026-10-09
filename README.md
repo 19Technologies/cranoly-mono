@@ -97,3 +97,10 @@ Built with Next.js 16 (App Router), React 19, `react-markdown` + `remark-gfm` + 
 | `src/app/` | Routes: `/` (notes), `/notes`, `/search`, `/mind-map`, `/dictionary`, `/formatting`, `/flashcards`, `/flashcards/study`, `/settings`, plus `manifest.ts` and icons. `/home` and `/graph` redirect. |
 | `src/app/styles/` | The styles, by job (`01-base.css` to `17-flat.css`), loaded in that order by `globals.css`: a later file wins |
 | `public/sw.js` | Offline service worker (it leaves downloaded voices alone) |
+| `public/dict/` | The word dictionaries, one gzipped JSON file per language, loaded by `lookup.ts` |
+| `scripts/` | `build-dicts.sh` rebuilds `public/dict` (about 700 MB to download, compressed and streamed); `build-dict.mjs` builds one language |
+
+## Credits
+
+- Word meanings, gender and word forms: [English Wiktionary](https://en.wiktionary.org), extracted by [kaikki.org](https://kaikki.org) (CC BY-SA 4.0). The files in `public/dict` are shared under the same licence, and `scripts/build-dicts.sh` shows how they're made.
+- Which words to include: [FrequencyWords](https://github.com/hermitdave/FrequencyWords) word lists from OpenSubtitles (CC BY-SA 4.0).

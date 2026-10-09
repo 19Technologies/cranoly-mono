@@ -123,22 +123,29 @@ const DICTIONARY_VERSION = 1;
 const dictionaries = new Map<string, Promise<Record<string, Row[]> | null>>();
 const loaded = new Map<string, Record<string, Row[]>>();
 
+/** One dictionary file's words, gzipped or not; null when it isn't there or can't be read. */
+async function readDictionary(url: string) {
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  // Stored gzipped; a server may have unzipped it on the way already.
+  const gzipped = bytes[0] === 0x1f && bytes[1] === 0x8b;
+  const text = gzipped
+    ? await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).text()
+    : new TextDecoder().decode(bytes);
+  return (JSON.parse(text) as { words: Record<string, Row[]> }).words;
+}
+
 /** Load a language's dictionary once (about 1 MB); null when there's none or it can't be loaded. */
 export function loadDictionary(code: string) {
   if (!hasDictionary(code)) return Promise.resolve(null);
   let words = dictionaries.get(code);
   if (!words) {
-    words = fetch(`/dict/${code}.json.gz?v=${DICTIONARY_VERSION}`)
-      .then(async (res) => {
-        if (!res.ok) return null;
-        const bytes = new Uint8Array(await res.arrayBuffer());
-        // Stored gzipped; a server may have unzipped it on the way already.
-        const gzipped = bytes[0] === 0x1f && bytes[1] === 0x8b;
-        const text = gzipped
-          ? await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).text()
-          : new TextDecoder().decode(bytes);
-        return (JSON.parse(text) as { words: Record<string, Row[]> }).words;
-      })
+    // Android's build unzips .gz files it packs into the app and drops the ".gz", so there it's "de.json".
+    const file = `/dict/${code}.json`;
+    words = readDictionary(`${file}.gz?v=${DICTIONARY_VERSION}`)
+      .catch(() => null)
+      .then((w) => w ?? readDictionary(`${file}?v=${DICTIONARY_VERSION}`))
       .catch(() => null);
     dictionaries.set(code, words);
     words.then((w) => (w ? loaded.set(code, w) : dictionaries.delete(code))); // a failure tries again next time
